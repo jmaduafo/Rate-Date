@@ -41,17 +41,17 @@ function SideBar() {
     ]
 
     async function signOut() {
-        // const { error } = await supabase.auth.signOut()
+        const { error } = await supabase.auth.signOut()
 
-        // if (error) {
-        //     toast({
-        //         title: "Uh oh! Something went wrong.",
-        //         description: "There was a problem with your request.",
-        //         action: <ToastAction altText="Try again">Try again</ToastAction>,
-        //       })
-        // }
+        if (error) {
+            toast({
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem with your request.",
+                action: <ToastAction altText="Try again">Try again</ToastAction>,
+              })
+        }
 
-        // return redirect('/login')
+        return router.push('/login')
     }
 
   return (
