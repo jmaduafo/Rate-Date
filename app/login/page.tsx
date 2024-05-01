@@ -10,59 +10,59 @@ export default function Login({
 }: {
   searchParams: { message: string };
 }) {
-  const signIn = async (formData: FormData) => {
-    "use server";
+  // const signIn = async (formData: FormData) => {
+  //   "use server";
 
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const supabase = createClient();
+  //   const email = formData.get("email") as string;
+  //   const password = formData.get("password") as string;
+  //   const supabase = createClient();
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+  //   const { error } = await supabase.auth.signInWithPassword({
+  //     email,
+  //     password,
+  //   });
 
-    if (error) {
-      return redirect("/login?message=Could not authenticate user");
-    }
+  //   if (error) {
+  //     return redirect("/login?message=Could not authenticate user");
+  //   }
 
-    return redirect("/protected");
-  };
+  //   return redirect("/protected");
+  // };
 
-  const signUp = async (formData: FormData) => {
-    "use server";
+  // const signUp = async (formData: FormData) => {
+  //   "use server";
 
-    const origin = headers().get("origin");
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const supabase = createClient();
+  //   const origin = headers().get("origin");
+  //   const email = formData.get("email") as string;
+  //   const password = formData.get("password") as string;
+  //   const supabase = createClient();
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${origin}/auth/callback`,
-      },
-    })
+  //   const { data, error } = await supabase.auth.signUp({
+  //     email,
+  //     password,
+  //     options: {
+  //       emailRedirectTo: `${origin}/auth/callback`,
+  //     },
+  //   })
 
-    await supabase.from('users').insert({
-      id: data.user?.id,
-      email,
-      username: 'willow_tree',
-    })
+  //   await supabase.from('users').insert({
+  //     id: data.user?.id,
+  //     email,
+  //     username: 'willow_tree',
+  //   })
 
-    if (error) {
-      return redirect("/login?message=Could not authenticate user");
-    }
+  //   if (error) {
+  //     return redirect("/login?message=Could not authenticate user");
+  //   }
 
-    return redirect("/login?message=Check email to continue sign in process");
-  };
+  //   return redirect("/login?message=Check email to continue sign in process");
+  // };
 
   return (
     <div className="">
       <LogSignPage>
-        <form>
-          
+        <form className="text-darkText w-full p-5 border-[1px] border-darkText60 rounded-3xl">
+          <input className="w-full"/>
         </form>
       </LogSignPage>
       {/* <Link

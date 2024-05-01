@@ -1,11 +1,11 @@
 // import { GeistSans } from "geist/font/sans";
 import { DM_Sans } from 'next/font/google'
 import "./globals.css";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
 import SideBar from "@/components/SideBar";
 import Container from "@/components/Container";
 import { Toaster } from "@/components/ui/toaster"
+import { createClient } from "@/utils/supabase/server";
+
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -24,15 +24,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  
   const supabase = createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return redirect("/login");
-  }
+  const { data: { user }, } = await supabase.auth.getUser()
 
   return (
     <html lang="en" className={`${DMSans.className}`}>

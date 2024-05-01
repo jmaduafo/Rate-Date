@@ -6,11 +6,11 @@ import { ToastAction } from "@/components/ui/toast"
 import { useToast } from "@/components/ui/use-toast"
 import Link from 'next/link'
 import LineBreak from './LineBreak'
-import { createClient } from '@/utils/supabase/client'
+import { createClient } from "@/utils/supabase/client";
 import { HomeIcon, ChartBarIcon, QueueListIcon, UserCircleIcon, ArrowRightEndOnRectangleIcon as LogoutIcon, Cog6ToothIcon } from '@heroicons/react/24/solid'
 
 function SideBar() {
-    const [ increm, setIncrem ] = useState(0)
+    // const [ increm, setIncrem ] = useState(0)
     const pathname = usePathname()
     const supabase = createClient()
     const router = useRouter()
@@ -41,21 +41,17 @@ function SideBar() {
     ]
 
     async function signOut() {
-        setIncrem(prev => prev++)
+        // const { error } = await supabase.auth.signOut()
 
-        if (increm > 1) {
-            toast({
-                title: "Uh oh! Something went wrong.",
-                description: "There was a problem with your request.",
-                action: <ToastAction altText="Try again">Try again</ToastAction>,
-              })
-        } else {
-            toast({
-                title: "Success!",
-                description: "Your request has been successful!",
-              })        
-        }
+        // if (error) {
+        //     toast({
+        //         title: "Uh oh! Something went wrong.",
+        //         description: "There was a problem with your request.",
+        //         action: <ToastAction altText="Try again">Try again</ToastAction>,
+        //       })
+        // }
 
+        // return redirect('/login')
     }
 
   return (
@@ -86,13 +82,7 @@ function SideBar() {
             )
         })}
         {/* LOGOUT BUTTON */}
-        <div onClick={() => {
-                toast({
-                title: "Uh oh! Something went wrong.",
-                description: "There was a problem with your request.",
-                action: <ToastAction altText="Try again">Try again</ToastAction>,
-                })
-            }} className={`group duration-[.4s] md:py-3 md:px-8 md:mb-2 flex md:flex-row md:items-center md:justify-start md:gap-6 flex-col justify-center items-center cursor-pointer`}>
+        <div onClick={signOut} className={`group duration-[.4s] md:py-3 md:px-8 md:mb-2 flex md:flex-row md:items-center md:justify-start md:gap-6 flex-col justify-center items-center cursor-pointer`}>
             <div className={`'md:text-darkText text-lightText group-hover:text-darkText md:text-darkText60 text-lightText60 duration-[.4s]'}`}>
                 <LogoutIcon className='xs:w-[5.5vw] sm:w-[4vw] md:w-[20px] w-[7vw]'/>
             </div>
