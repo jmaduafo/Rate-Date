@@ -1,9 +1,11 @@
-import Container from '@/components/Container'
+import TopBar from '@/components/links/main/TopBar'
+import BottomBar from '@/components/links/main/BottomBar'
 
 function MainDashboard() {
   return (
     <div className=''>
-      <h1 className='text-black'>Hi</h1>    
+      <TopBar/>
+      <BottomBar/>    
     </div>
   )
 }

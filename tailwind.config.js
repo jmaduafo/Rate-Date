@@ -6,9 +6,18 @@ module.exports = {
   ],
   theme: {
     extend: {
+      boxShadow: {
+        '3xl': "20px 20px 60px #afa9a9, -20px -20px 60px #ede5e5",
+      },
       colors: {
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        background: "#CEC7C7",
+        darkText: "black",
+        dark10: "rgba(0, 0, 0, .1)",
+        lightText: "#D9D9D9",
+        darkText60: "rgba(0, 0, 0, .6)",
+        lightText60: "rgba(217, 217, 217, .6)",
+        foreground: "#D9D9D9",
+        accent: "#DF8E74",
         btn: {
           background: "hsl(var(--btn-background))",
           "background-hover": "hsl(var(--btn-background-hover))",
