@@ -47,7 +47,7 @@ function BottomBar() {
             </div>
             {data.map(date => {
                 return (
-                    <div className='mb-3'>
+                    <div className='mb-3' key={date.dateName}>
                         <SingleDateList>
                             <p className='text-[15px]'>{date.dateName}</p>
                             <p className='italic text-[10px] text-darkText60'>in {date.dueDate}</p>

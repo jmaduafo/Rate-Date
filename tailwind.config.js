@@ -10,13 +10,15 @@ module.exports = {
         '3xl': "20px 20px 60px #afa9a9, -20px -20px 60px #ede5e5",
       },
       colors: {
-        background: "#CEC7C7",
+        background: "black",
+        foreground: "#D9D9D9",
+        myBackground: "#CEC7C7",
+        myForeground: "#D9D9D9",
         darkText: "black",
         dark10: "rgba(0, 0, 0, .1)",
         lightText: "#D9D9D9",
         darkText60: "rgba(0, 0, 0, .6)",
         lightText60: "rgba(217, 217, 217, .6)",
-        foreground: "#D9D9D9",
         accent: "#DF8E74",
         btn: {
           background: "hsl(var(--btn-background))",
@@ -45,6 +47,20 @@ module.exports = {
         // => @media (min-width: 1920px) { ... } 
       },
     },
+    keyframes: {
+      "accordion-down": {
+        from: { height: "0" },
+        to: { height: "var(--radix-accordion-content-height)" },
+      },
+      "accordion-up": {
+        from: { height: "var(--radix-accordion-content-height)" },
+        to: { height: "0" },
+      },
+    },
+    animation: {
+      "accordion-down": "accordion-down 0.2s ease-out",
+      "accordion-up": "accordion-up 0.2s ease-out",
+    },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 };
