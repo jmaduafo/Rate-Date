@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import LogSignPage from '@/components/links/login-signup/LogSignPage';
 import Header2 from '@/components/Header2';
+import Loading from '@/components/Loading';
 import { SubmitButton } from '../login/submit-button';
 
 function Signup({
@@ -35,7 +36,7 @@ function Signup({
       id: data.user?.id,
       email,
       username,
-
+      name
     })
 
     if (error) {
@@ -54,7 +55,7 @@ function Signup({
           <div className="flex justify-center">
             <Header2 title='Sign Up'/>
           </div>
-          <p className="text-[14px] text-darkText60 font-medium text-center mt-5">Not a registered user yet? Enter your email below to create your account</p>
+          <p className="text-[14px] text-darkText60 font-medium text-center mt-5">Not a registered user yet? Enter your credentials below to create your account</p>
         </div>
         <form className="text-darkText w-full">
           {/* NAME INPUT */}
@@ -75,7 +76,7 @@ function Signup({
           </div>
           {/* ERROR OR CONFIRMATION MESSAGE */}
           {searchParams?.message && (
-            <p className="mt-4 p-4 bg-myBackground text-myForeground text-center">
+            <p className="mt-4 p-4 bg-myBackground text-darkText text-center rounded-xl">
               {searchParams.message}
             </p>
           )}
