@@ -36,13 +36,19 @@ export default function Login({
     const password = formData.get("password") as string;
     const supabase = createClient();
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: `${origin}/auth/callback`,
       },
-    });
+    })
+
+    await supabase.from('users').insert({
+      id: data.user?.id,
+      email,
+      username: 'willow_tree',
+    })
 
     if (error) {
       return redirect("/login?message=Could not authenticate user");
