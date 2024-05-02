@@ -1,16 +1,27 @@
 'use client'
 
-import React, { useState } from 'react'
-import { redirect, usePathname, useRouter } from 'next/navigation'
+import React, { useState, useEffect } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import { ToastAction } from "@/components/ui/toast"
 import { useToast } from "@/components/ui/use-toast"
 import Link from 'next/link'
 import LineBreak from './LineBreak'
 import { createClient } from "@/utils/supabase/client";
+import { greetings } from '@/utils/general/greeting'
+import { getInitials } from '@/utils/general/initials'
 import { HomeIcon, ChartBarIcon, QueueListIcon, UserCircleIcon, ArrowRightEndOnRectangleIcon as LogoutIcon, Cog6ToothIcon } from '@heroicons/react/24/solid'
+import Header2 from './Header2'
+
+type User = {
+    name: string;
+    image: string | null;
+}
 
 function SideBar() {
-    // const [ increm, setIncrem ] = useState(0)
+    const [ userData, setUserData ] = useState<User[] | null>()
+    const [ userInitials, setUserInitials ] = useState<string>('')
+    const [ loading, setLoading ] = useState<boolean>(false)
+
     const pathname = usePathname()
     const supabase = createClient()
     const router = useRouter()
@@ -51,16 +62,67 @@ function SideBar() {
               })
         }
 
-        return router.push('/login')
+        router.push('/login')
+        router.refresh()
     }
+
+    async function getUserInfo() {
+        setLoading(true)
+        const { data, error } = await supabase.auth.getUser()
+
+        if (error) {
+            toast({
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem retrieving user data.",
+            })
+        } else {
+            // GET ONLY THE NAME IN USERS COLLECTION WHERE THE ID MATCHES THE CURRENT LOGGED IN USER
+            const { data: dataName, error } = await supabase.from('users').select('name, image').eq('id', data?.user?.id)
+
+            if (error) {
+                toast({
+                    title: "Uh oh! Something went wrong.",
+                    description: "There was a problem retrieving data.",
+                })
+            }
+
+            setUserData(dataName)
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        getUserInfo()
+    }, [])
 
   return (
     <>
-    <div className='gap-6 items-center md:flex hidden'>
-        <div className='w-[50px] h-[50px] bg-myForeground rounded-full'></div>
+    <div className=' gap-6 items-center md:flex hidden'>
+        {userData && !userData[0].image
+        ?
+            <div className='w-[50px] h-[50px] bg-myForeground rounded-full flex justify-center items-center'>
+                <h5 className='text-[18px] text-darkText60 font-bold uppercase'>
+                    {getInitials(userData[0]?.name)}
+                </h5>
+            </div>
+        :
+            (
+                userData && userData[0].image ?
+                <div>
+
+                </div>
+                :
+                <div className='w-[50px] h-[50px] bg-myForeground rounded-full'>
+                    <h5 className='text-[18px] text-darkText60 font-bold uppercase'>
+                    {getInitials('Anon')}
+                    </h5>
+                </div>
+            )
+                
+        }
         <div>
-            <p className='text-[14px] md:mb-[-5px]'>Good morning,</p>
-            <p className='text-[14px]'>Gianna</p>
+            <p className='text-[14px] md:mb-[-5px]'>Good {greetings()},</p>
+            <p className='text-[14px]'>{userData ? userData[0]?.name : 'Anon'}</p>
         </div>
     </div>
     <nav className='md:mt-[8rem] md:block w-full flex flex-row justify-evenly items-center'>

@@ -5,7 +5,6 @@ import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 import LogSignPage from '@/components/links/login-signup/LogSignPage';
 import Header2 from '@/components/Header2';
-import Loading from '@/components/Loading';
 import { SubmitButton } from '../login/submit-button';
 
 function Signup({
@@ -43,7 +42,7 @@ function Signup({
       return redirect("/login?message=Could not authenticate user");
     }
 
-    return redirect("/login?message=Check email to continue sign in process");
+    return redirect("/login?message=Check your email to continue sign in process");
   };
 
   return (

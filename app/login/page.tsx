@@ -53,7 +53,7 @@ export default function Login({
             </SubmitButton>
           </div>
           {searchParams?.message && (
-            <p className="mt-4 p-4 bg-myBackground text-myForeground text-center">
+            <p className="mt-4 p-4 md:bg-myBackground text-myForeground bg-green-600 text-center rounded">
               {searchParams.message}
             </p>
           )}
