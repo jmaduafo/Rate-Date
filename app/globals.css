@@ -64,18 +64,4 @@
       --input: 240 3.7% 15.9%;
       --ring: 240 4.9% 83.9%;
     }
-
-    .spin {
-      animation: spinning 8s linear infinite;
-    }
-
-    @keyframes spinning {
-      from {
-        transform: rotate(0deg)
-      }
-      to {
-        transform: rotate(360deg)
-
-      }
-    }
   }

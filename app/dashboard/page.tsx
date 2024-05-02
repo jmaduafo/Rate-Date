@@ -3,7 +3,7 @@ import BottomBar from '@/components/links/main/BottomBar'
 
 function MainDashboard() {
   return (
-    <div className=''>
+    <div className='md:block flex flex-col-reverse'>
       <TopBar/>
       <BottomBar/>    
     </div>

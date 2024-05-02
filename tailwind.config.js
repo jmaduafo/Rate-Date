@@ -24,6 +24,30 @@ module.exports = {
           background: "hsl(var(--btn-background))",
           "background-hover": "hsl(var(--btn-background-hover))",
         },
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
       },
       screens: {
         'xxs': '0px',
@@ -60,11 +84,16 @@ module.exports = {
         from: { transform: "rotate(0deg)" },
         to: { transform: "rotate(360deg)" },
       },
+      "skeleton": {
+        from: { opacity: .3},
+        to: { opacity: 1},
+      } 
     },
     animation: {
       "accordion-down": "accordion-down 0.2s ease-out",
       "accordion-up": "accordion-up 0.2s ease-out",
-      "spin": "spinning 2s linear infinite"
+      "spin": "spinning 2s linear infinite",
+      "skeleton": "skeleton 2s ease-in-out infinite alternate",
     },
   },
   plugins: [require("tailwindcss-animate")],

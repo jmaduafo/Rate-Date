@@ -22,9 +22,29 @@ function BottomBar() {
             dateName: 'Kallum',
             dueDate: '1 week',
         },
+        {
+            dateName: 'Kallum',
+            dueDate: '1 week',
+        },
+        {
+            dateName: 'Kallum',
+            dueDate: '1 week',
+        },
+        {
+            dateName: 'Kallum',
+            dueDate: '1 week',
+        },
+        {
+            dateName: 'Kallum',
+            dueDate: '1 week',
+        },
+        {
+            dateName: 'Kallum',
+            dueDate: '1 week',
+        },
     ]
   return (
-    <div className='mt-8 gap-6 flex'>
+    <div className='md:mt-8 gap-6 flex md:flex-row flex-col'>
         {/* DATES TABLE */}
         <div className='flex-[5]'>
             <div className='flex gap-4'>
@@ -36,7 +56,7 @@ function BottomBar() {
                     <AdjustmentsHorizontalIcon strokeWidth={1} className='w-6'/>
                 </SecondaryButton>        
             </div>
-            <Card className='mt-5 h-[45vh]'>
+            <Card className='mt-5 max-h-[45vh] overflow-y-auto'>
                 
             </Card>
         </div>
@@ -45,17 +65,19 @@ function BottomBar() {
             <div className='mb-[4rem]'>
                 <Header4 title='Upcoming Dates'/>
             </div>
-            {data.map(date => {
-                return (
-                    <div className='mb-3' key={date.dateName}>
-                        <SingleDateList>
-                            <p className='text-[15px]'>{date.dateName}</p>
-                            <p className='italic text-[10px] text-darkText60'>in {date.dueDate}</p>
-                        </SingleDateList>
+            <div className='max-h-[35vh] overflow-y-auto'>
+                {data.map(date => {
+                    return (
+                        <div className='mb-3' key={date.dateName}>
+                            <SingleDateList>
+                                <p className='text-[15px]'>{date.dateName}</p>
+                                <p className='italic text-[10px] text-darkText60'>in {date.dueDate}</p>
+                            </SingleDateList>
 
-                    </div>
-                )
-            })}
+                        </div>
+                    )
+                })}
+            </div>
          </Card>
     </div>
   )

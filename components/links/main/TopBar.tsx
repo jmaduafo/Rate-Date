@@ -31,7 +31,7 @@ function TopBar() {
     }, [])
 
   return (
-    <div className='flex md:flex-row flex-col gap-6 md:h-[30vh]'>
+    <div className='flex md:flex-row flex-col gap-6 md:h-[30vh] md:mt-0 mt-8'>
         {/* WEATHER CARD */}
         <Card className='flex-[1.5]'>
             <Header3 title='Weather'/>

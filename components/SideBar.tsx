@@ -10,7 +10,7 @@ import { createClient } from "@/utils/supabase/client";
 import { greetings } from '@/utils/general/greeting'
 import { getInitials } from '@/utils/general/initials'
 import { HomeIcon, ChartBarIcon, QueueListIcon, UserCircleIcon, ArrowRightEndOnRectangleIcon as LogoutIcon, Cog6ToothIcon } from '@heroicons/react/24/solid'
-import Header2 from './Header2'
+import { Skeleton } from "@/components/ui/skeleton"
 
 type User = {
     name: string;
@@ -97,41 +97,49 @@ function SideBar() {
 
   return (
     <>
-    <div className=' gap-6 items-center md:flex hidden'>
-        {userData && !userData[0].image
-        ?
+    <Link href='/profile'>
+        <div className='hover:bg-dark10 p-3 rounded-xl cursor-pointer duration-500 gap-6 items-center md:flex hidden'>
+            {/* PROFILE IMAGE */}
+            {userData && !userData[0].image
+            ?
             <div className='w-[50px] h-[50px] bg-myForeground rounded-full flex justify-center items-center'>
-                <h5 className='text-[18px] text-darkText60 font-bold uppercase'>
-                    {getInitials(userData[0]?.name)}
-                </h5>
-            </div>
-        :
+                    <h5 className='text-[18px] text-darkText60 font-bold uppercase'>
+                        {getInitials(userData[0]?.name)}
+                    </h5>
+                </div>
+            :
             (
                 userData && userData[0].image ?
                 <div>
 
-                </div>
-                :
-                <div className='w-[50px] h-[50px] bg-myForeground rounded-full'>
-                    <h5 className='text-[18px] text-darkText60 font-bold uppercase'>
-                    {getInitials('Anon')}
-                    </h5>
-                </div>
-            )
-                
-        }
-        <div>
-            <p className='text-[14px] md:mb-[-5px]'>Good {greetings()},</p>
-            <p className='text-[14px]'>{userData ? userData[0]?.name : 'Anon'}</p>
+                    </div>
+                    :
+                    <Skeleton className='animate-skeleton w-[50px] h-[50px] rounded-full'/>
+                    )     
+                }
+            {/* GREETING WITH USER'S NAME */}
+            <div>
+                {userData ?
+                    <>
+                        <p className='text-[14px] md:mb-[-5px]'>Good {greetings()},</p>
+                        <p className='text-[14px]'>{userData[0]?.name}</p>
+                    </>
+                    :
+                    <>
+                        <Skeleton className='animate-skeleton w-[70px] mb-2 h-4 rounded'/>
+                        <Skeleton className='animate-skeleton w-[100px] h-4 rounded'/>
+                    </>
+                }
+            </div>
         </div>
-    </div>
+    </Link>
     <nav className='md:mt-[8rem] md:block w-full flex flex-row justify-evenly items-center'>
         {navigations.map(nav => {
             return (
                 <Link key={nav.name} href={nav.link}>
-                    <div className={`${pathname.slice(1) === nav.name.toLowerCase() ? 'md:bg-myBackground md:shadow-3xl rounded-2xl' : 'md:bg-transparent text-text60'} group duration-[.4s] md:py-3 md:px-8 md:mb-2 flex md:flex-row md:items-center md:justify-start md:gap-6 flex-col justify-center items-center`}>
+                    <div className={`${pathname.slice(1) === nav.name.toLowerCase() ? 'md:bg-myBackground md:shadow-3xl rounded-2xl' : 'md:bg-transparent text-text60'} group duration-500 md:py-3 md:px-8 md:mb-2 flex md:flex-row md:items-center md:justify-start md:gap-6 flex-col justify-center items-center`}>
                         {/* CHANGES ICON COLOR BASED ON PATHNAME */}
-                        <div className={`${pathname.slice(1) === nav.name.toLowerCase() ? 'md:text-darkText text-lightText' : 'group-hover:text-darkText md:text-darkText60 text-lightText60 duration-[.4s]'}`}>
+                        <div className={`${pathname.slice(1) === nav.name.toLowerCase() ? 'md:text-darkText text-lightText' : 'group-hover:text-lightText group-hover:md:text-darkText md:text-darkText60 text-lightText60 duration-500'}`}>
                             {nav.icon}
                         </div>
                         {/* CHANGES TEXT COLOR BASED ON PATHNAME */}
@@ -144,12 +152,12 @@ function SideBar() {
             )
         })}
         {/* LOGOUT BUTTON */}
-        <div onClick={signOut} className={`group duration-[.4s] md:py-3 md:px-8 md:mb-2 flex md:flex-row md:items-center md:justify-start md:gap-6 flex-col justify-center items-center cursor-pointer`}>
-            <div className={`'md:text-darkText text-lightText group-hover:text-darkText md:text-darkText60 text-lightText60 duration-[.4s]'}`}>
+        <div onClick={signOut} className={`group duration-500 md:py-3 md:px-8 md:mb-2 flex md:flex-row md:items-center md:justify-start md:gap-6 flex-col justify-center items-center cursor-pointer`}>
+            <div className={`'md:text-darkText group-hover:text-lightText group-hover:md:text-darkText md:text-darkText60 text-lightText60 duration-500'}`}>
                 <LogoutIcon className='xs:w-[5.5vw] sm:w-[4vw] md:w-[20px] w-[7vw]'/>
             </div>
             <div className=''>
-                <p className={`md:text-darkText text-lightText group-hover:md:text-darkText group-hover:text-lightText md:text-darkText60 text-lightText60 duration-[.4s] md:text-[15px] text-[9px]`}>Logout</p>
+                <p className={`md:text-darkText text-lightText group-hover:md:text-darkText group-hover:text-lightText md:text-darkText60 text-lightText60 duration-500 md:text-[15px] text-[9px]`}>Logout</p>
             </div>
         </div>
     </nav>
