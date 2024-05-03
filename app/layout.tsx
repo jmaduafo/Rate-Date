@@ -30,7 +30,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${DMSans.className}`}>
-      <body className="bg-myBackground text-myForeground">
+      <body className="bg-myBackground text-myForeground bodyScroll">
         <main className="">
           {/* IF USER IS LOGGED IN, DISPLAY SIDEBAR WITH CUSTOM CONTAINER;
               IF NOT LOGGED IN, DISPLAY COMPONENTS AS NORMAL */}

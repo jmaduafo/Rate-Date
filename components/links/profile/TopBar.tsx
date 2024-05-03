@@ -134,9 +134,9 @@ function TopBar() {
             .eq("id", userData[0]?.id);
 
             if (error) {
-            toast({
-                title: error.message,
-            });
+                toast({
+                    title: error.message,
+                });
             } else {
                 toast({
                     title: "Profile updated successfully!"
@@ -148,8 +148,6 @@ function TopBar() {
         }
     }
   }
-
-  console.log(getZodiac('06-16'))
 
   return (
     <div>

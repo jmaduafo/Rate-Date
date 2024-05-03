@@ -4,7 +4,7 @@ import PrimaryButton from '@/components/PrimaryButton'
 import SecondaryButton from '@/components/SecondaryButton'
 import { PlusIcon } from '@heroicons/react/24/solid'
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline'
-import Header3 from '@/components/Header3'
+import Link from 'next/link'
 import Header4 from '@/components/Header4'
 import SingleDateList from '@/components/SingleDateList'
 
@@ -48,10 +48,12 @@ function BottomBar() {
         {/* DATES TABLE */}
         <div className='flex-[5]'>
             <div className='flex gap-4'>
-                <PrimaryButton className='flex items-center gap-2'>
-                    <PlusIcon className='w-4'/>
-                    <p className='text-[13px]'>Add a Date</p>
-                </PrimaryButton>
+                <Link href={'/dashboard/create'}>
+                    <PrimaryButton className='flex items-center gap-2 h-full'>
+                        <PlusIcon className='w-4'/>
+                        <p className='text-[13px]'>Add a Date</p>
+                    </PrimaryButton>
+                </Link>
                 <SecondaryButton className='flex justify-center items-center px-2'>
                     <AdjustmentsHorizontalIcon strokeWidth={1} className='w-6'/>
                 </SecondaryButton>        
@@ -73,7 +75,6 @@ function BottomBar() {
                                 <p className='text-[15px]'>{date.dateName}</p>
                                 <p className='italic text-[10px] text-darkText60'>in {date.dueDate}</p>
                             </SingleDateList>
-
                         </div>
                     )
                 })}
