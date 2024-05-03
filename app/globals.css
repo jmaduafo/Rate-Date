@@ -81,6 +81,20 @@
     border-radius: 5px;
   }
 
+  .scrollbar::-moz-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar::-moz-scrollbar-thumb {
+    background-color: rgb(210, 210, 210);
+    border-radius: 5px;
+  }
+
+  .scrollbar::-moz-scrollbar-track {
+    background-color: transparent;
+    border-radius: 5px;
+  }
+
   .bodyScroll::-webkit-scrollbar {
     width: 4px;
   }
@@ -93,4 +107,30 @@
   .bodyScroll::-webkit-scrollbar-track {
     background-color: transparent;
     border-radius: 5px;
+  }
+
+  .bodyScroll::-moz-scrollbar {
+    width: 4px;
+  }
+
+  .bodyScroll::-moz-scrollbar-thumb {
+    background-color: rgb(255, 255, 255);
+    border-radius: 5px;
+  }
+
+  .bodyScroll::-moz-scrollbar-track {
+    background-color: transparent;
+    border-radius: 5px;
+  }
+
+  .rangeStyle:focus {
+    outline: none;
+    
+  }
+  .rangeStyle::-webkit-slider-runnable-track {
+    background-color: rgba(255, 255, 255, .3);
+
+  }
+  .rangeStyle::-webkit-slider-runnable-thumb {
+    background-color: black;
   }

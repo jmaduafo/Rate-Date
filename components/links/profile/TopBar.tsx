@@ -22,7 +22,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import { Switch } from "@/components/ui/switch"
+import { Switch } from "@/components/ui/switch";
 
 import Header4 from "@/components/Header4";
 import Loading from "@/components/Loading";
@@ -49,21 +49,11 @@ function TopBar() {
 
   const [name, setName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
-  const [pronounsText, setPronounsText] = useState<
-    string | undefined 
-  >("");
-  const [birthday, setBirthday] = useState<
-    string | undefined
-  >("");
-  const [relationStatus, setRelationStatus] = useState<
-    string | undefined
-  >("");
-  const [orientation, setOrientation] = useState<
-    string | undefined
-  >("");
-  const [bio, setBio] = useState<
-    string | undefined
-  >("");
+  const [pronounsText, setPronounsText] = useState<string | undefined>("");
+  const [birthday, setBirthday] = useState<string | undefined>("");
+  const [relationStatus, setRelationStatus] = useState<string | undefined>("");
+  const [orientation, setOrientation] = useState<string | undefined>("");
+  const [bio, setBio] = useState<string | undefined>("");
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -109,7 +99,7 @@ function TopBar() {
   }, []);
 
   async function updateProfile(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!name.length || !username.length) {
       toast({
@@ -118,34 +108,37 @@ function TopBar() {
           "Name and username cannot be left empty. Please fill in these fields.",
       });
     } else {
-        setLoading(true)
-        if (userData) {
-            const { error } = await supabase
-            .from("users")
-            .update({
-                username,
-                bio,
-                pronouns: pronounsText,
-                birthday,
-                relationship_status: relationStatus === '' || relationStatus === 'n/a' ? null : relationStatus,
-                sexual_orientation: orientation === '' || orientation === 'n/a' ? null : orientation,
-                private: isPrivate
-            })
-            .eq("id", userData[0]?.id);
+      setLoading(true);
+      if (userData) {
+        const { error } = await supabase
+          .from("users")
+          .update({
+            username,
+            bio,
+            pronouns: pronounsText,
+            birthday,
+            relationship_status:
+              relationStatus === "" || relationStatus === "n/a"
+                ? null
+                : relationStatus,
+            sexual_orientation:
+              orientation === "" || orientation === "n/a" ? null : orientation,
+            private: isPrivate,
+          })
+          .eq("id", userData[0]?.id);
 
-            if (error) {
-                toast({
-                    title: error.message,
-                });
-            } else {
-                toast({
-                    title: "Profile updated successfully!"
-                });
-                
-            }
-            
-            setLoading(false)
+        if (error) {
+          toast({
+            title: error.message,
+          });
+        } else {
+          toast({
+            title: "Profile updated successfully!",
+          });
         }
+
+        setLoading(false);
+      }
     }
   }
 
@@ -185,7 +178,7 @@ function TopBar() {
                 <div className="mt-8">
                   {userData ? (
                     <form className="" onSubmit={updateProfile}>
-                        {/* NAME INPUT */}
+                      {/* NAME INPUT */}
                       <div className="flex flex-col gap-2 mb-3">
                         <label htmlFor="name">Name</label>
                         <input
@@ -303,18 +296,27 @@ function TopBar() {
                       </div>
                       <div className="mt-8">
                         <SheetDescription>
-                            If private is checked, your wishlists will be hidden from other viewers. Your birthday will also not be shown whether checked or not.
+                          If private is checked, your wishlists will be hidden
+                          from other viewers. Your birthday will also not be
+                          shown whether checked or not.
                         </SheetDescription>
                         <div className="flex justify-end gap-3 items-center mt-4">
-                            <Switch checked={isPrivate} onCheckedChange={setIsPrivate} id='private'/>
-                            <label>Private</label>
+                          <Switch
+                            checked={isPrivate}
+                            onCheckedChange={setIsPrivate}
+                            id="private"
+                          />
+                          <label>Private</label>
                         </div>
                       </div>
                       <div className="mt-5">
-                        <button type='submit' className="w-full bg-green-700 hover:opacity-70 duration-500 rounded py-2">
-                          {loading ? <Loading/> : 'Save'}
+                        <button
+                          type="submit"
+                          className="w-full bg-green-700 hover:opacity-70 duration-500 rounded py-2"
+                        >
+                          {loading ? <Loading /> : "Save"}
                         </button>
-                      </div>                    
+                      </div>
                     </form>
                   ) : (
                     <div></div>
