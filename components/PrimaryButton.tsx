@@ -10,7 +10,7 @@ type PrimaryProps = {
 function PrimaryButton({children, className, actionFunction}: PrimaryProps) {
   return (
     <button onClick={actionFunction}
-    className={`${className} border-[1px] duration-[.4s] hover:opacity-80 border-darkText text-lightText rounded-xl py-2 px-5 bg-darkText outline-none`}>
+    className={`${className} border-[1px] duration-500 hover:opacity-80 border-darkText text-lightText rounded-xl py-2 px-5 bg-darkText outline-none`}>
         {children}
     </button>
   )

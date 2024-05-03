@@ -1,4 +1,3 @@
-// import { GeistSans } from "geist/font/sans";
 import { DM_Sans } from 'next/font/google'
 import "./globals.css";
 import SideBar from "@/components/SideBar";
@@ -15,7 +14,7 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js and Supabase Starter Kit",
+  title: "Rate My Date",
   description: "The fastest way to build apps with Next.js and Supabase",
 };
 

@@ -65,10 +65,10 @@ function BottomBar() {
             <div className='mb-[4rem]'>
                 <Header4 title='Upcoming Dates'/>
             </div>
-            <div className='max-h-[35vh] overflow-y-auto'>
+            <div className='max-h-[35vh] overflow-y-auto scrollbar'>
                 {data.map(date => {
                     return (
-                        <div className='mb-3' key={date.dateName}>
+                        <div className='mb-3 pr-3' key={date.dateName}>
                             <SingleDateList>
                                 <p className='text-[15px]'>{date.dateName}</p>
                                 <p className='italic text-[10px] text-darkText60'>in {date.dueDate}</p>

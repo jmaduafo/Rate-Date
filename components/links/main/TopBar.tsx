@@ -6,22 +6,7 @@ import Header3 from '@/components/Header3'
 function TopBar() {
     
     async function fetchHoroscope() {
-        // const url = 'https://daily-horoscope-api.p.rapidapi.com/api/Daily-Horoscope-English/?zodiacSign=aries&timePeriod=today';
-        // const options = {
-        // method: 'GET',
-        // headers: {
-        //     'X-RapidAPI-Key': '0e976a1fbbmsh7ac8e1b1601c05bp18248fjsnca2701bd4fc5',
-        //     'X-RapidAPI-Host': 'daily-horoscope-api.p.rapidapi.com'
-        // }
-        // };
-
-        // try {
-        //     const response = await fetch(url, options);
-        //     const result = await response.text();
-        //     console.log(result);
-        // } catch (error) {
-        //     console.error(error);
-        // }
+        
 
     }
 

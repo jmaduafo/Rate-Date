@@ -73,16 +73,16 @@ function SideBar() {
         if (error) {
             toast({
                 title: "Uh oh! Something went wrong.",
-                description: "There was a problem retrieving user data.",
+                description: error.message,
             })
         } else {
             // GET ONLY THE NAME IN USERS COLLECTION WHERE THE ID MATCHES THE CURRENT LOGGED IN USER
-            const { data: dataName, error } = await supabase.from('users').select('name, image').eq('id', data?.user?.id)
+            const { data: dataName, error: errorMessage } = await supabase.from('users').select('name, image').eq('id', data?.user?.id)
 
-            if (error) {
+            if (errorMessage) {
                 toast({
                     title: "Uh oh! Something went wrong.",
-                    description: "There was a problem retrieving data.",
+                    description: errorMessage.message,
                 })
             }
 
@@ -108,15 +108,15 @@ function SideBar() {
                     </h5>
                 </div>
             :
-            (
+                (
                 userData && userData[0].image ?
-                <div>
+                    <div>
 
                     </div>
                     :
                     <Skeleton className='animate-skeleton w-[50px] h-[50px] rounded-full'/>
-                    )     
-                }
+                )     
+            }
             {/* GREETING WITH USER'S NAME */}
             <div>
                 {userData ?
@@ -144,7 +144,7 @@ function SideBar() {
                         </div>
                         {/* CHANGES TEXT COLOR BASED ON PATHNAME */}
                         <div className=''>
-                            <p className={`${pathname.slice(1) === nav.name.toLowerCase() ? 'md:text-darkText text-lightText' : 'group-hover:md:text-darkText group-hover:text-lightText md:text-darkText60 text-lightText60'} duration-[.4s] md:text-[15px] text-[9px]`}>{nav.name}</p>
+                            <p className={`${pathname.slice(1) === nav.name.toLowerCase() ? 'md:text-darkText text-lightText' : 'group-hover:md:text-darkText group-hover:text-lightText md:text-darkText60 text-lightText60'} duration-500 md:text-[15px] text-[9px]`}>{nav.name}</p>
                             {pathname.slice(1) === nav.name.toLowerCase() && <div className='md:hidden w-[40%] mx-auto h-[1.5px] rounded-full bg-myForeground mt-1'></div>}
                         </div>
                     </div>
@@ -163,7 +163,12 @@ function SideBar() {
     </nav>
     <div className='mt-[6rem]'>
         <LineBreak/>
-        <div className='md:flex items-center gap-6 hidden md:py-3 md:px-8 mt-3 cursor-pointer'>
+        <div onClick={() => {
+            toast({
+                title: "Uh oh! Something went wrong.",
+                description: "There was a problem with your request.",
+            })
+        }} className='md:flex items-center gap-6 hidden md:py-3 md:px-8 mt-3 cursor-pointer'>
             <Cog6ToothIcon className='w-[20px] text-darkText'/>
             <p className='text-[15px]'>Setting</p>
         </div>

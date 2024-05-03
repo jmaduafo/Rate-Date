@@ -1,8 +1,12 @@
 import React from 'react'
+import TopBar from '@/components/links/profile/TopBar'
+
 
 function Profile() {
   return (
-    <div>Profile</div>
+    <div>
+      <TopBar/>
+    </div>
   )
 }
 

@@ -14,12 +14,14 @@ module.exports = {
         foreground: "#D9D9D9",
         myBackground: "#CEC7C7",
         myForeground: "#E9E9E9",
+        mutedBorder: 'rgba(255, 255, 255, .4)',
         darkText: "black",
         dark10: "rgba(0, 0, 0, .1)",
         lightText: "#D9D9D9",
         darkText60: "rgba(0, 0, 0, .6)",
         lightText60: "rgba(217, 217, 217, .6)",
         accent: "#DF8E74",
+        border: "hsl(var(--border))",
         btn: {
           background: "hsl(var(--btn-background))",
           "background-hover": "hsl(var(--btn-background-hover))",
@@ -47,6 +49,10 @@ module.exports = {
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
       },
       screens: {

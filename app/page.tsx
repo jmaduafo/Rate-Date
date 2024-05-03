@@ -16,7 +16,7 @@ export default async function Index() {
 
   return (
    <div>
-    
+    Logged out user
    </div>
   );
 }
