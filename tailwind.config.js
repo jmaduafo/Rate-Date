@@ -14,13 +14,13 @@ module.exports = {
         foreground: "#D9D9D9",
         myBackground: "#CEC7C7",
         myForeground: "#E9E9E9",
+        myAccent: "#DF8E74",
         mutedBorder: 'rgba(255, 255, 255, .4)',
         darkText: "black",
         dark10: "rgba(0, 0, 0, .1)",
         lightText: "#D9D9D9",
         darkText60: "rgba(0, 0, 0, .6)",
         lightText60: "rgba(217, 217, 217, .6)",
-        accent: "#DF8E74",
         border: "hsl(var(--border))",
         btn: {
           background: "hsl(var(--btn-background))",
@@ -86,10 +86,10 @@ module.exports = {
         from: { height: "var(--radix-accordion-content-height)" },
         to: { height: "0" },
       },
-      "spin": {
-        from: { transform: "rotate(0deg)" },
-        to: { transform: "rotate(360deg)" },
-      },
+      // "spin": {
+      //   from: { transform: "rotate(0deg)" },
+      //   to: { transform: "rotate(360deg)" },
+      // },
       "skeleton": {
         from: { opacity: .3},
         to: { opacity: 1},
@@ -98,7 +98,7 @@ module.exports = {
     animation: {
       "accordion-down": "accordion-down 0.2s ease-out",
       "accordion-up": "accordion-up 0.2s ease-out",
-      "spin": "spinning 2s linear infinite",
+      // "spin": "spinning 2s linear infinite",
       "skeleton": "skeleton 2s ease-in-out infinite alternate",
     },
   },

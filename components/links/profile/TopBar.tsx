@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Card from "@/components/Card";
 import { useToast } from "@/components/ui/use-toast";
 import { getInitials } from "@/utils/general/initials";
+import { getZodiac } from "@/utils/general/zodiacSign";
 import { createClient } from "@/utils/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -147,6 +148,8 @@ function TopBar() {
         }
     }
   }
+
+  console.log(getZodiac('06-16'))
 
   return (
     <div>
@@ -310,7 +313,7 @@ function TopBar() {
                         </div>
                       </div>
                       <div className="mt-5">
-                        <button type='submit' className="w-full bg-green-700 rounded py-2">
+                        <button type='submit' className="w-full bg-green-700 hover:opacity-70 duration-500 rounded py-2">
                           {loading ? <Loading/> : 'Save'}
                         </button>
                       </div>                    
