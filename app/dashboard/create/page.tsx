@@ -20,10 +20,10 @@ function DashboardCreate() {
   const [desc, setDesc] = useState<string | undefined>("");
   const [meetCute, setMeetCute] = useState<string | undefined>("");
 
-  const [physical, setPhysical] = useState<number[] | undefined>([0]);
+  const [physical, setPhysical] = useState<number[] | undefined>([5]);
   const [physicalSwitch, setPhysicalSwitch] = useState<boolean>(false);
 
-  const [emotional, setEmotional] = useState<number[] | undefined>([0]);
+  const [emotional, setEmotional] = useState<number[] | undefined>([5]);
   const [emotionalSwitch, setEmotionalSwitch] = useState<boolean>(false);
 
   const [status, setStatus] = useState<string | undefined>();
@@ -39,10 +39,21 @@ function DashboardCreate() {
   const [greenFlags, setGreenFlags] = useState<string[]>([]);
   const [redFlags, setRedFlags] = useState<string[]>([]);
 
-  const [rating, setRating] = useState<number[] | undefined>([0]);
+  const [rating, setRating] = useState<number[] | undefined>([5]);
   const [ratingsSwitch, setRatingsSwitch] = useState<boolean>(false);
 
+  const [additionalComments, setAdditionalComments] = useState<string | undefined>("");
+
+  // NSFW SECTION
   const [NSFWSwitch, setNSFWSwitch] = useState<boolean>(false);
+
+  const [kissingSkills, setKissingSkills] = useState<number[] | undefined>([5])
+  const [oralSkills, setOralSkills] = useState<number[] | undefined>([5])
+  const [strokeGame, setStrokeGame] = useState<number[] | undefined>([5])
+  const [creativity, setCreativity] = useState<number[] | undefined>([5])
+  const [kinkLevel, setKinkLevel] = useState<number[] | undefined>([5])
+  const [dirtyTalk, setDirtyTalk] = useState<number[] | undefined>([5])
+  const [bigO, setBigO] = useState<boolean>(false)
 
   return (
     <div className="mb-6">
@@ -236,8 +247,8 @@ function DashboardCreate() {
         </CreateEditCard>
         {/* FUTURE DATES PLANNED */}
         <CreateEditCard
-          title="Future Dates"
-          description="Any dates planned with this person for the future?"
+          title="Future Date"
+          description="Record a date/meetup planned with this person for the future"
         >
           <input
             type="datetime-local"
@@ -317,9 +328,128 @@ function DashboardCreate() {
             <p className="text-[14px]">{NSFWSwitch ? "Off" : "On"}</p>
           </div>
         </CreateEditCard>
-        {NSFWSwitch ? <NSFWContainer /> : null}
+        {NSFWSwitch ? 
+            <NSFWContainer>
+                <CreateEditCard title='Kissing Skills'>
+                    <div
+                        className={`duration-500 flex gap-8 items-center`}
+                        >
+                        <Slider
+                            min={0}
+                            max={10}
+                            step={1}
+                            className="w-[50%]"
+                            value={kissingSkills}
+                            onValueChange={(text) => setKissingSkills(text)}
+                        />
+                        <p>{kissingSkills}</p>
+                    </div>
+                </CreateEditCard>
+                <CreateEditCard title='Oral Skills'>
+                    <div
+                        className={`duration-500 flex gap-8 items-center`}
+                        >
+                        <Slider
+                            min={0}
+                            max={10}
+                            step={1}
+                            className="w-[50%]"
+                            value={oralSkills}
+                            onValueChange={(text) => setOralSkills(text)}
+                        />
+                        <p>{oralSkills}</p>
+                    </div>
+                </CreateEditCard>
+                <CreateEditCard title='Stroke Game'>
+                    <div
+                        className={`duration-500 flex gap-8 items-center`}
+                        >
+                        <Slider
+                            min={0}
+                            max={10}
+                            step={1}
+                            className="w-[50%]"
+                            value={strokeGame}
+                            onValueChange={(text) => setStrokeGame(text)}
+                        />
+                        <p>{strokeGame}</p>
+                    </div>
+                </CreateEditCard>
+                <CreateEditCard title='Creativity'>
+                    <div
+                        className={`duration-500 flex gap-8 items-center`}
+                        >
+                        <Slider
+                            min={0}
+                            max={10}
+                            step={1}
+                            className="w-[50%]"
+                            value={creativity}
+                            onValueChange={(text) => setCreativity(text)}
+                        />
+                        <p>{creativity}</p>
+                    </div>
+                </CreateEditCard>
+                <CreateEditCard title='Kink Level'>
+                    <div
+                        className={`duration-500 flex gap-8 items-center`}
+                        >
+                        <Slider
+                            min={0}
+                            max={10}
+                            step={1}
+                            className="w-[50%]"
+                            value={kinkLevel}
+                            onValueChange={(text) => setKinkLevel(text)}
+                        />
+                        <p>{kinkLevel}</p>
+                    </div>
+                </CreateEditCard>
+                <CreateEditCard title='Dirty Talk'>
+                    <div
+                        className={`duration-500 flex gap-8 items-center`}
+                        >
+                        <Slider
+                            min={0}
+                            max={10}
+                            step={1}
+                            className="w-[50%]"
+                            value={dirtyTalk}
+                            onValueChange={(text) => setDirtyTalk(text)}
+                        />
+                        <p>{dirtyTalk}</p>
+                    </div>
+                </CreateEditCard>
+                <CreateEditCard title='Big O'>
+                <div
+                    className={`flex items-center gap-3`}
+                >
+                    <Switch
+                    checked={bigO}
+                    onCheckedChange={setBigO}
+                    />
+                    <p className="text-[14px]">{bigO ? "Yes" : "No"}</p>
+                </div>
+                </CreateEditCard>
+            </NSFWContainer> 
+            :
+            null}
+        <CreateEditCard
+                    title="Additional Comments"
+                    description="Add any extra comments or information"
+                >
+                    <textarea
+                        value={additionalComments}
+                        onChange={(e) => setAdditionalComments(e.target.value)}
+                        name="additionalComment"
+                        rows={4}
+                        className="text-[14px] lg:w-[70%] md:w-[80%] w-full outline-none border-none rounded-lg py-2 px-5"
+                    ></textarea>
+        </CreateEditCard>
         <div className="flex justify-end items-center gap-4 mt-4">
-          <PrimaryButton>Add Date</PrimaryButton>
+            <PrimaryButton type="submit">
+                Add Date
+            </PrimaryButton>
           <Link href={"/dashboard"}>
             <SecondaryButton>Cancel</SecondaryButton>
           </Link>
@@ -426,23 +556,17 @@ function List({ array, setArray, name }: ListProps) {
           className="cursor-pointer bg-darkText text-foreground py-1 px-4 rounded-lg mt-3 flex items-center gap-2 w-fit"
         >
           <PlusIcon className="w-4 text-lightText" />
-          <p>Add</p>
+          <p className="text-[14px]">Add</p>
         </div>
       )}
     </div>
   );
 }
 
-type NSFWProps = {
-
-}
-
-function NSFWContainer() {
+function NSFWContainer({ children }: { children: React.ReactNode}) {
   return (
     <div>
-      <CreateEditCard title="Kissing Skills">
-
-      </CreateEditCard>
+      {children}
     </div>
   );
 }
