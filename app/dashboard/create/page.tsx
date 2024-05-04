@@ -25,6 +25,7 @@ import Loading from "@/components/Loading";
 
 function DashboardCreate() {
   const [dateName, setDateName] = useState<string | undefined>("");
+  const [age, setAge] = useState<string | undefined>();
   const [desc, setDesc] = useState<string | undefined>("");
   const [meetCute, setMeetCute] = useState<string | undefined>("");
 
@@ -50,6 +51,8 @@ function DashboardCreate() {
   const [rating, setRating] = useState<number[] | undefined>([5]);
   const [ratingsSwitch, setRatingsSwitch] = useState<boolean>(false);
 
+  const [isStillSeeing, setisStillSeeing] = useState<boolean>(false);
+
   const [additionalComments, setAdditionalComments] = useState<
     string | undefined
   >("");
@@ -73,7 +76,7 @@ function DashboardCreate() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!dateName || !desc || !meetCute || !duration || !unitOfDuration) {
+    if (!dateName || !age || !desc || !meetCute || !isStillSeeing || !duration || !unitOfDuration) {
       toast({
         title: "Whoops! You left some entries empty",
         description: "Please fill in the starred entries accordingly",
@@ -84,6 +87,8 @@ function DashboardCreate() {
       const { error } = await supabase.from("dates").insert({
         date_name: dateName,
         short_desc: desc,
+        date_age: parseInt(age),
+        is_seeing: isStillSeeing ? true : false,
         relationship_status: status === 'Other' ? otherStatus : status,
         first_meet: meetCute,
         duration_of_dating: duration,
@@ -146,6 +151,20 @@ function DashboardCreate() {
             className="text-[14px] lg:w-[70%] md:w-[80%] w-full outline-none border-none rounded-lg py-2 px-5"
           />
         </CreateEditCard>
+        {/* DATE'S NAME OR NICKNAME */}
+        <CreateEditCard
+          title="Age *"
+          description="Enter their age"
+        >
+          <input
+            type="number"
+            name="age"
+            min="0"
+            value={age}
+            onChange={(e) => setAge(e.target.value)}
+            className="text-[14px] lg:w-[70%] md:w-[80%] w-full outline-none border-none rounded-lg py-2 px-5"
+          />
+        </CreateEditCard>
         {/* SHORT DESCRIPTION OF DATE */}
         <CreateEditCard
           title="Description *"
@@ -175,6 +194,13 @@ function DashboardCreate() {
             placeholder="We met at a..."
             className="text-[14px] lg:w-[70%] md:w-[80%] w-full outline-none border-none rounded-lg py-2 px-5"
           ></textarea>
+        </CreateEditCard>
+        {/* BIG O */}
+        <CreateEditCard title="In Contact *" description="Are you still seeing this person?">
+            <div className={`flex items-center gap-3`}>
+                <Switch checked={isStillSeeing} onCheckedChange={setisStillSeeing} />
+                <p className="text-[14px]">{isStillSeeing ? "Yes" : "No"}</p>
+            </div>
         </CreateEditCard>
         {/* PHYSICAL ATTRACTION */}
         <CreateEditCard
@@ -369,7 +395,7 @@ function DashboardCreate() {
               <Slider
                 min={0}
                 max={10}
-                step={0.5}
+                step={0.1}
                 className="w-[50%]"
                 value={rating}
                 onValueChange={(text) => setRating(text)}
