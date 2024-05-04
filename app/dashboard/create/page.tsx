@@ -1,19 +1,27 @@
 "use client";
 
 import React, { useState } from "react";
+
 import CreateEditCard from "@/components/CreateEditCard";
 import Header2 from "@/components/Header2";
+import PrimaryButton from "@/components/PrimaryButton";
+import SecondaryButton from "@/components/SecondaryButton";
+
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { relationStatus, durationUnits } from "@/utils/general/createEditData";
+import { useToast } from "@/components/ui/use-toast";
 import {
   TrashIcon,
   PencilSquareIcon,
   PlusIcon,
 } from "@heroicons/react/24/solid";
-import PrimaryButton from "@/components/PrimaryButton";
-import SecondaryButton from "@/components/SecondaryButton";
+import { createClient } from "@/utils/supabase/client";
+
+import { relationStatus, durationUnits } from "@/utils/general/createEditData";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading";
 
 function DashboardCreate() {
   const [dateName, setDateName] = useState<string | undefined>("");
@@ -42,18 +50,80 @@ function DashboardCreate() {
   const [rating, setRating] = useState<number[] | undefined>([5]);
   const [ratingsSwitch, setRatingsSwitch] = useState<boolean>(false);
 
-  const [additionalComments, setAdditionalComments] = useState<string | undefined>("");
+  const [additionalComments, setAdditionalComments] = useState<
+    string | undefined
+  >("");
 
   // NSFW SECTION
   const [NSFWSwitch, setNSFWSwitch] = useState<boolean>(false);
+  const [kissingSkills, setKissingSkills] = useState<number[] | undefined>([5]);
+  const [oralSkills, setOralSkills] = useState<number[] | undefined>([5]);
+  const [strokeGame, setStrokeGame] = useState<number[] | undefined>([5]);
+  const [creativity, setCreativity] = useState<number[] | undefined>([5]);
+  const [kinkLevel, setKinkLevel] = useState<number[] | undefined>([5]);
+  const [dirtyTalk, setDirtyTalk] = useState<number[] | undefined>([5]);
+  const [bigO, setBigO] = useState<boolean>(false);
 
-  const [kissingSkills, setKissingSkills] = useState<number[] | undefined>([5])
-  const [oralSkills, setOralSkills] = useState<number[] | undefined>([5])
-  const [strokeGame, setStrokeGame] = useState<number[] | undefined>([5])
-  const [creativity, setCreativity] = useState<number[] | undefined>([5])
-  const [kinkLevel, setKinkLevel] = useState<number[] | undefined>([5])
-  const [dirtyTalk, setDirtyTalk] = useState<number[] | undefined>([5])
-  const [bigO, setBigO] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const { toast } = useToast();
+  const supabase = createClient();
+  const router = useRouter();
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (!dateName || !desc || !meetCute || !duration || !unitOfDuration) {
+      toast({
+        title: "Whoops! You left some entries empty",
+        description: "Please fill in the starred entries accordingly",
+      });
+    } else {
+      setLoading(true)
+
+      const { error } = await supabase.from("dates").insert({
+        date_name: dateName,
+        short_desc: desc,
+        relationship_status: status === 'Other' ? otherStatus : status,
+        first_meet: meetCute,
+        duration_of_dating: duration,
+        duration_metric: unitOfDuration,
+        physical_attraction: physicalSwitch && physical ? physical[0] : null,
+        emotional_attraction: emotionalSwitch && emotional ? emotional[0] : null,
+        icks,
+        green_flags: greenFlags,
+        red_flags: redFlags,
+        date_schedule: futureDatesSwitch ? futureDates : null,
+        rating: ratingsSwitch && rating ? rating[0] : null,
+        additional_desc: additionalComments ? additionalComments : null,
+        nsfw: NSFWSwitch,
+        nsfw_oral_skills: NSFWSwitch && oralSkills ? oralSkills[0] : null,
+        nsfw_stroke_game: NSFWSwitch && strokeGame ? strokeGame[0] : null,
+        nsfw_kissing_skills: NSFWSwitch && kissingSkills ? kissingSkills[0] : null,
+        nsfw_kink_level: NSFWSwitch && kinkLevel ? kinkLevel[0] : null,
+        nsfw_creativity: NSFWSwitch && creativity ? creativity[0] : null,
+        nsfw_dirty_talk: NSFWSwitch && dirtyTalk ? dirtyTalk[0] : null,
+        nsfw_big_o: NSFWSwitch ? bigO : null,
+      });
+
+      if (error) {
+        toast({
+            title: 'Something went wrong!',
+            description: error.message
+        })
+
+        setLoading(false)
+      } else {
+        toast({
+            title: 'Success!',
+            description: 'Your date was successfully created!'
+        })
+
+        setLoading(false)
+        router.push('/dashboard')
+      }
+    }
+  }
 
   return (
     <div className="mb-6">
@@ -61,7 +131,7 @@ function DashboardCreate() {
       <div className="text-darkText mb-8">
         <Header2 title="Create a Date" />
       </div>
-      <form>
+      <form onSubmit={handleSubmit}>
         {/* DATE'S NAME OR NICKNAME */}
         <CreateEditCard
           title="Name *"
@@ -328,127 +398,122 @@ function DashboardCreate() {
             <p className="text-[14px]">{NSFWSwitch ? "Off" : "On"}</p>
           </div>
         </CreateEditCard>
-        {NSFWSwitch ? 
-            <NSFWContainer>
-                <CreateEditCard title='Kissing Skills'>
-                    <div
-                        className={`duration-500 flex gap-8 items-center`}
-                        >
-                        <Slider
-                            min={0}
-                            max={10}
-                            step={1}
-                            className="w-[50%]"
-                            value={kissingSkills}
-                            onValueChange={(text) => setKissingSkills(text)}
-                        />
-                        <p>{kissingSkills}</p>
-                    </div>
-                </CreateEditCard>
-                <CreateEditCard title='Oral Skills'>
-                    <div
-                        className={`duration-500 flex gap-8 items-center`}
-                        >
-                        <Slider
-                            min={0}
-                            max={10}
-                            step={1}
-                            className="w-[50%]"
-                            value={oralSkills}
-                            onValueChange={(text) => setOralSkills(text)}
-                        />
-                        <p>{oralSkills}</p>
-                    </div>
-                </CreateEditCard>
-                <CreateEditCard title='Stroke Game'>
-                    <div
-                        className={`duration-500 flex gap-8 items-center`}
-                        >
-                        <Slider
-                            min={0}
-                            max={10}
-                            step={1}
-                            className="w-[50%]"
-                            value={strokeGame}
-                            onValueChange={(text) => setStrokeGame(text)}
-                        />
-                        <p>{strokeGame}</p>
-                    </div>
-                </CreateEditCard>
-                <CreateEditCard title='Creativity'>
-                    <div
-                        className={`duration-500 flex gap-8 items-center`}
-                        >
-                        <Slider
-                            min={0}
-                            max={10}
-                            step={1}
-                            className="w-[50%]"
-                            value={creativity}
-                            onValueChange={(text) => setCreativity(text)}
-                        />
-                        <p>{creativity}</p>
-                    </div>
-                </CreateEditCard>
-                <CreateEditCard title='Kink Level'>
-                    <div
-                        className={`duration-500 flex gap-8 items-center`}
-                        >
-                        <Slider
-                            min={0}
-                            max={10}
-                            step={1}
-                            className="w-[50%]"
-                            value={kinkLevel}
-                            onValueChange={(text) => setKinkLevel(text)}
-                        />
-                        <p>{kinkLevel}</p>
-                    </div>
-                </CreateEditCard>
-                <CreateEditCard title='Dirty Talk'>
-                    <div
-                        className={`duration-500 flex gap-8 items-center`}
-                        >
-                        <Slider
-                            min={0}
-                            max={10}
-                            step={1}
-                            className="w-[50%]"
-                            value={dirtyTalk}
-                            onValueChange={(text) => setDirtyTalk(text)}
-                        />
-                        <p>{dirtyTalk}</p>
-                    </div>
-                </CreateEditCard>
-                <CreateEditCard title='Big O'>
-                <div
-                    className={`flex items-center gap-3`}
-                >
-                    <Switch
-                    checked={bigO}
-                    onCheckedChange={setBigO}
-                    />
-                    <p className="text-[14px]">{bigO ? "Yes" : "No"}</p>
-                </div>
-                </CreateEditCard>
-            </NSFWContainer> 
-            :
-            null}
+        {/* SHOW NSFW CONTENT IF SWITCH IS ON */}
+        {NSFWSwitch ? (
+          <NSFWContainer>
+            {/* KISSING SKILLS */}
+            <CreateEditCard title="Kissing Skills">
+              <div className={`duration-500 flex gap-8 items-center`}>
+                <Slider
+                  min={0}
+                  max={10}
+                  step={1}
+                  className="w-[50%]"
+                  value={kissingSkills}
+                  onValueChange={(text) => setKissingSkills(text)}
+                />
+                <p>{kissingSkills}</p>
+              </div>
+            </CreateEditCard>
+            {/* ORAL SKILLS */}
+            <CreateEditCard title="Oral Skills">
+              <div className={`duration-500 flex gap-8 items-center`}>
+                <Slider
+                  min={0}
+                  max={10}
+                  step={1}
+                  className="w-[50%]"
+                  value={oralSkills}
+                  onValueChange={(text) => setOralSkills(text)}
+                />
+                <p>{oralSkills}</p>
+              </div>
+            </CreateEditCard>
+            {/* STROKE GAME */}
+            <CreateEditCard title="Stroke Game">
+              <div className={`duration-500 flex gap-8 items-center`}>
+                <Slider
+                  min={0}
+                  max={10}
+                  step={1}
+                  className="w-[50%]"
+                  value={strokeGame}
+                  onValueChange={(text) => setStrokeGame(text)}
+                />
+                <p>{strokeGame}</p>
+              </div>
+            </CreateEditCard>
+            {/* CREATIVITY */}
+            <CreateEditCard title="Creativity">
+              <div className={`duration-500 flex gap-8 items-center`}>
+                <Slider
+                  min={0}
+                  max={10}
+                  step={1}
+                  className="w-[50%]"
+                  value={creativity}
+                  onValueChange={(text) => setCreativity(text)}
+                />
+                <p>{creativity}</p>
+              </div>
+            </CreateEditCard>
+            {/* KINK LEVEL */}
+            <CreateEditCard title="Kink Level">
+              <div className={`duration-500 flex gap-8 items-center`}>
+                <Slider
+                  min={0}
+                  max={10}
+                  step={1}
+                  className="w-[50%]"
+                  value={kinkLevel}
+                  onValueChange={(text) => setKinkLevel(text)}
+                />
+                <p>{kinkLevel}</p>
+              </div>
+            </CreateEditCard>
+            {/* DIRTY TALK */}
+            <CreateEditCard title="Dirty Talk">
+              <div className={`duration-500 flex gap-8 items-center`}>
+                <Slider
+                  min={0}
+                  max={10}
+                  step={1}
+                  className="w-[50%]"
+                  value={dirtyTalk}
+                  onValueChange={(text) => setDirtyTalk(text)}
+                />
+                <p>{dirtyTalk}</p>
+              </div>
+            </CreateEditCard>
+            {/* BIG O */}
+            <CreateEditCard title="Big O">
+              <div className={`flex items-center gap-3`}>
+                <Switch checked={bigO} onCheckedChange={setBigO} />
+                <p className="text-[14px]">{bigO ? "Yes" : "No"}</p>
+              </div>
+            </CreateEditCard>
+          </NSFWContainer>
+        ) : null}
+        {/* ADDITIONAL COMMENTS */}
         <CreateEditCard
-                    title="Additional Comments"
-                    description="Add any extra comments or information"
-                >
-                    <textarea
-                        value={additionalComments}
-                        onChange={(e) => setAdditionalComments(e.target.value)}
-                        name="additionalComment"
-                        rows={4}
-                        className="text-[14px] lg:w-[70%] md:w-[80%] w-full outline-none border-none rounded-lg py-2 px-5"
-                    ></textarea>
+          title="Additional Comments"
+          description="Add any extra comments or information"
+        >
+          <textarea
+            value={additionalComments}
+            onChange={(e) => setAdditionalComments(e.target.value)}
+            name="additionalComment"
+            rows={4}
+            className="text-[14px] lg:w-[70%] md:w-[80%] w-full outline-none border-none rounded-lg py-2 px-5"
+          ></textarea>
         </CreateEditCard>
         <div className="flex justify-end items-center gap-4 mt-4">
             <PrimaryButton type="submit">
-                Add Date
+            {loading ?
+                <Loading/>
+                :
+                'Add Date' 
+            }
             </PrimaryButton>
           <Link href={"/dashboard"}>
             <SecondaryButton>Cancel</SecondaryButton>
@@ -476,6 +541,7 @@ function List({ array, setArray, name }: ListProps) {
   function addElement() {
     if (value.length) {
       setArray([...array, value]);
+      setValue('')
     }
   }
 
@@ -487,9 +553,9 @@ function List({ array, setArray, name }: ListProps) {
 
   function updateElement() {
     // console.log(index)
-    if (typeof index === 'number' && value.length) {
+    if (typeof index === "number" && value.length) {
       array[index] = value;
-      
+
       setUpdateOn(false);
       setValue("");
     }
@@ -563,10 +629,6 @@ function List({ array, setArray, name }: ListProps) {
   );
 }
 
-function NSFWContainer({ children }: { children: React.ReactNode}) {
-  return (
-    <div>
-      {children}
-    </div>
-  );
+function NSFWContainer({ children }: { children: React.ReactNode }) {
+  return <div>{children}</div>;
 }

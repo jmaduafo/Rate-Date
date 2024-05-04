@@ -86,10 +86,10 @@ module.exports = {
         from: { height: "var(--radix-accordion-content-height)" },
         to: { height: "0" },
       },
-      // "spin": {
-      //   from: { transform: "rotate(0deg)" },
-      //   to: { transform: "rotate(360deg)" },
-      // },
+      "spinner": {
+        from: { transform: "rotate(0deg)" },
+        to: { transform: "rotate(360deg)" },
+      },
       "skeleton": {
         from: { opacity: .3},
         to: { opacity: 1},
@@ -98,7 +98,7 @@ module.exports = {
     animation: {
       "accordion-down": "accordion-down 0.2s ease-out",
       "accordion-up": "accordion-up 0.2s ease-out",
-      // "spin": "spinning 2s linear infinite",
+      "spinner": "spinning 2s linear infinite",
       "skeleton": "skeleton 2s ease-in-out infinite alternate",
     },
   },
