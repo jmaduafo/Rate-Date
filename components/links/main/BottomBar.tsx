@@ -30,7 +30,8 @@ import { UserProp, DateDataProps } from "@/types/type";
 function BottomBar() {
   const [datesList, setDatesList] = useState<DateDataProps[] | undefined>();
   const [schedulesList, setSchedulesList] = useState<DateDataProps[] | undefined>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [dateLoading, setDateLoading] = useState<boolean>(false);
+  const [upcomingLoading, setUpcomingLoading] = useState<boolean>(false);
 
   const listHeaders = [
     {
@@ -59,7 +60,7 @@ function BottomBar() {
   const { toast } = useToast();
 
   async function getDateList() {
-    setLoading(true)
+    setDateLoading(true)
 
     const { data: { user }, error } = await supabase.auth.getUser()
 
@@ -75,16 +76,17 @@ function BottomBar() {
     
             if (dateError) {
                 console.log(dateError.message);
+                setDateLoading(false)
             } else {
                 setDatesList(dateData);
-                console.log(dateData)
+                setDateLoading(false)
             }
         }
     }
   }
 
   async function getUpcomingDates() {
-    setLoading(true)
+    setUpcomingLoading(true)
 
     const { data: { user }, error } = await supabase.auth.getUser()
 
@@ -100,26 +102,19 @@ function BottomBar() {
     
             if (scheduleError) {
                 console.log(scheduleError.message);
+                setUpcomingLoading(false)
             } else {
                 setSchedulesList(scheduleData);
-                console.log(scheduleData)
+                setUpcomingLoading(false)
             }
 
         }
     }
   }
 
-  function getLoading() {
-    if (schedulesList && datesList) {
-        setLoading(false)
-    }
-  }
-
   useEffect(() => {
     getDateList()
     getUpcomingDates()
-    getLoading()
-    console.log(loading)
   }, [])
 
   return (
@@ -152,21 +147,38 @@ function BottomBar() {
               })}
             </div>
             <LineBreak />
-            <div className="flex mt-2 text-darkText max-h-[45vh] overflow-y-auto">
               {
-                !datesList ? 
-                    [...listHeaders, ...listHeaders, ...listHeaders, ...listHeaders, ...listHeaders].map((header, i) => {
+                dateLoading || !datesList ? 
+                    <div className="mt-2 text-darkText max-h-[45vh] overflow-y-auto">
+
+                    {[0, 1, 2, 3, 4, 5].map((header, i) => {
                         return (
-                            <div className="mb-2" key={`${header.header}_${i}`}>
-                                <Skeleton className={`${header.className} w-full h-6 rounded-lg animate-skeleton`}/>
+                            <div className="flex items-center w-full mt-4" key={`${header}`}  >
+                                <div className="flex-[3] h-5">
+                                    <Skeleton className="animate-skeleton h-full w-[60%] rounded-full"/>
+                                </div>
+                                <div className="flex-[3] h-5">
+                                    <Skeleton className="animate-skeleton h-full w-[60%] rounded-full"/>
+                                </div>
+                                <div className="flex-[2] h-5">
+                                    <Skeleton className="animate-skeleton h-full w-[60%] rounded-full"/>
+                                </div>
+                                <div className="flex-[2] h-5">
+                                    <Skeleton className="animate-skeleton h-full w-[60%] rounded-full"/>
+                                </div>
+                                <div className="flex-[2] h-5">
+                                    <Skeleton className="animate-skeleton h-full w-[60%] rounded-full"/>
+                                </div>
                             </div>
                         )
-                    })
+                    })}
+                    </div>
                     :
                     (
 
                         datesList.length ?
-                        datesList.map(date => {
+                        <div className="flex mt-2 text-darkText max-h-[45vh] overflow-y-auto">
+                        {datesList.map(date => {
                             return (
                                 <DialogTrigger key={date.id} asChild>
                                     <div className="duration-500 hover:bg-myBackgroundMuted cursor-pointer mt-1 py-3 px-3 rounded-xl flex w-full">
@@ -189,14 +201,14 @@ function BottomBar() {
                                     </div>
                                 </DialogTrigger>
                             )
-                        }) 
+                        })} 
+                        </div>
                         :
                         <div className="mt-8 text-darkText">
                             <p className="text-center">No dates added yet</p>
                         </div> 
                     )
                 }
-            </div>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>Date Info</DialogTitle>
