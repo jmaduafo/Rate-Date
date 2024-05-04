@@ -272,6 +272,7 @@ function DashboardCreate() {
               <input
                 type="text"
                 name="status"
+                maxLength={30}
                 className="text-[14px] lg:w-[70%] md:w-[80%] w-full outline-none border-none rounded-lg py-2 px-5"
                 value={otherStatus}
                 onChange={(e) => setOtherStatus(e.target.value)}
