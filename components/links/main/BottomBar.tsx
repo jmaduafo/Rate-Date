@@ -15,6 +15,15 @@ import SecondaryButton from "@/components/SecondaryButton";
 import SingleDateList from "@/components/SingleDateList";
 import LineBreak from "@/components/LineBreak";
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+  } from "@/components/ui/dialog"
+
 import { UserProp, DateDataProps } from "@/types/type";
 
 // { userID }: {userID: string}
@@ -22,42 +31,6 @@ function BottomBar() {
   const [datesList, setDatesList] = useState<DateDataProps[] | undefined>();
   const [schedulesList, setSchedulesList] = useState<DateDataProps[] | undefined>();
   const [loading, setLoading] = useState<boolean>(false);
-//   const [ userID, setUserID ] = useState<string>('')
-
-  const data = [
-    {
-      dateName: "Oliver",
-      dueDate: "2 days",
-    },
-    {
-      dateName: "Mauricio",
-      dueDate: "6 days",
-    },
-    {
-      dateName: "Kallum",
-      dueDate: "1 week",
-    },
-    {
-      dateName: "Kallum",
-      dueDate: "1 week",
-    },
-    {
-      dateName: "Kallum",
-      dueDate: "1 week",
-    },
-    {
-      dateName: "Kallum",
-      dueDate: "1 week",
-    },
-    {
-      dateName: "Kallum",
-      dueDate: "1 week",
-    },
-    {
-      dateName: "Kallum",
-      dueDate: "1 week",
-    },
-  ];
 
   const listHeaders = [
     {
@@ -150,6 +123,7 @@ function BottomBar() {
   }, [])
 
   return (
+    <Dialog>
     <div className="md:mt-8 gap-6 flex md:flex-row flex-col">
       {/* DATES TABLE */}
       <div className="flex-[5]">
@@ -190,27 +164,30 @@ function BottomBar() {
                     })
                     :
                     (
+
                         datesList.length ?
                         datesList.map(date => {
                             return (
-                                <div key={date.id} className="duration-500 hover:bg-myBackgroundMuted cursor-pointer my-1 py-3 px-3 rounded-xl flex w-full">
-                                    <div className='flex-[3] text-darkText'>
-                                        <p className="text-[13.5px]">{date.date_name}</p>
+                                <DialogTrigger key={date.id} asChild>
+                                    <div className="duration-500 hover:bg-myBackgroundMuted cursor-pointer mt-1 py-3 px-3 rounded-xl flex w-full">
+                                        <div className='flex-[3] text-darkText'>
+                                            <p className="text-[13.5px]">{date.date_name}</p>
+                                        </div>
+                                        <div className='flex-[3] text-darkText'>
+                                            <p className="text-[13.5px]">{date.short_desc}</p>
+                                        </div>
+                                        <div className='flex-[2] text-darkText'>
+                                            <p className="text-[13.5px]">{date.duration_of_dating} {date.duration_metric}</p>
+                                        </div>
+                                        <div className='flex-[2] text-darkText flex gap-1 items-center'>
+                                            {date.rating && date.rating >= 8 ? <FireIcon className="w-4 text-orange-500"/> : null}
+                                            <p className="text-[13.5px]">{date.rating?.toFixed(1)}</p>
+                                        </div>
+                                        <div className='flex-[2] text-darkText'>
+                                            <p className="text-[13.5px]">{date.relationship_status}</p>
+                                        </div>
                                     </div>
-                                    <div className='flex-[3] text-darkText'>
-                                        <p className="text-[13.5px]">{date.short_desc}</p>
-                                    </div>
-                                    <div className='flex-[2] text-darkText'>
-                                        <p className="text-[13.5px]">{date.duration_of_dating} {date.duration_metric}</p>
-                                    </div>
-                                    <div className='flex-[2] text-darkText flex gap-1 items-center'>
-                                        {date.rating && date.rating >= 8 ? <FireIcon className="w-4 text-orange-500"/> : null}
-                                        <p className="text-[13.5px]">{date.rating?.toFixed(1)}</p>
-                                    </div>
-                                    <div className='flex-[2] text-darkText'>
-                                        <p className="text-[13.5px]">{date.relationship_status}</p>
-                                    </div>
-                                </div>
+                                </DialogTrigger>
                             )
                         }) 
                         :
@@ -218,9 +195,14 @@ function BottomBar() {
                             <p className="text-center">No dates added yet</p>
                         </div> 
                     )
-              }
-
+                }
             </div>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Date Info</DialogTitle>
+                </DialogHeader>
+                <div></div>
+            </DialogContent>
           </div>
         </Card>
       </div>
@@ -231,18 +213,19 @@ function BottomBar() {
         </div>
         <div className="max-h-[35vh] overflow-y-auto scrollbar">
           {/* {data.map((date, i) => {
-                    return (
-                        <div className='mb-3 pr-3' key={`${date.dateName}_${i}`}>
-                            <SingleDateList>
-                                <p className='text-[15px]'>{date.dateName}</p>
-                                <p className='italic text-[10px] text-darkText60'>in {date.dueDate}</p>
-                            </SingleDateList>
-                        </div>
-                    )
+              return (
+                  <div className='mb-3 pr-3' key={`${date.dateName}_${i}`}>
+                  <SingleDateList>
+                  <p className='text-[15px]'>{date.dateName}</p>
+                  <p className='italic text-[10px] text-darkText60'>in {date.dueDate}</p>
+                  </SingleDateList>
+                  </div>
+                  )
                 })} */}
         </div>
       </Card>
     </div>
+    </Dialog>
   );
 }
 
