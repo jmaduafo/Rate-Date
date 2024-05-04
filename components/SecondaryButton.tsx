@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 type SecondaryProps = {
     children: React.ReactNode;
-    className: string;
+    className?: string;
     actionFunction?: React.MouseEventHandler<HTMLButtonElement> | undefined
 }
 

@@ -45,3 +45,18 @@ export const relationStatus = [
     },
 ]
 
+export const durationUnits = [
+    'second',
+    'seconds',
+    'hour',
+    'hours',
+    'day',
+    'days',
+    'week',
+    'weeks',
+    'month',
+    'months',
+    'year',
+    'years'    
+]
+

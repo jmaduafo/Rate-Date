@@ -3,7 +3,7 @@ import React from 'react'
 
 type PrimaryProps = {
     children: React.ReactNode;
-    className: string;
+    className?: string;
     actionFunction?: React.MouseEventHandler<HTMLButtonElement> | undefined
 }
 
