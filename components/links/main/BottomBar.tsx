@@ -135,7 +135,7 @@ function BottomBar() {
         </div>
         <Card className="mt-5 text-darkText">
           <div>
-            <div className="flex py-2 px-3">
+            <div className="flex gap-3 py-2 px-3">
               {listHeaders.map((header) => {
                 return (
                   <div key={header.header} className={`${header.className}`}>
@@ -177,11 +177,11 @@ function BottomBar() {
                     (
 
                         datesList.length ?
-                        <div className="flex mt-2 text-darkText max-h-[45vh] overflow-y-auto">
+                        <div className=" mt-2 text-darkText max-h-[45vh] overflow-y-auto">
                         {datesList.map(date => {
                             return (
                                 <DialogTrigger key={date.id} asChild>
-                                    <div className="duration-500 hover:bg-myBackgroundMuted cursor-pointer mt-1 py-3 px-3 rounded-xl flex w-full">
+                                    <div className="flex gap-3 duration-500 hover:bg-myBackgroundMuted cursor-pointer mt-1 py-3 px-3 rounded-xl w-full">
                                         <div className='flex-[3] text-darkText'>
                                             <p className="text-[13.5px]">{date.date_name}</p>
                                         </div>
