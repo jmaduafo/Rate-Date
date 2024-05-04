@@ -310,7 +310,7 @@ function DashboardCreate() {
         {/* NSFW ON OR OFF */}
         <CreateEditCard
           title="NSFW"
-          description="How would you rate your experience with this person?"
+          description="Turn on to access the NSFW section"
         >
           <div className={`flex items-center gap-3`}>
             <Switch checked={NSFWSwitch} onCheckedChange={setNSFWSwitch} />
@@ -356,9 +356,10 @@ function List({ array, setArray, name }: ListProps) {
   }
 
   function updateElement() {
-    if (index && value.length) {
+    // console.log(index)
+    if (typeof index === 'number' && value.length) {
       array[index] = value;
-
+      
       setUpdateOn(false);
       setValue("");
     }
