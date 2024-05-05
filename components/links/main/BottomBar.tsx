@@ -18,16 +18,17 @@ import LineBreak from "@/components/LineBreak";
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogClose
   } from "@/components/ui/dialog"
 
 import Header6 from "@/components/Header6";
+import Header5 from "@/components/Header5";
 
 import { UserProp, DateDataProps } from "@/types/type";
-import Header5 from "@/components/Header5";
 
 // { userID }: {userID: string}
 function BottomBar() {
@@ -63,6 +64,7 @@ function BottomBar() {
   const supabase = createClient();
   const { toast } = useToast();
 
+  // GETS LIST OF DATES ACCORDING TO THE AUTH ID IN ORDER OF WHEN DATE WAS CREATED
   async function getDateList() {
     setDateLoading(true)
 
@@ -89,6 +91,7 @@ function BottomBar() {
     }
   }
 
+  // GET 
   async function getUpcomingDates() {
     setUpcomingLoading(true)
 
@@ -120,6 +123,25 @@ function BottomBar() {
     getDateList()
     getUpcomingDates()
   }, [])
+
+  async function handleDelete(id: string) {
+    const { error } = await supabase
+    .from('dates')
+    .delete()
+    .eq('id', id)
+
+    if (error) {
+      toast({
+        title: "Whoops! An error occurred",
+        description: error.message
+      })
+    } else {
+      toast({
+        title: "Success!",
+        description: "Date was deleted successfully!"
+      })      
+    }
+  }
 
   return (
     <Dialog>
@@ -212,13 +234,16 @@ function BottomBar() {
                         </div> 
                     )
                 }
+            {/* DIALOG POP UP */}
             <DialogContent>
                 <DialogHeader>
                   <div className="mb-5">
                     <DialogTitle>Full Info</DialogTitle>
                   </div>
+                </DialogHeader>
                     {
                       selectedDate ?
+                      <>
                       <div className="max-h-[60vh] overflow-y-auto scrollbar pr-4">
                         <DialogNormalDisplay title="Name" data={selectedDate?.date_name}/>
                         <DialogNormalDisplay title="Age" data={selectedDate?.date_age}/>
@@ -237,6 +262,7 @@ function BottomBar() {
                         {selectedDate?.physical_attraction && <DialogNormalDisplay title="Physical Attraction" data={selectedDate?.physical_attraction}/>}
                         {selectedDate?.emotional_attraction && <DialogNormalDisplay title="Emotional Attraction" data={selectedDate?.emotional_attraction}/>}
                         <DialogNormalDisplay title="Rating" data={selectedDate?.rating}/>
+                        {/* ICKS LIST */}
                         {selectedDate?.icks && selectedDate?.icks?.length ?
                           <div className="mb-4">
                             <div className="mb-2 flex justify-start">
@@ -258,6 +284,7 @@ function BottomBar() {
                          :
                          null
                         }
+                        {/* GREEN FLAGS LIST */}
                         {selectedDate?.green_flags && selectedDate?.green_flags?.length ?
                           <div className="mb-4">
                             <div className="mb-2 flex justify-start">
@@ -279,6 +306,7 @@ function BottomBar() {
                          :
                          null
                         }
+                        {/* RED FLAGS LIST */}
                         {selectedDate?.red_flags && selectedDate?.red_flags?.length ?
                           <div className="mb-4">
                             <div className="mb-2 flex items-end justify-start">
@@ -300,6 +328,7 @@ function BottomBar() {
                          :
                          null
                         }
+                        {/* ADDITIONAL DESCRIPTION */}
                         {selectedDate?.additional_desc && selectedDate?.additional_desc?.length ?
                           <div className="mb-4">
                             <div className="mb-2 flex justify-start">
@@ -328,15 +357,55 @@ function BottomBar() {
                         </>
                         }
                       </div>
+                      <DialogFooter>
+                        <div className="flex justify-end items-center gap-3">
+                          <Link href={`/edit/${selectedDate?.id}`}>
+                          <button className="hover:opacity-70 duration-500 bg-myForeground text-darkText text-[13px] px-5 py-2 rounded-lg border-none outline-none">
+                            Edit Date
+                          </button>
+                          </Link>
+                          <DialogClose>
+                            <button onClick={() => handleDelete(selectedDate?.id)} className="hover:opacity-70 duration-500 text-destructive-foreground bg-destructive text-[13px] px-5 py-2 rounded-lg border-none outline-none">
+                              Delete Date
+                            </button>
+                          </DialogClose>
+                        </div>
+                      </DialogFooter>
+                      </>
                       :
-                      <div>
-
+                      <div className="flex flex-col gap-4">
+                        <div className="h-4 w-full">
+                          <Skeleton className="animate-skeleton h-full w-[80%] bg-myBackground60 rounded-full"/>
+                        </div>
+                        <div className="h-4 w-full">
+                          <Skeleton className="animate-skeleton h-full w-[70%] bg-myBackground60 rounded-full"/>
+                        </div>
+                        <div className="h-4 w-full">
+                          <Skeleton className="animate-skeleton h-full w-[50%] bg-myBackground60 rounded-full"/>
+                        </div>
+                        <div className="h-4 w-full">
+                          <Skeleton className="animate-skeleton h-full w-[70%] bg-myBackground60 rounded-full"/>
+                        </div>
+                        <div className="h-4 w-full">
+                          <Skeleton className="animate-skeleton h-full w-[80%] bg-myBackground60 rounded-full"/>
+                        </div>
+                        <div className="h-4 w-full">
+                          <Skeleton className="animate-skeleton h-full w-[75%] bg-myBackground60 rounded-full"/>
+                        </div>
+                        <div className="mt-5 h-4 w-full">
+                          <Skeleton className="animate-skeleton h-full w-[50%] bg-myBackground60 rounded-full"/>
+                        </div>
+                        <div className="h-4 w-full">
+                          <Skeleton className="animate-skeleton h-full w-[85%] bg-myBackground60 rounded-full"/>
+                        </div>
+                        <div className="h-4 w-full">
+                          <Skeleton className="animate-skeleton h-full w-[40%] bg-myBackground60 rounded-full"/>
+                        </div>
                       </div>
 
                     }
-                </DialogHeader>
-                <div></div>
             </DialogContent>
+            
           </div>
         </Card>
       </div>
