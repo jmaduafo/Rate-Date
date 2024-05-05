@@ -29,6 +29,7 @@ import Header6 from "@/components/Header6";
 import Header5 from "@/components/Header5";
 
 import { UserProp, DateDataProps } from "@/types/type";
+import { futureTimeFromNow } from "@/utils/general/getTimeFromNow";
 
 // { userID }: {userID: string}
 function BottomBar() {
@@ -85,6 +86,7 @@ function BottomBar() {
                 setDateLoading(false)
             } else {
                 setDatesList(dateData);
+                console.log(dateData)
                 setDateLoading(false)
             }
         }
@@ -104,8 +106,9 @@ function BottomBar() {
             const { data: scheduleData, error: scheduleError } = await supabase
               .from("dates")
               .select('id, date_name, date_schedule, user_id')
-              .eq("user_id", user?.id)
-              .order('date_schedule', { ascending: false })
+              .eq("user_id", user?.id) 
+              .not("date_schedule", 'is', null)
+              .order('date_schedule', { ascending: true })
     
             if (scheduleError) {
                 console.log(scheduleError.message);
@@ -409,22 +412,37 @@ function BottomBar() {
           </div>
         </Card>
       </div>
-      {/* UPCOMING DATES */}
+      {/* UPCOMING DATES SCHEDULES */}
       <Card className="flex-[2]">
         <div className="mb-[4rem]">
           <Header4 title="Upcoming Dates" />
         </div>
         <div className="max-h-[35vh] overflow-y-auto scrollbar">
-          {/* {data.map((date, i) => {
+          {schedulesList && schedulesList.length ? 
+          schedulesList?.map((date) => {
               return (
-                  <div className='mb-3 pr-3' key={`${date.dateName}_${i}`}>
-                  <SingleDateList>
-                  <p className='text-[15px]'>{date.dateName}</p>
-                  <p className='italic text-[10px] text-darkText60'>in {date.dueDate}</p>
-                  </SingleDateList>
+                // futureTimeFromNow(...) returns negative numbers so should be rendered 
+                // when the output is less than 0 and not appear if greater than 0
+                date.date_schedule && futureTimeFromNow(date.date_schedule) <= 0 ? (
+                  <div className='mb-3 pr-3' key={date.id}>
+                    <SingleDateList>
+                    <p className='text-[15px]'>{date.date_name}</p>
+                    <p className='italic text-[10px] text-darkText60'>in {date.date_schedule ? Math.round(Math.abs(futureTimeFromNow(date.date_schedule))) : '-'} days</p>
+                    </SingleDateList>
                   </div>
                   )
-                })} */}
+                :
+                null
+              )
+            })
+          :
+          [0, 1, 2, 3, 4, 5].map(skeleton => {
+            return (
+              <div key={skeleton} className="mb-3">
+              <Skeleton className="w-full h-7 rounded-full bg-myBackground60 animate-skeleton"/>
+              </div>
+            )
+          })}
         </div>
       </Card>
     </div>

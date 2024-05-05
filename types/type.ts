@@ -32,6 +32,6 @@ export type DateDataProps = {
     emotional_attraction?: number | null;
     additional_desc?: string | null;
     first_meet?: string | null;
-    date_schedule?: Date | string | null;
+    date_schedule?: Date | undefined | null;
     relationship_status?: string | null;
 }
