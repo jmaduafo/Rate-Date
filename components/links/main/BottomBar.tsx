@@ -24,10 +24,14 @@ import {
     DialogTrigger,
   } from "@/components/ui/dialog"
 
+import Header6 from "@/components/Header6";
+
 import { UserProp, DateDataProps } from "@/types/type";
+import Header5 from "@/components/Header5";
 
 // { userID }: {userID: string}
 function BottomBar() {
+  const [selectedDate, setSelectedDate] = useState<DateDataProps | undefined>();
   const [datesList, setDatesList] = useState<DateDataProps[] | undefined>();
   const [schedulesList, setSchedulesList] = useState<DateDataProps[] | undefined>();
   const [dateLoading, setDateLoading] = useState<boolean>(false);
@@ -175,12 +179,11 @@ function BottomBar() {
                     </div>
                     :
                     (
-
                         datesList.length ?
                         <div className=" mt-2 text-darkText max-h-[45vh] overflow-y-auto">
                         {datesList.map(date => {
                             return (
-                                <DialogTrigger key={date.id} asChild>
+                                <DialogTrigger key={date.id} asChild onClick={() => setSelectedDate(date)}>
                                     <div className="flex gap-3 duration-500 hover:bg-myBackgroundMuted cursor-pointer mt-1 py-3 px-3 rounded-xl w-full">
                                         <div className='flex-[3] text-darkText'>
                                             <p className="text-[13.5px]">{date.date_name}</p>
@@ -211,7 +214,126 @@ function BottomBar() {
                 }
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Date Info</DialogTitle>
+                  <div className="mb-5">
+                    <DialogTitle>Full Info</DialogTitle>
+                  </div>
+                    {
+                      selectedDate ?
+                      <div className="max-h-[60vh] overflow-y-auto scrollbar pr-4">
+                        <DialogNormalDisplay title="Name" data={selectedDate?.date_name}/>
+                        <DialogNormalDisplay title="Age" data={selectedDate?.date_age}/>
+                        <DialogNormalDisplay title="Description" data={selectedDate?.short_desc}/>
+                        <div className="mb-4">
+                            <div className="mb-2 flex justify-start">
+                              <Header6 title={'First Meet'}/>
+                            </div>
+                            <div className="flex justify-start">
+                              <p className="text-[13px] text-left">{selectedDate?.first_meet}</p>
+                            </div>
+                        </div>
+                        <DialogNormalDisplay title="Still Seeing?" data={selectedDate?.is_seeing ? 'Yes' : 'No'}/>
+                        <DialogNormalDisplay title="Duration" data={`${selectedDate?.duration_of_dating} ${selectedDate?.duration_metric}`}/>
+                        <DialogNormalDisplay title="Relationship Status" data={`${selectedDate?.relationship_status}`}/>
+                        {selectedDate?.physical_attraction && <DialogNormalDisplay title="Physical Attraction" data={selectedDate?.physical_attraction}/>}
+                        {selectedDate?.emotional_attraction && <DialogNormalDisplay title="Emotional Attraction" data={selectedDate?.emotional_attraction}/>}
+                        <DialogNormalDisplay title="Rating" data={selectedDate?.rating}/>
+                        {selectedDate?.icks && selectedDate?.icks?.length ?
+                          <div className="mb-4">
+                            <div className="mb-2 flex justify-start">
+                              <Header6 title={'Icks'}/>
+                            </div>
+                            <div className="flex justify-start">
+                              <div>
+                            {selectedDate?.icks?.map((data, i) => {
+                              return (
+                                <div key={data} className="flex gap-2">
+                                  <p className="text-[14px]">{i + 1}.</p>
+                                  <p className="text-[13px] text-left">{data}</p>
+                                </div>
+                                )
+                              })}
+                              </div>
+                            </div>
+                          </div>
+                         :
+                         null
+                        }
+                        {selectedDate?.green_flags && selectedDate?.green_flags?.length ?
+                          <div className="mb-4">
+                            <div className="mb-2 flex justify-start">
+                              <Header6 title={'Green Flags'}/>
+                            </div>
+                            <div className="flex justify-start">
+                              <div>
+                            {selectedDate?.green_flags?.map((data, i) => {
+                              return (
+                                <div key={data} className="flex gap-2">
+                                  <p className="text-[14px]">{i + 1}.</p>
+                                  <p className="text-[13px] text-left">{data}</p>
+                                </div>
+                                )
+                              })}
+                              </div>
+                            </div>
+                          </div>
+                         :
+                         null
+                        }
+                        {selectedDate?.red_flags && selectedDate?.red_flags?.length ?
+                          <div className="mb-4">
+                            <div className="mb-2 flex items-end justify-start">
+                              <Header6 title={'Red Flags'}/>
+                            </div>
+                            <div className="flex justify-start">
+                              <div>
+                            {selectedDate?.red_flags?.map((data, i) => {
+                              return (
+                                <div key={data} className="flex gap-2">
+                                  <p className="text-[14px]">{i+1}.</p>
+                                  <p className="text-[13px] text-left">{data}</p>
+                                </div>
+                                )
+                              })}
+                              </div>
+                            </div>
+                          </div>
+                         :
+                         null
+                        }
+                        {selectedDate?.additional_desc && selectedDate?.additional_desc?.length ?
+                          <div className="mb-4">
+                            <div className="mb-2 flex justify-start">
+                              <Header6 title={'Additional Info'}/>
+                            </div>
+                            <div className="flex justify-start">
+                              <p className="text-[13px] text-left">{selectedDate?.additional_desc}</p>
+                            </div>
+                          </div>
+                         :
+                         null
+                        }
+                        {/* NSFW SECTION */}
+                        {selectedDate?.nsfw === true &&
+                        <>
+                          <div className="my-2">
+                            <Header5 title="NSFW section"/>
+                          </div>
+                          <DialogNormalDisplay title="Kissing Skills" data={selectedDate?.nsfw_kissing_skills}/>
+                          <DialogNormalDisplay title="Oral skills" data={selectedDate?.nsfw_oral_skills}/>
+                          <DialogNormalDisplay title="Stroke Game" data={selectedDate?.nsfw_stroke_game}/>
+                          <DialogNormalDisplay title="Dirty Talk" data={selectedDate?.nsfw_dirty_talk}/>
+                          <DialogNormalDisplay title="Creativity" data={selectedDate?.nsfw_creativity}/>
+                          <DialogNormalDisplay title="Kink Level" data={selectedDate?.nsfw_kink_level}/>
+                          <DialogNormalDisplay title="Orgasm?" data={selectedDate?.nsfw_big_o ? 'Yes' : 'No'}/>
+                        </>
+                        }
+                      </div>
+                      :
+                      <div>
+
+                      </div>
+
+                    }
                 </DialogHeader>
                 <div></div>
             </DialogContent>
@@ -242,3 +364,39 @@ function BottomBar() {
 }
 
 export default BottomBar;
+
+function DialogNormalDisplay({title, data}: {title: string, data: string | number | boolean | undefined | null}) {
+  return (
+    <div className="mb-2 flex justify-between items-center">
+      <div className="mb-1">
+        <Header6 title={title}/>
+      </div>
+      <p className="text-[13px] text-white">{data}</p>
+    </div>
+  )
+}
+
+function DialogListDisplay({title, data}: {title: string, data: string[] | undefined | null}) {
+  console.log(data)
+  return (
+    <div className="mb-2">
+      <div className="mb-1">
+        <Header6 title={title}/>
+      </div>
+      {
+        data?.length ?
+        <div>
+          {data?.map((el, i) => {
+            return (
+              <p key={el} className="text-[13px] text-white text-right">{data}</p>
+            )
+          })}
+        </div>
+        :
+        <div>
+          <p className="text-[13px] text-white text-right">No {title.toLowerCase()} listed</p>
+        </div>
+      }
+    </div>
+  )
+}

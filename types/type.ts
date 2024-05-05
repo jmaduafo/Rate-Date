@@ -9,6 +9,7 @@ export type UserProp = {
 export type DateDataProps = {
     id: string;
     date_name: string;
+    date_age?: number;
     short_desc?: string;
     duration_of_dating?: number | null;
     duration_metric?: string;
@@ -17,6 +18,7 @@ export type DateDataProps = {
     red_flags?: string[];
     rating?: number | null;
     image?: string | null;
+    is_seeing?: boolean | null;
     nsfw?: boolean | null;
     nsfw_oral_skills?: number | null;
     nsfw_stroke_game?: number | null;

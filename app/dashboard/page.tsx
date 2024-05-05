@@ -1,5 +1,3 @@
-'use client'
-import { useState, useEffect } from 'react'
 import TopBar from '@/components/links/main/TopBar'
 import BottomBar from '@/components/links/main/BottomBar'
 import { createClient } from '@/utils/supabase/client'

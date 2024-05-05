@@ -11,6 +11,8 @@ import { greetings } from '@/utils/general/greeting'
 import { getInitials } from '@/utils/general/initials'
 import { HomeIcon, ChartBarIcon, QueueListIcon, UserCircleIcon, ArrowRightEndOnRectangleIcon as LogoutIcon, Cog6ToothIcon } from '@heroicons/react/24/solid'
 import { Skeleton } from "@/components/ui/skeleton"
+import ScreenLoading from './ScreenLoading'
+import Loading from './Loading'
 
 type User = {
     name: string;
@@ -20,6 +22,7 @@ type User = {
 function SideBar() {
     const [ userData, setUserData ] = useState<User[] | null>()
     const [ loading, setLoading ] = useState<boolean>(false)
+    const [ logOutLoading, setLogOutLoading ] = useState<boolean>(false)
 
     const pathname = usePathname()
     const supabase = createClient()
@@ -51,6 +54,7 @@ function SideBar() {
     ]
 
     async function signOut() {
+        setLogOutLoading(true)
         const { error } = await supabase.auth.signOut()
 
         if (error) {
@@ -59,10 +63,13 @@ function SideBar() {
                 description: "There was a problem with your request.",
                 action: <ToastAction altText="Try again">Try again</ToastAction>,
               })
+            setLogOutLoading(false)
+        } else {
+            setLogOutLoading(false)
+            router.push('/login')
+            router.refresh()
         }
 
-        router.push('/login')
-        router.refresh()
     }
 
     async function getUserInfo() {
@@ -153,7 +160,7 @@ function SideBar() {
         {/* LOGOUT BUTTON */}
         <div onClick={signOut} className={`group duration-500 md:py-3 md:px-8 md:mb-2 flex md:flex-row md:items-center md:justify-start md:gap-6 flex-col justify-center items-center cursor-pointer`}>
             <div className={`'md:text-darkText group-hover:text-lightText group-hover:md:text-darkText md:text-darkText60 text-lightText60 duration-500'}`}>
-                <LogoutIcon className='xs:w-[5.5vw] sm:w-[4vw] md:w-[20px] w-[7vw]'/>
+                {logOutLoading ? <Loading/> : <LogoutIcon className='xs:w-[5.5vw] sm:w-[4vw] md:w-[20px] w-[7vw]'/>}
             </div>
             <div className=''>
                 <p className={`md:text-darkText text-lightText group-hover:md:text-darkText group-hover:text-lightText md:text-darkText60 text-lightText60 duration-500 md:text-[15px] text-[9px]`}>Logout</p>
