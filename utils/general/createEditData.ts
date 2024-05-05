@@ -36,6 +36,10 @@ export const relationStatus = [
         'innerText': 'Booty Call'
     },
     {
+        'value': 'Strangers',
+        'innerText': 'Strangers'
+    },
+    {
         'value': 'Other',
         'innerText': 'Other'
     },
