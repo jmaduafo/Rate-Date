@@ -86,7 +86,6 @@ function BottomBar() {
                 setDateLoading(false)
             } else {
                 setDatesList(dateData);
-                console.log(dateData)
                 setDateLoading(false)
             }
         }
@@ -164,6 +163,8 @@ function BottomBar() {
         </div>
         <Card className="mt-5 text-darkText">
           <div>
+              {datesList && datesList?.length ? 
+              <>
             <div className="flex gap-3 py-2 px-3">
               {listHeaders.map((header) => {
                 return (
@@ -174,8 +175,12 @@ function BottomBar() {
                   </div>
                 );
               })}
-            </div>
-            <LineBreak />
+              </div>
+              <LineBreak />
+              </>
+              :
+              null
+            }
               {
                 dateLoading || !datesList ? 
                     <div className="mt-2 text-darkText max-h-[45vh] overflow-y-auto">
@@ -232,8 +237,8 @@ function BottomBar() {
                         })} 
                         </div>
                         :
-                        <div className="mt-8 text-darkText">
-                            <p className="text-center">No dates added yet</p>
+                        <div className="my-8 text-darkText">
+                            <p className="text-center text-[14px]">No dates added yet</p>
                         </div> 
                     )
                 }
@@ -419,8 +424,10 @@ function BottomBar() {
           <Header4 title="Upcoming Dates" />
         </div>
         <div className="max-h-[35vh] overflow-y-auto scrollbar">
-          {schedulesList && schedulesList.length ? 
-          schedulesList?.map((date) => {
+          {schedulesList && schedulesList.length ?
+          (
+
+            schedulesList?.map((date) => {
               return (
                 // futureTimeFromNow(...) returns negative numbers so should be rendered 
                 // when the output is less than 0 and not appear if greater than 0
@@ -432,18 +439,27 @@ function BottomBar() {
                     </SingleDateList>
                   </div>
                   )
-                :
-                null
+                  :
+                  null
+                  )
+                })
+            ) 
+          :
+          (
+            upcomingLoading ? 
+            [0, 1, 2, 3, 4, 5].map(skeleton => {
+              return (
+                <div key={skeleton} className="mb-3">
+                <Skeleton className="w-full h-7 rounded-full bg-myBackground60 animate-skeleton"/>
+                </div>
               )
             })
-          :
-          [0, 1, 2, 3, 4, 5].map(skeleton => {
-            return (
-              <div key={skeleton} className="mb-3">
-              <Skeleton className="w-full h-7 rounded-full bg-myBackground60 animate-skeleton"/>
-              </div>
-            )
-          })}
+            :
+            <div className="">
+              <p className="text-center text-[14px]">No dates scheduled</p>
+            </div>
+          )
+          }
         </div>
       </Card>
     </div>

@@ -84,12 +84,12 @@ function TopBar() {
       if (dataInfo) {
         setName(dataInfo[0]?.name);
         setUsername(dataInfo[0]?.username);
-        setPronounsText(dataInfo[0]?.pronouns);
-        setBirthday(dataInfo[0]?.birthday);
-        setRelationStatus(dataInfo[0]?.relationship_status);
-        setOrientation(dataInfo[0]?.sexual_orientation);
-        setBio(dataInfo[0]?.bio);
-        setIsPrivate(dataInfo[0]?.private);
+        setPronounsText(dataInfo[0]?.pronouns ? dataInfo[0]?.pronouns : undefined)
+        setBirthday(dataInfo[0]?.birthday ? dataInfo[0]?.birthday : undefined);
+        setRelationStatus(dataInfo[0]?.relationship_status ?? undefined);
+        setOrientation(dataInfo[0]?.sexual_orientation ?? undefined);
+        setBio(dataInfo[0]?.bio ?? undefined);
+        setIsPrivate(dataInfo[0]?.private ?? false);
       }
     }
   }
