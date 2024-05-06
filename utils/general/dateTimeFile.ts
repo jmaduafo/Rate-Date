@@ -49,3 +49,16 @@ export function scheduleFormat(sch: Date) {
 
     return scheduleDate + ' ' + scheduleTime
 }
+
+export function chartCount(sch: Date) {
+    const date = new Date(sch)
+    const thisDay = new Date()
+
+    const year = date.getFullYear()
+    const thisYear = thisDay.getFullYear()
+    
+    const month  = months[date.getMonth()]
+
+
+    return 
+}

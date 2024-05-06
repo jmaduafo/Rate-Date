@@ -35,3 +35,17 @@ export type DateDataProps = {
     date_schedule?: Date | undefined | null;
     relationship_status?: string | null;
 }
+
+export type UserDataProps = {
+    id: string;
+    email?: string;
+    name?: string;
+    username?: number;
+    sexual_orientation?: string | null;
+    bio?: string;
+    birthday?: string | null;
+    dark_mode?: boolean;
+    private?: boolean;
+    pronouns?: string | null;
+    image?: string | null;
+}

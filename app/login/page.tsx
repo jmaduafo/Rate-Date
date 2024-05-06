@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { SubmitButton } from "./submit-button";
 import Header2 from "@/components/Header2";
 import Header3 from "@/components/Header3";
+import Loading from "@/components/Loading";
 import LogSignPage from "@/components/links/login-signup/LogSignPage";
 
 export default function Login({
@@ -46,6 +47,7 @@ export default function Login({
           {/* PASSWORD INPUT */}
           <input name='password' className="w-full outline-none border-none rounded-xl py-2 px-5 tracking-tight" type='password' placeholder="••••••••"/>
           <div className="mt-[2rem]">
+            {}
             <SubmitButton
             formAction={signIn}
             >
