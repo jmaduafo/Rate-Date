@@ -695,7 +695,7 @@ function DashboardEdit() {
         </CreateEditCard>
         <div className="flex justify-end items-center gap-4 mt-4">
           <PrimaryButton type="submit">
-            {loading ? <Loading /> : "Update Date"}
+            {loading ? <Loading classNameColor='border-t-myForeground' classNameSize="w-[30px] h-[30px]" /> : "Update Date"}
           </PrimaryButton>
           <Link href={"/dashboard"}>
             <SecondaryButton>Cancel</SecondaryButton>

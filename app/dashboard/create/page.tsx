@@ -537,7 +537,7 @@ function DashboardCreate() {
         <div className="flex justify-end items-center gap-4 mt-4">
             <PrimaryButton type="submit">
             {loading ?
-                <Loading/>
+                <Loading classNameColor='border-t-myForeground' classNameSize="w-[30px] h-[30px]" />
                 :
                 'Add Date' 
             }
