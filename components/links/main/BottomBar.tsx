@@ -3,8 +3,8 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { createClient } from "@/utils/supabase/client";
-import { FireIcon, PlusIcon } from "@heroicons/react/24/solid";
-import { AdjustmentsHorizontalIcon } from "@heroicons/react/24/outline";
+import { FireIcon } from "@heroicons/react/24/solid";
+import { AdjustmentsHorizontalIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 
@@ -145,8 +145,28 @@ function BottomBar() {
     }
   }
 
+
+  async function handleAddDateSchedule(e: React.FormEvent) {
+    e.preventDefault()
+
+    const { error } = await supabase
+    .from('dates')
+    .insert({})
+
+    if (error) {
+      toast({
+        title: "Whoops! An error occurred",
+        description: error.message
+      })
+    } else {
+      toast({
+        title: "Success!",
+        description: "Date was deleted successfully!"
+      })      
+    }
+  }
+
   return (
-    <Dialog>
     <div className="md:mt-8 gap-6 flex md:flex-row flex-col">
       {/* DATES TABLE */}
       <div className="flex-[5]">
@@ -161,6 +181,7 @@ function BottomBar() {
             <AdjustmentsHorizontalIcon strokeWidth={1} className="w-6" />
           </SecondaryButton>
         </div>
+      <Dialog>
         <Card className="mt-5 text-darkText">
           <div>
               {datesList && datesList?.length ? 
@@ -242,7 +263,7 @@ function BottomBar() {
                         </div> 
                     )
                 }
-            {/* DIALOG POP UP */}
+            {/* DATES INFORMATION DIALOG POP UP */}
             <DialogContent>
                 <DialogHeader>
                   <div className="mb-5">
@@ -413,20 +434,26 @@ function BottomBar() {
                       </div>
 
                     }
-            </DialogContent>
-            
+            </DialogContent> 
           </div>
         </Card>
+      </Dialog>
       </div>
+      <Dialog>
       {/* UPCOMING DATES SCHEDULES */}
       <Card className="flex-[2]">
-        <div className="mb-[4rem]">
+        <div className="mb-[4rem] flex justify-between items-center">
           <Header4 title="Upcoming Dates" />
+          <DialogTrigger asChild>
+            <button className="bg-darkText outline-none border-none py-1 px-2 rounded-lg">
+              <PlusIcon strokeWidth={2} className="w-4 text-myForeground"/>
+            </button>
+          </DialogTrigger>
         </div>
         <div className="max-h-[35vh] overflow-y-auto scrollbar">
           {schedulesList && schedulesList.length ?
           (
-
+            
             schedulesList?.map((date) => {
               return (
                 // futureTimeFromNow(...) returns negative numbers so should be rendered 
@@ -443,10 +470,10 @@ function BottomBar() {
                   null
                   )
                 })
-            ) 
-          :
-          (
-            upcomingLoading ? 
+                ) 
+                :
+                (
+                  upcomingLoading ? 
             [0, 1, 2, 3, 4, 5].map(skeleton => {
               return (
                 <div key={skeleton} className="mb-3">
@@ -460,10 +487,30 @@ function BottomBar() {
             </div>
           )
           }
+          <DialogContent>
+            <form onSubmit={handleAddDateSchedule}>
+              <DialogHeader className="mb-5">
+                  <Header4 title="Schedule a Date"/>
+              </DialogHeader>
+              <div className="mb-3">
+                <label className="mb-2" htmlFor="dateName">Name</label>
+                <input id='dateName' type='text' placeholder='John' className="text-darkText px-3 py-1 w-full border-none outline-none rounded text-[14px]"/>
+              </div>
+              <div>
+                <label className="mb-2" htmlFor="schedule">Select a Date</label>
+                <input id='schedule' type='datetime-local' className="text-darkText px-3 py-1 w-full border-none outline-none rounded text-[14px]"/>
+              </div>
+              <DialogFooter className="mt-7">
+                <button type='submit' className="w-full text-myForeground bg-green-700 rounded border-none outline-none px-3 py-2 text-[15px]">
+                  Save
+                </button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
         </div>
       </Card>
+      </Dialog>
     </div>
-    </Dialog>
   );
 }
 

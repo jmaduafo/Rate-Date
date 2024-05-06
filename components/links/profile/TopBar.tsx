@@ -314,7 +314,7 @@ function TopBar() {
                           type="submit"
                           className="w-full bg-green-700 hover:opacity-70 duration-500 rounded py-2"
                         >
-                          {loading ? <Loading /> : "Save"}
+                          {loading ? <Loading classNameColor="border-t-myForeground" classNameSize="w-[30px] h-[30px]"/> : "Save"}
                         </button>
                       </div>
                     </form>

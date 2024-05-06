@@ -10,15 +10,36 @@ import SingleDateList from "@/components/SingleDateList";
 import { FireIcon } from "@heroicons/react/24/solid";
 import Loading from "@/components/Loading";
 import { getZodiac, getZodiacImage } from "@/utils/general/zodiacSign";
+import PrimaryButton from "@/components/PrimaryButton";
 
 function TopBar() {
   const [chartLoading, setChartLoading] = useState(true);
   const [topData, setTopData] = useState<DateDataProps[] | undefined>();
   const [zodiacData, setZodiacData] = useState<UserDataProps[] | undefined>();
+  const [horoscope, setHoroscope] = useState<string | undefined>();
 
   const supabase = createClient();
 
-  async function fetchHoroscope() {}
+  async function fetchHoroscope(zodiac: string) {
+    try {
+        // const res = await fetch(`https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=${getZodiac(zodiac)}&day=TODAY`)
+        // const data = await res.json();
+
+        const URL = `https://aztro.sameerkumar.website/?sign=${getZodiac(zodiac)}&day=today`;
+        fetch(URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then((data : any) => { setHoroscope(data.description); });
+
+    } catch (err: any) {
+        console.log(err.message)
+    }
+  }
 
   async function getUserData() {
     const { data: userData, error: userError } = await supabase.auth.getUser();
@@ -40,10 +61,15 @@ function TopBar() {
         .is("is_seeing", true)
         .limit(1);
 
+        
         if (zodiacError) {
-          console.log(zodiacError.message);
+            console.log(zodiacError.message);
         } else {
-          setZodiacData(zodiac);
+            setZodiacData(zodiac);
+
+            // CALL HOROSCOPE FUNCTION TO GET THE DAILY HOROSCOPE
+            // fetchHoroscope(zodiac[0].birthday)
+
         }
 
       if (topError) {
@@ -83,17 +109,33 @@ function TopBar() {
         <div className="flex justify-between items-center">
           <Header3 title="Daily Horoscope" />
           {
-            zodiacData && zodiacData.length ?
-          <div className="w-[30px] object-cover">
-            {zodiacData[0].birthday && <Image src={getZodiacImage(getZodiac(zodiacData[0].birthday))} alt={getZodiac(zodiacData[0].birthday)} className="w-full h-full" />}
-          </div>
-            :
-            <div>
-                <Loading classNameColor="border-t-darkText" classNameSize="w-9"/>
-                
+
+            zodiacData && zodiacData?.length ?
+            <div className="w-[30px] object-cover">
+                {zodiacData[0].birthday && <Image src={getZodiacImage(getZodiac(zodiacData[0].birthday))} alt={getZodiac(zodiacData[0].birthday)} className="w-full h-full" />}
             </div>
+            :
+            <div className="">
+                <Loading classNameColor="border-t-darkText" classNameSize="w-5"/>
+            </div> 
           }
         </div>
+          {
+            horoscope && horoscope.length ?
+            // HOROSCOPE
+            <div className=''>
+                {/* <p className="text-center px-6 text-[15px]">{horoscope}</p> */}
+            </div>
+            :
+            <div className="mt-9">
+                <p className="text-center px-6 text-[15px]">Add your birthday when editing your profile to get your daily horoscope</p>
+                <div className="flex justify-center items-center mt-4">
+                    <PrimaryButton className="">
+                        Go To Profile
+                    </PrimaryButton>
+                </div>
+            </div>
+          }
       </Card>
       {/* TOP DATE CARD */}
       {topData && topData.length ? (
