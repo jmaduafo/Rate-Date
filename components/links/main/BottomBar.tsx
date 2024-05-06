@@ -29,7 +29,7 @@ import Header6 from "@/components/Header6";
 import Header5 from "@/components/Header5";
 
 import { UserProp, DateDataProps } from "@/types/type";
-import { futureTimeFromNow } from "@/utils/general/getTimeFromNow";
+import { futureTimeFromNow, scheduleFormat } from "@/utils/general/dateTimeFile";
 
 // { userID }: {userID: string}
 function BottomBar() {
@@ -264,6 +264,7 @@ function BottomBar() {
                         <DialogNormalDisplay title="Relationship Status" data={`${selectedDate?.relationship_status}`}/>
                         {selectedDate?.physical_attraction && <DialogNormalDisplay title="Physical Attraction" data={selectedDate?.physical_attraction}/>}
                         {selectedDate?.emotional_attraction && <DialogNormalDisplay title="Emotional Attraction" data={selectedDate?.emotional_attraction}/>}
+                        {selectedDate?.date_schedule && <DialogNormalDisplay title="Future Date" data={scheduleFormat(selectedDate?.date_schedule)}/>}
                         <DialogNormalDisplay title="Rating" data={selectedDate?.rating}/>
                         {/* ICKS LIST */}
                         {selectedDate?.icks && selectedDate?.icks?.length ?
@@ -362,7 +363,7 @@ function BottomBar() {
                       </div>
                       <DialogFooter>
                         <div className="flex justify-end items-center gap-3">
-                          <Link href={`/edit/${selectedDate?.id}`}>
+                          <Link href={`/dashboard/edit/${selectedDate?.id}`}>
                           <button className="hover:opacity-70 duration-500 bg-myForeground text-darkText text-[13px] px-5 py-2 rounded-lg border-none outline-none">
                             Edit Date
                           </button>
@@ -459,31 +460,6 @@ function DialogNormalDisplay({title, data}: {title: string, data: string | numbe
         <Header6 title={title}/>
       </div>
       <p className="text-[13px] text-white">{data}</p>
-    </div>
-  )
-}
-
-function DialogListDisplay({title, data}: {title: string, data: string[] | undefined | null}) {
-  console.log(data)
-  return (
-    <div className="mb-2">
-      <div className="mb-1">
-        <Header6 title={title}/>
-      </div>
-      {
-        data?.length ?
-        <div>
-          {data?.map((el, i) => {
-            return (
-              <p key={el} className="text-[13px] text-white text-right">{data}</p>
-            )
-          })}
-        </div>
-        :
-        <div>
-          <p className="text-[13px] text-white text-right">No {title.toLowerCase()} listed</p>
-        </div>
-      }
     </div>
   )
 }

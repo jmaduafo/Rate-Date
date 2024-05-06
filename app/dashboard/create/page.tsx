@@ -65,7 +65,7 @@ function DashboardCreate() {
   const [creativity, setCreativity] = useState<number[] | undefined>([5]);
   const [kinkLevel, setKinkLevel] = useState<number[] | undefined>([5]);
   const [dirtyTalk, setDirtyTalk] = useState<number[] | undefined>([5]);
-  const [bigO, setBigO] = useState<boolean>(false);
+  const [bigO, setBigO] = useState<boolean | undefined>(false);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -76,7 +76,7 @@ function DashboardCreate() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!dateName || !age || !desc || !meetCute || !isStillSeeing || !duration || !unitOfDuration) {
+    if (!dateName || !age || !desc || !meetCute || !status || !status.length || !isStillSeeing || !duration || !unitOfDuration) {
       toast({
         title: "Whoops! You left some entries empty",
         description: "Please fill in the starred entries accordingly",
