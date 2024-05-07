@@ -38,21 +38,30 @@ import {
 } from "@/utils/general/dateTimeFile";
 import Loading from "@/components/Loading";
 
-// { userID }: {userID: string}
 function BottomBar() {
+  // HANDLES GETTING THE DIALOG FOR ONE INDIVIDUAL DATE
   const [selectedDate, setSelectedDate] = useState<DateDataProps | undefined>();
+  // GETS ALL THE DATES DATA AND RENDERS INTO A TABLE
   const [datesList, setDatesList] = useState<DateDataProps[] | undefined>();
+  const [dateLoading, setDateLoading] = useState<boolean>(false);
+
   const [schedulesList, setSchedulesList] = useState<
     DateDataProps[] | undefined
   >();
-  const [dateLoading, setDateLoading] = useState<boolean>(false);
   const [upcomingLoading, setUpcomingLoading] = useState<boolean>(false);
 
-  const [ scheduleName, setScheduleName ] = useState<string | undefined>('')
-  const [ scheduleDate, setScheduleDate ] = useState<string | undefined>('')
-  const [ scheduleLoading, setScheduleLoading ] = useState<boolean>(false)
+  // FOR SCHEDULING AN UPCOMING DATE
+  const [scheduleName, setScheduleName] = useState<string | undefined>("");
+  const [scheduleDate, setScheduleDate] = useState<string | undefined>("");
+  const [scheduleLoading, setScheduleLoading] = useState<boolean>(false);
 
-  const [ userID, setUserID ] = useState<string | undefined>('')
+  const [selectedSchedule, setSelectedSchedule] = useState<
+    DateDataProps | undefined
+  >();
+  const [updateSchedule, setUpdateSchedule] = useState<boolean>(false);
+
+  const [userID, setUserID] = useState<string | undefined>("");
+  const [ open, setOpen ] = useState(false)
 
   const listHeaders = [
     {
@@ -83,7 +92,7 @@ function BottomBar() {
   // GETS LIST OF DATES ACCORDING TO THE AUTH ID IN ORDER OF WHEN DATE WAS CREATED
 
   async function getScheduleDates() {
-    setUpcomingLoading(true)
+    setUpcomingLoading(true);
 
     const {
       data: { user },
@@ -91,14 +100,14 @@ function BottomBar() {
     } = await supabase.auth.getUser();
 
     if (error) {
-      console.log(error.message)
+      console.log(error.message);
     } else {
       // GETS THE SCHEDULE DATA
       const { data: scheduleData, error: scheduleError } = await supabase
-      .from("schedules")
-      .select()
-      .eq("user_id", user?.id)
-      .order("date_schedule", { ascending: true });
+        .from("schedules")
+        .select()
+        .eq("user_id", user?.id)
+        .order("date_schedule", { ascending: true });
 
       // SCHEDULES DATE
       if (scheduleError) {
@@ -107,7 +116,7 @@ function BottomBar() {
       } else {
         setSchedulesList(scheduleData);
         setUpcomingLoading(false);
-    }
+      }
     }
   }
 
@@ -117,11 +126,11 @@ function BottomBar() {
       data: { user },
       error,
     } = await supabase.auth.getUser();
-    
+
     if (error) {
       console.log(error.message);
     } else {
-      setUserID(user?.id)
+      setUserID(user?.id);
       // GETS THE DATE LIST DATA
       const { data: dateData, error: dateError } = await supabase
         .from("dates")
@@ -134,62 +143,77 @@ function BottomBar() {
         setDateLoading(false);
       } else {
         setDatesList(dateData);
-        setDateLoading(false)
+        setDateLoading(false);
       }
     }
   }
 
   async function schedulesListen() {
     const channel = supabase
-        .channel("schedule changes")
-        .on("postgres_changes", { 
+      .channel("schedule changes")
+      .on(
+        "postgres_changes",
+        {
           event: "*",
-          schema: 'public',
-          table: 'schedules',
+          schema: "public",
+          table: "schedules",
           // Only care about dates where the user_id matches the user's id
-          filter: `user_id=eq.${userID}`
+          filter: `user_id=eq.${userID}`,
         },
         (payload) => {
           if (schedulesList) {
-            setSchedulesList([...schedulesList, payload.new as DateDataProps])
+            setSchedulesList([...schedulesList, payload.new as DateDataProps]);
           }
-        }).subscribe()
-        
-        return () => {
-          supabase.removeChannel(channel)
         }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }
 
   async function datesListen() {
     const channel = supabase
       .channel("date changes")
-      .on("postgres_changes", { 
-        event: "*",
-        schema: 'public',
-        table: 'dates',
-        // Only care about dates where the user_id matches the user's id
-        filter: `user_id=eq.${userID}`
-      },
-      (payload) => {
-        if (datesList) {
-          setDatesList([...datesList, payload.new as DateDataProps])
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "dates",
+          // Only care about dates where the user_id matches the user's id
+          filter: `user_id=eq.${userID}`,
+        },
+        (payload) => {
+          if (datesList) {
+            setDatesList([...datesList, payload.new as DateDataProps]);
+          }
         }
-      }).subscribe()
-        
-      return () => {
-        supabase.removeChannel(channel)
-      }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }
 
   useEffect(() => {
-    getDates()
-    getScheduleDates()
+    getDates();
+    getScheduleDates();
   }, []);
-  
+
   useEffect(() => {
-    schedulesListen()
-    datesListen()
-  }, [userID, supabase, datesList, schedulesList, setDatesList, setSchedulesList]);
+    schedulesListen();
+    datesListen();
+  }, [
+    userID,
+    supabase,
+    datesList,
+    schedulesList,
+    setDatesList,
+    setSchedulesList,
+  ]);
 
   // INSERT, UPDATE, DELETE REQUESTS
 
@@ -215,16 +239,16 @@ function BottomBar() {
 
     if (!scheduleDate || !scheduleName) {
       toast({
-        title: 'Entries must not be left empty',
-        description: 'Please fill out all fields above'
-      })
+        title: "Entries must not be left empty",
+        description: "Please fill out all fields above",
+      });
     } else {
-      setScheduleLoading(true)
+      setScheduleLoading(true);
       const { error } = await supabase.from("schedules").insert({
         date_name: scheduleName,
-        date_schedule: scheduleDate
-      })
-  
+        date_schedule: scheduleDate,
+      });
+
       if (error) {
         toast({
           title: "Whoops! An error occurred",
@@ -236,11 +260,60 @@ function BottomBar() {
           description: "Date was scheduled successfully!",
         });
       }
-      
-      setScheduleLoading(false)
 
+      setScheduleLoading(false);
     }
   }
+
+  async function updateScheduleTrue(id: string) {
+    setUpdateSchedule(true)
+
+    const { data, error } = await supabase.from('schedules').select().eq('id', id)
+
+    if (error) {
+      console.log(error.message)
+    } else {
+      setScheduleName(data[0]?.date_name)
+      setScheduleDate(data[0]?.date_schedule
+        ? data[0]?.date_schedule.split(" ").join("T").split("+")[0]
+        : undefined)
+      
+      {!open && setUpdateSchedule(false)}
+    }
+  }
+
+  async function handleUpdateSchedule(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (!scheduleDate || !scheduleName) {
+      toast({
+        title: "Entries must not be left empty",
+        description: "Please fill out all fields above",
+      });
+    } else {
+      setScheduleLoading(true);
+      const { error } = await supabase.from("schedules").update({
+        date_name: scheduleName,
+        date_schedule: scheduleDate,
+      });
+
+      if (error) {
+        toast({
+          title: "Whoops! An error occurred",
+          description: error.message,
+        });
+      } else {
+        toast({
+          title: "Success!",
+          description: "Date was updated successfully!",
+        });
+      }
+
+      setScheduleLoading(false);
+    }
+  }
+
+
 
   return (
     <div className="md:mt-8 gap-6 flex md:flex-row flex-col">
@@ -587,58 +660,18 @@ function BottomBar() {
           </Card>
         </Dialog>
       </div>
-      <Dialog>
-        {/* UPCOMING DATES SCHEDULES */}
-        <Card className="flex-[2]">
-          <div className="mb-[4rem] flex justify-between items-center">
-            <Header4 title="Upcoming Dates" />
+      {/* UPCOMING DATES SCHEDULES */}
+      <Card className="flex-[2]">
+        <div className="mb-[4rem] flex justify-between items-center">
+          <Header4 title="Upcoming Dates" />
+          {/* TRIGGER DIALOG POPUP WHEN ADD BUTTON IS CLICKED */}
+          <Dialog>
             <DialogTrigger asChild>
-              <button className="bg-darkText outline-none border-none py-1 px-2 rounded-lg">
+              <button className="bg-darkText outline-none border-none py-1 px-2 rounded-md">
                 <PlusIcon strokeWidth={2} className="w-4 text-myForeground" />
               </button>
             </DialogTrigger>
-          </div>
-          <div className="max-h-[35vh] overflow-y-auto scrollbar">
-            {upcomingLoading || !schedulesList ? 
-              [0, 1, 2, 3, 4, 5].map((skeleton) => {
-                return (
-                  <div key={skeleton} className="mb-3">
-                    <Skeleton className="w-full h-7 rounded-full bg-myBackground60 animate-skeleton" />
-                  </div>
-                );
-              })
-              :
-              (
-                schedulesList.length ?
-                schedulesList?.map((date) => {
-                  return (
-                    // futureTimeFromNow(...) returns negative numbers so should be rendered
-                    // when the output is less than 0 and not appear if greater than 0
-                    date.date_schedule &&
-                      futureTimeFromNow(date.date_schedule) <= 0 ? (
-                      <div className="mb-3 pr-3" key={date.id}>
-                        <SingleDateList>
-                          <p className="text-[15px]">{date.date_name}</p>
-                          <p className="italic text-[10px] text-darkText60">
-                            in{" "}
-                            {date.date_schedule
-                              ? Math.round(
-                                  Math.abs(futureTimeFromNow(date.date_schedule))
-                                )
-                              : "-"}{" "}
-                            days
-                          </p>
-                        </SingleDateList>
-                      </div>
-                    ) 
-                    :
-                    null
-                  )})
-                  :
-                  <div className="">
-                    <p className="text-center text-[14px]">No dates scheduled yet</p>
-                  </div>
-              )}
+            {/* SCHEDULE / RECORD A FUTURE DATE DIALOG FOR NAME AND DATE*/}
             <DialogContent>
               <form onSubmit={handleAddDateSchedule}>
                 <DialogHeader className="mb-5">
@@ -670,19 +703,167 @@ function BottomBar() {
                   />
                 </div>
                 <DialogFooter className="mt-7">
-                  
-                    <button
-                      type="submit"
-                      className="w-full text-myForeground bg-green-700 rounded border-none outline-none px-3 py-2 text-[15px]"
-                      >
-                       {scheduleLoading ? <Loading classNameColor="border-t-myForeground" classNameSize="w-[30px] h-[30px]"/> : 'Save'}
-                    </button>
+                  <button
+                    type="submit"
+                    className="w-full text-myForeground bg-green-700 rounded border-none outline-none px-3 py-2 text-[15px]"
+                  >
+                    {scheduleLoading ? (
+                      <Loading
+                        classNameColor="border-t-myForeground"
+                        classNameSize="w-[30px] h-[30px]"
+                      />
+                    ) : (
+                      "Add Record"
+                    )}
+                  </button>
                 </DialogFooter>
               </form>
             </DialogContent>
-          </div>
-        </Card>
-      </Dialog>
+          </Dialog>
+        </div>
+        <div className="max-h-[35vh] overflow-y-auto scrollbar">
+          {/* FULL SCHEDULE INFO DISPLAYING NAME AND DATE */}
+          <Dialog open={open} onOpenChange={setOpen}>
+            {upcomingLoading || !schedulesList ? (
+              [0, 1, 2, 3, 4, 5].map((skeleton) => {
+                return (
+                  <div key={skeleton} className="mb-3">
+                    <Skeleton className="w-full h-7 rounded-full bg-myBackground60 animate-skeleton" />
+                  </div>
+                );
+              })
+            ) : schedulesList.length ? (
+              schedulesList?.map((date) => {
+                return (
+                  // futureTimeFromNow(...) returns negative numbers so should be rendered
+                  // when the output is less than 0 and not appear if greater than 0
+                  date.date_schedule &&
+                    futureTimeFromNow(date.date_schedule) <= 0 ? (
+                    <div className="mb-3 pr-3" key={date.id}>
+                      <DialogTrigger
+                        onClick={() => setSelectedSchedule(date)}
+                        asChild
+                      >
+                        <div className="flex justify-between items-center w-full px-4 py-3 shadow-md rounded-2xl hover:bg-myBackgroundMuted cursor-pointer duration-500">
+                          <p className="text-[15px]">{date.date_name}</p>
+                          <p className="italic text-[10px] text-darkText60">
+                            in{" "}
+                            {date.date_schedule
+                              ? Math.round(
+                                  Math.abs(
+                                    futureTimeFromNow(date.date_schedule)
+                                  )
+                                )
+                              : "-"}{" "}
+                            days
+                          </p>
+                        </div>
+                      </DialogTrigger>
+                    </div>
+                  ) : null
+                );
+              })
+            ) : (
+              <div className="">
+                <p className="text-center text-[14px]">
+                  No dates scheduled yet
+                </p>
+              </div>
+            )}
+            <DialogContent>
+              <DialogHeader>
+                <Header4 title="Schedule Info" />
+              </DialogHeader>
+              {!updateSchedule ? (
+                <>
+                  <div>
+                    <DialogNormalDisplay
+                      title="Name"
+                      data={selectedSchedule?.date_name}
+                    />
+                    <DialogNormalDisplay
+                      title="Scheduled for:"
+                      data={
+                        selectedSchedule?.date_schedule
+                          ? scheduleFormat(selectedSchedule?.date_schedule)
+                          : "No date scheduled"
+                      }
+                    />
+                  </div>
+                  <DialogFooter>
+                    <div className="flex gap-3 items-center">
+                      <button
+                        onClick={() => selectedSchedule?.id && updateScheduleTrue(selectedSchedule?.id)}
+                        className="hover:opacity-70 duration-500 text-darkText bg-myForeground text-[13px] px-5 py-2 rounded-lg border-none outline-none"
+                      >
+                        Update
+                      </button>
+                      <button className="hover:opacity-70 duration-500 text-destructive-foreground bg-destructive text-[13px] px-5 py-2 rounded-lg border-none outline-none">
+                        Delete
+                      </button>
+                    </div>
+                  </DialogFooter>
+                </>
+              ) : (
+                <>
+                  <form onSubmit={handleUpdateSchedule}>
+                    <div className="mb-3">
+                      <label className="mb-2" htmlFor="dateName">
+                        Name
+                      </label>
+                      <input
+                        id="dateName"
+                        type="text"
+                        placeholder="John"
+                        value={scheduleName}
+                        onChange={(e) => setScheduleName(e.target.value)}
+                        className="text-darkText px-3 py-1 w-full border-none outline-none rounded text-[14px]"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-2" htmlFor="schedule">
+                        Select a Date
+                      </label>
+                      <input
+                        id="schedule"
+                        type="datetime-local"
+                        value={scheduleDate}
+                        onChange={(e) => setScheduleDate(e.target.value)}
+                        className="text-darkText px-3 py-1 w-full border-none outline-none rounded text-[14px]"
+                      />
+                    </div>
+                    <DialogFooter className="mt-7">
+                      <div className="w-full">
+                        <button
+                          type="submit"
+                          className="w-full hover:opacity-85 duration-500 text-myForeground bg-green-700 rounded border-none outline-none px-3 py-2 text-[15px]"
+                        >
+                          {/* {scheduleLoading ? (
+                            <Loading
+                              classNameColor="border-t-myForeground"
+                              classNameSize="w-[30px] h-[30px]"
+                            />
+                          ) : (
+                            "Add Record"
+                          )} */}
+                          Save
+                        </button>
+                        <button
+                          onClick={() => setUpdateSchedule(false)}
+                          className="w-full mt-2 hover:opacity-85 duration-500 text-darkText bg-myForeground rounded border-none outline-none px-3 py-2 text-[15px]"
+                        >
+                          Back
+                        </button>
+
+                      </div>
+                    </DialogFooter>
+                  </form>
+                </>
+              )}
+            </DialogContent>
+          </Dialog>
+        </div>
+      </Card>
     </div>
   );
 }

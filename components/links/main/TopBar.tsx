@@ -83,8 +83,6 @@ function TopBar() {
 
   useEffect(() => {
     getUserData();
-    
-    
   }, []);
 
   return (
