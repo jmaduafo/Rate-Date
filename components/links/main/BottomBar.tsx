@@ -49,8 +49,10 @@ function BottomBar() {
   const [upcomingLoading, setUpcomingLoading] = useState<boolean>(false);
 
   const [ scheduleName, setScheduleName ] = useState<string | undefined>('')
-  const [ scheduleDate, setScheduleDate ] = useState<string | undefined>()
+  const [ scheduleDate, setScheduleDate ] = useState<string | undefined>('')
   const [ scheduleLoading, setScheduleLoading ] = useState<boolean>(false)
+
+  const [ userID, setUserID ] = useState<string | undefined>('')
 
   const listHeaders = [
     {
@@ -104,27 +106,7 @@ function BottomBar() {
         setUpcomingLoading(false);
       } else {
         setSchedulesList(scheduleData);
-        console.log(scheduleData)
         setUpcomingLoading(false);
-
-        const channel = supabase
-        .channel("schedule changes")
-        .on("postgres_changes", { 
-          event: "*",
-          schema: 'public',
-          table: 'schedules',
-          // Only care about dates where the user_id matches the user's id
-          filter: `user_id=eq.${user?.id}`
-        },
-        (payload) => {
-          if (schedulesList) {
-            setSchedulesList([...schedulesList, payload.new as DateDataProps])
-          }
-        }).subscribe()
-        
-        return () => {
-          supabase.removeChannel(channel)
-        }
     }
     }
   }
@@ -139,7 +121,7 @@ function BottomBar() {
     if (error) {
       console.log(error.message);
     } else {
-      
+      setUserID(user?.id)
       // GETS THE DATE LIST DATA
       const { data: dateData, error: dateError } = await supabase
         .from("dates")
@@ -153,33 +135,61 @@ function BottomBar() {
       } else {
         setDatesList(dateData);
         setDateLoading(false)
-        
-        const channel = supabase
-        .channel("date changes")
+      }
+    }
+  }
+
+  async function schedulesListen() {
+    const channel = supabase
+        .channel("schedule changes")
         .on("postgres_changes", { 
           event: "*",
           schema: 'public',
-          table: 'dates',
+          table: 'schedules',
           // Only care about dates where the user_id matches the user's id
-          filter: `user_id=eq.${user?.id}`
+          filter: `user_id=eq.${userID}`
         },
         (payload) => {
-          if (datesList) {
-            setDatesList([...datesList, payload.new as DateDataProps])
+          if (schedulesList) {
+            setSchedulesList([...schedulesList, payload.new as DateDataProps])
           }
         }).subscribe()
-          
+        
         return () => {
           supabase.removeChannel(channel)
         }
+  }
+
+  async function datesListen() {
+    const channel = supabase
+      .channel("date changes")
+      .on("postgres_changes", { 
+        event: "*",
+        schema: 'public',
+        table: 'dates',
+        // Only care about dates where the user_id matches the user's id
+        filter: `user_id=eq.${userID}`
+      },
+      (payload) => {
+        if (datesList) {
+          setDatesList([...datesList, payload.new as DateDataProps])
+        }
+      }).subscribe()
+        
+      return () => {
+        supabase.removeChannel(channel)
       }
-    }
   }
 
   useEffect(() => {
     getDates()
     getScheduleDates()
   }, []);
+  
+  useEffect(() => {
+    schedulesListen()
+    datesListen()
+  }, [userID, supabase, datesList, schedulesList, setDatesList, setSchedulesList]);
 
   // INSERT, UPDATE, DELETE REQUESTS
 
@@ -532,14 +542,12 @@ function BottomBar() {
                             Edit Date
                           </button>
                         </Link>
-                        <DialogClose>
-                          <button
-                            onClick={() => handleDateDelete(selectedDate?.id)}
-                            className="hover:opacity-70 duration-500 text-destructive-foreground bg-destructive text-[13px] px-5 py-2 rounded-lg border-none outline-none"
-                          >
-                            Delete Date
-                          </button>
-                        </DialogClose>
+                        <button
+                          onClick={() => handleDateDelete(selectedDate?.id)}
+                          className="hover:opacity-70 duration-500 text-destructive-foreground bg-destructive text-[13px] px-5 py-2 rounded-lg border-none outline-none"
+                        >
+                          Delete Date
+                        </button>
                       </div>
                     </DialogFooter>
                   </>
@@ -628,7 +636,7 @@ function BottomBar() {
                   )})
                   :
                   <div className="">
-                    <p className="text-center text-[14px]">No dates scheduled</p>
+                    <p className="text-center text-[14px]">No dates scheduled yet</p>
                   </div>
               )}
             <DialogContent>
@@ -662,14 +670,13 @@ function BottomBar() {
                   />
                 </div>
                 <DialogFooter className="mt-7">
-                  <DialogClose>
+                  
                     <button
                       type="submit"
                       className="w-full text-myForeground bg-green-700 rounded border-none outline-none px-3 py-2 text-[15px]"
                       >
-                      {scheduleLoading ? <Loading classNameColor="border-t-myForeground" classNameSize="w-[30px] h-[30px]"/> : 'Save'}
+                       {scheduleLoading ? <Loading classNameColor="border-t-myForeground" classNameSize="w-[30px] h-[30px]"/> : 'Save'}
                     </button>
-                  </DialogClose>
                 </DialogFooter>
               </form>
             </DialogContent>
