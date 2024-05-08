@@ -71,7 +71,7 @@ function TopBar() {
 
       const { data: topData, error: topError } = await supabase
         .from("dates")
-        .select("date_name, rating, user_id, id")
+        .select("date_name, rating, user_id, id, relationship_status")
         .eq("user_id", userData?.user?.id)
         .order("rating", { ascending: false })
         .is("is_seeing", true)
@@ -110,8 +110,9 @@ function TopBar() {
   }, []);
 
   useEffect(() => {
+    dateListen()
     reactionListen();
-  }, [supabase, emojiData, setEmojiData]);
+  }, [supabase, topData, setTopData, emojiData, setEmojiData]);
 
     async function reactionListen() {
       const channel = supabase
@@ -128,6 +129,31 @@ function TopBar() {
           (payload) => {
             if (emojiData) {
               setEmojiData(payload.new as ReactionDataProps);
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+
+    async function dateListen() {
+      const channel = supabase
+        .channel("date changes")
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "dates",
+            // Only care about dates where the user_id matches the user's id
+            filter: `user_id=eq.${userID}`,
+          },
+          (payload) => {
+            if (topData) {
+              setTopData(payload.new as DateDataProps[]);
             }
           }
         )
@@ -239,6 +265,9 @@ function TopBar() {
               selectedEmoji={selectedEmoji}
               setSelectedEmoji={setSelectedEmoji}
             />
+          </div>
+          <div>
+            <p className="bg-myAccent text-darkText py-1 px-3 rounded-full text-[12px] w-fit">{topData[0]?.relationship_status}</p>
           </div>
           <div className="mt-auto">
             {topData?.map((data) => {
