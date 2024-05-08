@@ -18,7 +18,7 @@ function SubmitButton({
       {loading ? (
         <Loading
           classNameColor="border-t-myForeground"
-          classNameSize="w-[20px] h-[20px]"
+          classNameSize="w-[25px] h-[25px]"
         />
       ) : (
         title

@@ -27,6 +27,8 @@ function TopBar() {
   const [emojiDialogOpen, setEmojiDialogOpen] = useState<boolean>(false);
   const [emojiLoading, setEmojiLoading] = useState<boolean>(false);
 
+  const [emojiData, setEmojiData] = useState<ReactionDataProps | undefined>();
+
   const supabase = createClient();
   const { toast } = useToast();
 
@@ -97,6 +99,7 @@ function TopBar() {
       if (reactionError) {
         console.log(reactionError.message);
       } else {
+        setEmojiData(reactionData[0]);
         setSelectedEmoji(reactionData[0]?.reaction);
       }
     }
@@ -106,30 +109,34 @@ function TopBar() {
     getUserData();
   }, []);
 
-  //   async function reactionListen() {
-  //     const channel = supabase
-  //       .channel("reaction changes")
-  //       .on(
-  //         "postgres_changes",
-  //         {
-  //           event: "*",
-  //           schema: "public",
-  //           table: "reactions",
-  //           // Only care about dates where the user_id matches the user's id
-  //         //   filter: `user_id=eq.${userID}`,
-  //         },
-  //         (payload) => {
-  //           if (selectedEmoji) {
-  //             setSelectedEmoji(payload.new);
-  //           }
-  //         }
-  //       )
-  //       .subscribe();
+  useEffect(() => {
+    reactionListen();
+  }, [supabase, emojiData, setEmojiData]);
 
-  //     return () => {
-  //       supabase.removeChannel(channel);
-  //     };
-  //   }
+    async function reactionListen() {
+      const channel = supabase
+        .channel("reaction changes")
+        .on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "reactions",
+            // Only care about dates where the user_id matches the user's id
+            filter: `user_id=eq.${userID}`,
+          },
+          (payload) => {
+            if (emojiData) {
+              setEmojiData(payload.new as ReactionDataProps);
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
 
   async function handleAddReaction(e: React.FormEvent) {
     e.preventDefault();
@@ -141,9 +148,11 @@ function TopBar() {
         title: "Sorry, you must select a reaction",
       });
     } else {
-      const { error } = await supabase.from("reactions").insert({
+      const { data, error } = await supabase.from("reactions").upsert({
+        user_id: userID,
         reaction: selectedEmoji,
-      });
+      })
+      .select()
 
       if (error) {
         toast({
@@ -156,67 +165,7 @@ function TopBar() {
           description: "Reaction added successfully!",
         });
 
-        // setEmojiDialogOpen(false);
-      }
-    }
-
-    setEmojiLoading(false);
-  }
-
-  async function handleUpdateReaction(e: React.FormEvent) {
-    e.preventDefault();
-
-    setEmojiLoading(true);
-
-    if (!selectedEmoji) {
-      toast({
-        title: "Sorry, you must select a reaction",
-      });
-    } else {
-      const { error } = await supabase.from("reactions").update({
-        reaction: selectedEmoji,
-      }).eq('user_id', userID)
-
-      if (error) {
-        toast({
-          title: "Whoops! Something went wrong",
-          description: error.message,
-        });
-      } else {
-        toast({
-          title: "Success!",
-          description: "Reaction added successfully!",
-        });
-
-        // setEmojiDialogOpen(false);
-      }
-    }
-
-    setEmojiLoading(false);
-  }
-
-  async function handleDeleteReaction() {
-    setEmojiLoading(true);
-
-    if (!selectedEmoji) {
-      toast({
-        title: "Sorry, you must select a reaction",
-      });
-    } else {
-      const { error } = await supabase.from("reactions").delete().eq('user_id', userID)
-
-      if (error) {
-        toast({
-          title: "Whoops! Something went wrong",
-          description: error.message,
-        });
-      } else {
-        toast({
-          title: "Success!",
-          description: "Reaction added successfully!",
-        });
-
-        // setEmojiDialogOpen(false);
+        setEmojiData(data[0])
       }
     }
 
@@ -284,10 +233,9 @@ function TopBar() {
           <div className="flex justify-between items-center">
             <Header3 title="Top Date" />
             <Emoji
-              updateSubmit={handleUpdateReaction}
+              emojiData={emojiData}
               emojiLoading={emojiLoading}
               handleSubmit={handleAddReaction}
-              handleDelete={handleDeleteReaction}
               selectedEmoji={selectedEmoji}
               setSelectedEmoji={setSelectedEmoji}
             />

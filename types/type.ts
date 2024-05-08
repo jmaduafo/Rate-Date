@@ -51,7 +51,7 @@ export type UserDataProps = {
 }
 
 export type ReactionDataProps = {
-    id: string;
+    id?: string;
     reaction?: string;
     user_id: string;
 
