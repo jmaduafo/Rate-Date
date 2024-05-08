@@ -266,8 +266,8 @@ function TopBar() {
               setSelectedEmoji={setSelectedEmoji}
             />
           </div>
-          <div>
-            <p className="bg-myAccent text-darkText py-1 px-3 rounded-full text-[12px] w-fit">{topData[0]?.relationship_status}</p>
+          <div className="mt-1">
+            <p className="bg-myAccent text-darkText py-[3px] px-3 rounded-full text-[11px] w-fit">{topData[0]?.relationship_status}</p>
           </div>
           <div className="mt-auto">
             {topData?.map((data) => {

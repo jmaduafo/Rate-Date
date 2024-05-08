@@ -53,8 +53,14 @@ function BottomBar() {
   // FOR SCHEDULING AN UPCOMING DATE
   const [scheduleName, setScheduleName] = useState<string | undefined>("");
   const [scheduleDate, setScheduleDate] = useState<string | undefined>("");
-  const [updateScheduleName, setUpdateScheduleName] = useState<string | undefined>("");
-  const [updateScheduleDate, setUpdateScheduleDate] = useState<string | undefined>("");
+  const [scheduleID, setScheduleID] = useState<string | undefined>("");
+
+  const [updateScheduleName, setUpdateScheduleName] = useState<
+    string | undefined
+  >("");
+  const [updateScheduleDate, setUpdateScheduleDate] = useState<
+    string | undefined
+  >("");
 
   const [scheduleLoading, setScheduleLoading] = useState<boolean>(false);
 
@@ -64,7 +70,7 @@ function BottomBar() {
   const [updateSchedule, setUpdateSchedule] = useState<boolean>(false);
 
   const [userID, setUserID] = useState<string | undefined>("");
-  const [ open, setOpen ] = useState(false)
+  const [open, setOpen] = useState(false);
 
   const listHeaders = [
     {
@@ -151,13 +157,13 @@ function BottomBar() {
     }
   }
 
-  async function schedulesListen() {
+  async function schedulesInsertListen() {
     const channel = supabase
       .channel("schedule changes")
       .on(
         "postgres_changes",
         {
-          event: "*",
+          event: "INSERT",
           schema: "public",
           table: "schedules",
           // Only care about dates where the user_id matches the user's id
@@ -165,7 +171,57 @@ function BottomBar() {
         },
         (payload) => {
           if (schedulesList) {
-            setSchedulesList([...schedulesList, payload.new as DateDataProps]);
+            setSchedulesList([...schedulesList, payload.old as DateDataProps]);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }
+
+  async function schedulesDeleteListen() {
+    const channel = supabase
+      .channel("schedule changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "schedules",
+          // Only care about dates where the user_id matches the user's id
+          filter: `user_id=eq.${userID}`,
+        },
+        (payload) => {
+          if (schedulesList) {
+            setSchedulesList([...schedulesList, payload.old as DateDataProps]);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }
+
+  async function schedulesUpdateListen() {
+    const channel = supabase
+      .channel("schedule changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "schedules",
+          // Only care about dates where the user_id matches the user's id
+          filter: `user_id=eq.${userID}`,
+        },
+        (payload) => {
+          if (schedulesList) {
+            setSchedulesList([...schedulesList, payload.old as DateDataProps]);
           }
         }
       )
@@ -207,7 +263,9 @@ function BottomBar() {
   }, []);
 
   useEffect(() => {
-    schedulesListen();
+    schedulesInsertListen();
+    schedulesUpdateListen();
+    schedulesDeleteListen();
     datesListen();
   }, [
     userID,
@@ -220,15 +278,13 @@ function BottomBar() {
 
   function checkOpen() {
     if (!open) {
-      setUpdateSchedule(false)
+      setUpdateSchedule(false);
     }
   }
 
   useEffect(() => {
-    checkOpen()
-  }, [
-    open
-  ]);
+    checkOpen();
+  }, [open]);
 
   // INSERT, UPDATE, DELETE REQUESTS
 
@@ -281,28 +337,58 @@ function BottomBar() {
   }
 
   function updateScheduleTrue() {
-    setUpdateSchedule(true)
+    setUpdateSchedule(true);
 
-    setUpdateScheduleName(selectedSchedule?.date_name)
-    setUpdateScheduleDate(selectedSchedule?.date_schedule
-      ? selectedSchedule?.date_schedule?.toString().split(" ").join("T").split("+")[0]
-      : undefined)
+    setUpdateScheduleName(selectedSchedule?.date_name);
+    setUpdateScheduleDate(
+      selectedSchedule?.date_schedule
+        ? selectedSchedule?.date_schedule
+            ?.toString()
+            .split(" ")
+            .join("T")
+            .split("+")[0]
+        : undefined
+    );
+  }
+  
+  async function handleDeleteSchedule() {
+    
+    setScheduleLoading(true);
+    const { error } = await supabase
+      .from("schedules")
+      .delete()
+      .eq("id", scheduleID);
+
+    if (error) {
+      toast({
+        title: "Whoops! An error occurred",
+        description: error.message,
+      });
+    } else {
+      toast({
+        title: "Success!",
+        description: `Your date was deleted successfully!`,
+      });
+    }
   }
 
   async function handleUpdateSchedule(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!scheduleDate || !scheduleName) {
+    if (!updateScheduleDate || !updateScheduleName) {
       toast({
         title: "Entries must not be left empty",
         description: "Please fill out all fields above",
       });
     } else {
       setScheduleLoading(true);
-      const { error } = await supabase.from("schedules").update({
-        date_name: scheduleName,
-        date_schedule: scheduleDate,
-      });
+      const { error } = await supabase
+        .from("schedules")
+        .update({
+          date_name: updateScheduleName,
+          date_schedule: updateScheduleDate,
+        })
+        .eq("id", scheduleID);
 
       if (error) {
         toast({
@@ -312,15 +398,13 @@ function BottomBar() {
       } else {
         toast({
           title: "Success!",
-          description: "Date was updated successfully!",
+          description: `Your date with ${selectedSchedule?.date_name} was updated successfully!`,
         });
       }
 
       setScheduleLoading(false);
     }
   }
-
-
 
   return (
     <div className="md:mt-8 gap-6 flex md:flex-row flex-col">
@@ -746,7 +830,7 @@ function BottomBar() {
                   // when the output is less than 0 and not appear if greater than 0
                   date.date_schedule &&
                     futureTimeFromNow(date.date_schedule) <= 0 ? (
-                    <div className="mb-3 pr-3" key={date.id}>
+                    <div className="mb-3 pr-3" key={date.id} onClick={() => setScheduleID(date.id)}>
                       <DialogTrigger
                         onClick={() => setSelectedSchedule(date)}
                         asChild
@@ -800,12 +884,18 @@ function BottomBar() {
                   <DialogFooter>
                     <div className="flex gap-3 items-center">
                       <button
-                        onClick={() => selectedSchedule?.id && updateScheduleTrue()}
+                        onClick={() =>
+                          selectedSchedule?.id && updateScheduleTrue()
+                        }
                         className="hover:opacity-70 duration-500 text-darkText bg-myForeground text-[13px] px-5 py-2 rounded-lg border-none outline-none"
                       >
                         Update
                       </button>
-                      <button className="hover:opacity-70 duration-500 text-destructive-foreground bg-destructive text-[13px] px-5 py-2 rounded-lg border-none outline-none">
+                      <button
+                        onClick={handleDeleteSchedule
+                        }
+                        className="hover:opacity-70 duration-500 text-destructive-foreground bg-destructive text-[13px] px-5 py-2 rounded-lg border-none outline-none"
+                      >
                         Delete
                       </button>
                     </div>
@@ -861,7 +951,6 @@ function BottomBar() {
                         >
                           Back
                         </button>
-
                       </div>
                     </DialogFooter>
                   </form>
