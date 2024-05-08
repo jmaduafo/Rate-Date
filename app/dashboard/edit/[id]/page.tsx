@@ -86,7 +86,6 @@ function DashboardEdit() {
       !meetCute ||
       !status ||
       !status.length ||
-      !isStillSeeing ||
       !duration ||
       !unitOfDuration
     ) {

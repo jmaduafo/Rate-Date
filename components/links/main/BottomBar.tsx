@@ -53,6 +53,9 @@ function BottomBar() {
   // FOR SCHEDULING AN UPCOMING DATE
   const [scheduleName, setScheduleName] = useState<string | undefined>("");
   const [scheduleDate, setScheduleDate] = useState<string | undefined>("");
+  const [updateScheduleName, setUpdateScheduleName] = useState<string | undefined>("");
+  const [updateScheduleDate, setUpdateScheduleDate] = useState<string | undefined>("");
+
   const [scheduleLoading, setScheduleLoading] = useState<boolean>(false);
 
   const [selectedSchedule, setSelectedSchedule] = useState<
@@ -220,7 +223,7 @@ function BottomBar() {
       setUpdateSchedule(false)
     }
   }
-  
+
   useEffect(() => {
     checkOpen()
   }, [
@@ -277,19 +280,13 @@ function BottomBar() {
     }
   }
 
-  async function updateScheduleTrue(id: string) {
+  function updateScheduleTrue() {
     setUpdateSchedule(true)
 
-    const { data, error } = await supabase.from('schedules').select().eq('id', id)
-
-    if (error) {
-      console.log(error.message)
-    } else {
-      setScheduleName(data[0]?.date_name)
-      setScheduleDate(data[0]?.date_schedule
-        ? data[0]?.date_schedule.split(" ").join("T").split("+")[0]
-        : undefined)
-    }
+    setUpdateScheduleName(selectedSchedule?.date_name)
+    setUpdateScheduleDate(selectedSchedule?.date_schedule
+      ? selectedSchedule?.date_schedule?.toString().split(" ").join("T").split("+")[0]
+      : undefined)
   }
 
   async function handleUpdateSchedule(e: React.FormEvent) {
@@ -685,7 +682,7 @@ function BottomBar() {
             <DialogContent>
               <form onSubmit={handleAddDateSchedule}>
                 <DialogHeader className="mb-5">
-                  <Header4 title="Record a Date" />
+                  <Header4 title="Record a Future Date" />
                 </DialogHeader>
                 <div className="mb-3">
                   <label className="mb-2" htmlFor="dateName">
@@ -803,7 +800,7 @@ function BottomBar() {
                   <DialogFooter>
                     <div className="flex gap-3 items-center">
                       <button
-                        onClick={() => selectedSchedule?.id && updateScheduleTrue(selectedSchedule?.id)}
+                        onClick={() => selectedSchedule?.id && updateScheduleTrue()}
                         className="hover:opacity-70 duration-500 text-darkText bg-myForeground text-[13px] px-5 py-2 rounded-lg border-none outline-none"
                       >
                         Update
@@ -825,8 +822,8 @@ function BottomBar() {
                         id="dateName"
                         type="text"
                         placeholder="John"
-                        value={scheduleName}
-                        onChange={(e) => setScheduleName(e.target.value)}
+                        value={updateScheduleName}
+                        onChange={(e) => setUpdateScheduleName(e.target.value)}
                         className="text-darkText px-3 py-1 w-full border-none outline-none rounded text-[14px]"
                       />
                     </div>
@@ -837,8 +834,8 @@ function BottomBar() {
                       <input
                         id="schedule"
                         type="datetime-local"
-                        value={scheduleDate}
-                        onChange={(e) => setScheduleDate(e.target.value)}
+                        value={updateScheduleDate}
+                        onChange={(e) => setUpdateScheduleDate(e.target.value)}
                         className="text-darkText px-3 py-1 w-full border-none outline-none rounded text-[14px]"
                       />
                     </div>

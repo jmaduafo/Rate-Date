@@ -76,7 +76,7 @@ function DashboardCreate() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!dateName || !age || !desc || !meetCute || !status || !status.length || !isStillSeeing || !duration || !unitOfDuration) {
+    if (!dateName || !age || !desc || !meetCute || !status || !status.length || !duration || !unitOfDuration) {
       toast({
         title: "Whoops! You left some entries empty",
         description: "Please fill in the starred entries accordingly",
