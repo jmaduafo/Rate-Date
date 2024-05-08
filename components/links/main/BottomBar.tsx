@@ -215,6 +215,18 @@ function BottomBar() {
     setSchedulesList,
   ]);
 
+  function checkOpen() {
+    if (!open) {
+      setUpdateSchedule(false)
+    }
+  }
+  
+  useEffect(() => {
+    checkOpen()
+  }, [
+    open
+  ]);
+
   // INSERT, UPDATE, DELETE REQUESTS
 
   // MANAGES DELETION OF A DATE
@@ -277,8 +289,6 @@ function BottomBar() {
       setScheduleDate(data[0]?.date_schedule
         ? data[0]?.date_schedule.split(" ").join("T").split("+")[0]
         : undefined)
-      
-      {!open && setUpdateSchedule(false)}
     }
   }
 
