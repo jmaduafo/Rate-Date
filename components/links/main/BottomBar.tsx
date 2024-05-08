@@ -163,7 +163,7 @@ function BottomBar() {
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "*",
           schema: "public",
           table: "schedules",
           // Only care about dates where the user_id matches the user's id
@@ -171,8 +171,9 @@ function BottomBar() {
         },
         (payload) => {
           if (schedulesList) {
-            setSchedulesList([...schedulesList, payload.old as DateDataProps]);
+            setSchedulesList([...schedulesList, payload.new as DateDataProps]);
           }
+          console.log(payload)
         }
       )
       .subscribe();
@@ -188,7 +189,7 @@ function BottomBar() {
       .on(
         "postgres_changes",
         {
-          event: "UPDATE",
+          event: "DELETE",
           schema: "public",
           table: "schedules",
           // Only care about dates where the user_id matches the user's id
@@ -196,7 +197,9 @@ function BottomBar() {
         },
         (payload) => {
           if (schedulesList) {
-            setSchedulesList([...schedulesList, payload.old as DateDataProps]);
+            const filter = schedulesList?.filter(sch => sch.id === scheduleID)
+            setSchedulesList(filter);
+            console.log(payload)
           }
         }
       )
@@ -264,8 +267,8 @@ function BottomBar() {
 
   useEffect(() => {
     schedulesInsertListen();
-    schedulesUpdateListen();
-    schedulesDeleteListen();
+    // schedulesUpdateListen();
+    // schedulesDeleteListen();
     datesListen();
   }, [
     userID,
