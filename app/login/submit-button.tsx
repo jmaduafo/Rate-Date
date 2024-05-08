@@ -15,7 +15,7 @@ export function SubmitButton({ children, ...props }: Props) {
 
   return (
     <button {...props} type="submit" aria-disabled={pending} className="rounded-xl w-full bg-darkText text-myForeground font-medium outline-none py-2">
-      {isPending ? <Loading/> : children}
+      {isPending ? <Loading classNameColor="border-t-myForeground" classNameSize="w-[20px] h-[20px]"/> : children}
     </button>
   );
 }

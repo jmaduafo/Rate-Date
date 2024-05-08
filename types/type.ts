@@ -49,3 +49,10 @@ export type UserDataProps = {
     pronouns?: string | null;
     image?: string | null;
 }
+
+export type ReactionDataProps = {
+    id: string;
+    reaction?: string;
+    user_id: string;
+
+}

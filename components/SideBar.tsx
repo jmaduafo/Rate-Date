@@ -160,7 +160,7 @@ function SideBar() {
         {/* LOGOUT BUTTON */}
         <div onClick={signOut} className={`group duration-500 md:py-3 md:px-8 md:mb-2 flex md:flex-row md:items-center md:justify-start md:gap-6 flex-col justify-center items-center cursor-pointer`}>
             <div className={`'md:text-darkText group-hover:text-lightText group-hover:md:text-darkText md:text-darkText60 text-lightText60 duration-500'}`}>
-                {logOutLoading ? <Loading classNameColor='border-t-darkText60' classNameSize="w-[20px] h-[20px]"/> : <LogoutIcon className='xs:w-[5.5vw] sm:w-[4vw] md:w-[20px] w-[7vw]'/>}
+                {logOutLoading ? <Loading classNameColor='border-t-darkText60' classNameSize="w-[10px] h-[10px]"/> : <LogoutIcon className='xs:w-[5.5vw] sm:w-[4vw] md:w-[20px] w-[7vw]'/>}
             </div>
             <div className=''>
                 <p className={`md:text-darkText text-lightText group-hover:md:text-darkText group-hover:text-lightText md:text-darkText60 text-lightText60 duration-500 md:text-[15px] text-[9px]`}>Logout</p>
