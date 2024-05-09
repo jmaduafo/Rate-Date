@@ -39,13 +39,21 @@ export function scheduleFormat(sch: Date) {
     const scheduleDate = months[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear()
 
     let minutes;
+    let hours;
+
+    if (date.getHours() < 10) {
+        hours = '0' + date.getHours()
+    } else {
+        hours = date.getHours()
+    }
 
     if (date.getMinutes() < 10) {
         minutes = '0' + date.getMinutes()
     } else {
         minutes = date.getMinutes()
     }
-    const scheduleTime = date.getHours() + ':' + minutes
+
+    const scheduleTime = hours + ':' + minutes
 
     return scheduleDate + ' ' + scheduleTime
 }

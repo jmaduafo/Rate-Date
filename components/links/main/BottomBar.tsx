@@ -155,6 +155,7 @@ function BottomBar() {
         setDateLoading(false);
       } else {
         setDatesList(dateData);
+        setFilteredDatesList(dateData);
         setDateLoading(false);
       }
     }
