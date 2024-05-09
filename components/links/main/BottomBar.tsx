@@ -7,6 +7,7 @@ import { FireIcon } from "@heroicons/react/24/solid";
 import {
   AdjustmentsHorizontalIcon,
   PlusIcon,
+  MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
@@ -25,7 +26,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from "@/components/ui/dialog";
 
 import Header6 from "@/components/Header6";
@@ -43,6 +43,7 @@ function BottomBar() {
   const [selectedDate, setSelectedDate] = useState<DateDataProps | undefined>();
   // GETS ALL THE DATES DATA AND RENDERS INTO A TABLE
   const [datesList, setDatesList] = useState<DateDataProps[] | undefined>();
+  const [filteredDatesList, setFilteredDatesList] = useState<DateDataProps[] | undefined>();
   const [dateLoading, setDateLoading] = useState<boolean>(false);
 
   const [schedulesList, setSchedulesList] = useState<
@@ -61,6 +62,8 @@ function BottomBar() {
   const [updateScheduleDate, setUpdateScheduleDate] = useState<
     string | undefined
   >("");
+
+  const [searchValue, setSearchValue] = useState("");
 
   const [scheduleLoading, setScheduleLoading] = useState<boolean>(false);
 
@@ -173,7 +176,7 @@ function BottomBar() {
           if (schedulesList) {
             setSchedulesList([...schedulesList, payload.new as DateDataProps]);
           }
-          console.log(payload)
+          console.log(payload);
         }
       )
       .subscribe();
@@ -197,9 +200,11 @@ function BottomBar() {
         },
         (payload) => {
           if (schedulesList) {
-            const filter = schedulesList?.filter(sch => sch.id === scheduleID)
+            const filter = schedulesList?.filter(
+              (sch) => sch.id === scheduleID
+            );
             setSchedulesList(filter);
-            console.log(payload)
+            console.log(payload);
           }
         }
       )
@@ -308,6 +313,20 @@ function BottomBar() {
     }
   }
 
+  function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
+    setSearchValue(e.target.value);
+    console.log(searchValue)
+
+    setFilteredDatesList(
+      datesList?.filter(
+        (date) =>
+          date?.date_name?.toLowerCase()?.includes(searchValue.toLowerCase()) ||
+          date?.short_desc?.toLowerCase()?.includes(searchValue.toLowerCase())
+      )
+    );
+    
+  }
+
   async function handleAddDateSchedule(e: React.FormEvent) {
     e.preventDefault();
 
@@ -353,9 +372,8 @@ function BottomBar() {
         : undefined
     );
   }
-  
+
   async function handleDeleteSchedule() {
-    
     setScheduleLoading(true);
     const { error } = await supabase
       .from("schedules")
@@ -414,18 +432,30 @@ function BottomBar() {
       {/* DATES TABLE */}
       <div className="flex-[5]">
         <div className="flex gap-4">
+          {/* ADD DATE BUTTON */}
           <Link href={"/dashboard/create"}>
             <PrimaryButton className="flex items-center gap-2 h-full">
               <PlusIcon className="w-4" />
               <p className="text-[13px]">Add a Date</p>
             </PrimaryButton>
           </Link>
+          {/* FILTER BY BUTTON */}
           <SecondaryButton className="flex justify-center items-center px-2">
             <AdjustmentsHorizontalIcon strokeWidth={1} className="w-6" />
           </SecondaryButton>
         </div>
+        {/* SEARCH BAR */}
+        <div className="w-full mt-3 flex gap-2 py-2 px-3 bg-myForeground rounded-full">
+          <MagnifyingGlassIcon className="w-5 text-darkText" strokeWidth={1} />
+          <input
+            value={searchValue}
+            onChange={handleSearch}
+            placeholder="Search"
+            className="w-full text-[14px] bg-transparent border-none outline-none text-darkText"
+          />
+        </div>
         <Dialog>
-          <Card className="mt-5 text-darkText">
+          <Card className="mt-3 text-darkText">
             <div>
               {datesList && datesList?.length ? (
                 <>
@@ -475,7 +505,7 @@ function BottomBar() {
                 </div>
               ) : datesList.length ? (
                 <div className=" mt-2 text-darkText max-h-[45vh] overflow-y-auto">
-                  {datesList.map((date) => {
+                  {filteredDatesList?.map((date) => {
                     return (
                       <DialogTrigger
                         key={date.id}
@@ -517,6 +547,12 @@ function BottomBar() {
                   <p className="text-center text-[14px]">No dates added yet</p>
                 </div>
               )}
+
+              {!filteredDatesList || !filteredDatesList?.length && 
+                <div className="my-8 text-darkText">
+                  <p className="text-center text-[14px]">No listed date applies to the search</p>
+                </div> }
+
               {/* DATES INFORMATION DIALOG POP UP */}
               <DialogContent>
                 <DialogHeader>
@@ -833,7 +869,11 @@ function BottomBar() {
                   // when the output is less than 0 and not appear if greater than 0
                   date.date_schedule &&
                     futureTimeFromNow(date.date_schedule) <= 0 ? (
-                    <div className="mb-3 pr-3" key={date.id} onClick={() => setScheduleID(date.id)}>
+                    <div
+                      className="mb-3 pr-3"
+                      key={date.id}
+                      onClick={() => setScheduleID(date.id)}
+                    >
                       <DialogTrigger
                         onClick={() => setSelectedSchedule(date)}
                         asChild
@@ -895,8 +935,7 @@ function BottomBar() {
                         Update
                       </button>
                       <button
-                        onClick={handleDeleteSchedule
-                        }
+                        onClick={handleDeleteSchedule}
                         className="hover:opacity-70 duration-500 text-destructive-foreground bg-destructive text-[13px] px-5 py-2 rounded-lg border-none outline-none"
                       >
                         Delete
