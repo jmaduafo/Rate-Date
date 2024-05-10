@@ -36,13 +36,13 @@ function SideBar() {
             icon: <HomeIcon className='xs:w-[5.5vw] sm:w-[4vw] md:w-[20px] w-[7vw]'/>,
             link: '/dashboard'
         },
+        // {
+        //     name: 'Charts',
+        //     icon: <ChartBarIcon className='xs:w-[5.5vw] sm:w-[4vw] md:w-[20px] w-[7vw]'/>,
+        //     link: '/charts'
+        // },
         {
-            name: 'Charts',
-            icon: <ChartBarIcon className='xs:w-[5.5vw] sm:w-[4vw] md:w-[20px] w-[7vw]'/>,
-            link: '/charts'
-        },
-        {
-            name: 'Wishlist',
+            name: 'My Corner',
             icon: <QueueListIcon className='xs:w-[5.5vw] sm:w-[4vw] md:w-[20px] w-[7vw]'/>,
             link: '/wishlist'
         },
@@ -139,7 +139,7 @@ function SideBar() {
             </div>
         </div>
     </Link>
-    <nav className='md:mt-[8rem] md:block w-full flex flex-row justify-evenly items-center'>
+    <nav className='md:mt-[10rem] md:block w-full flex flex-row justify-evenly items-center'>
         {navigations.map(nav => {
             return (
                 <Link key={nav.name} href={nav.link}>
@@ -167,14 +167,10 @@ function SideBar() {
             </div>
         </div>
     </nav>
-    <div className='mt-[6rem]'>
+    <div className='md:mt-[8rem]'>
         <LineBreak/>
-        <div onClick={() => {
-            toast({
-                title: "Uh oh! Something went wrong.",
-                description: "There was a problem with your request.",
-            })
-        }} className='md:flex items-center gap-6 hidden md:py-3 md:px-8 mt-3 cursor-pointer'>
+        {/* SETTINGS BUTTON */}
+        <div onClick={() => {}} className='md:flex items-center gap-6 hidden md:py-3 md:px-8 mt-3 cursor-pointer'>
             <Cog6ToothIcon className='w-[20px] text-darkText'/>
             <p className='text-[15px]'>Setting</p>
         </div>

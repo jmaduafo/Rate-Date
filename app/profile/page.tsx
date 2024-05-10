@@ -1,11 +1,11 @@
 import React from 'react'
-import TopBar from '@/components/links/profile/TopBar'
+import MainProfile from '@/components/links/profile/MainProfile'
 
 
 function Profile() {
   return (
     <div>
-      <TopBar/>
+      <MainProfile/>
     </div>
   )
 }

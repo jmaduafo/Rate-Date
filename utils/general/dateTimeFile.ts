@@ -34,6 +34,15 @@ export function futureTimeFromNow(endDate: Date) {
     return days
 }
 
+export function futureHoursFromNow(endDate: Date) {
+    var now = moment(new Date());
+    var end = moment(endDate)
+    var duration = moment.duration(now.diff(end));
+    var hours = duration.asHours();
+
+    return hours
+}
+
 export function scheduleFormat(sch: Date) {
     const date = new Date(sch)
     const scheduleDate = months[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear()

@@ -35,9 +35,11 @@ import { UserProp, DateDataProps } from "@/types/type";
 import {
   futureTimeFromNow,
   scheduleFormat,
+  futureHoursFromNow
 } from "@/utils/general/dateTimeFile";
 import Loading from "@/components/Loading";
 import { checkForS } from "@/utils/general/isS";
+import { useRouter } from "next/navigation";
 
 function BottomBar() {
   // HANDLES GETTING THE DIALOG FOR ONE INDIVIDUAL DATE
@@ -101,6 +103,7 @@ function BottomBar() {
 
   const supabase = createClient();
   const { toast } = useToast();
+  const router = useRouter()
 
   // GETS LIST OF DATES ACCORDING TO THE AUTH ID IN ORDER OF WHEN DATE WAS CREATED
 
@@ -113,7 +116,8 @@ function BottomBar() {
     } = await supabase.auth.getUser();
 
     if (error) {
-      console.log(error.message);
+      router.push('/login')
+      router.refresh()
     } else {
       // GETS THE SCHEDULE DATA
       const { data: scheduleData, error: scheduleError } = await supabase
@@ -141,7 +145,8 @@ function BottomBar() {
     } = await supabase.auth.getUser();
 
     if (error) {
-      console.log(error.message);
+      router.push('/login')
+      router.refresh()
     } else {
       setUserID(user?.id);
       // GETS THE DATE LIST DATA
@@ -871,36 +876,44 @@ function BottomBar() {
                   // when the output is less than 0 and not appear if greater than 0
                   date.date_schedule &&
                     futureTimeFromNow(date.date_schedule) <= 0 ? (
-                    <div
-                      className="mb-3 pr-3"
-                      key={date.id}
-                      onClick={() => setScheduleID(date.id)}
-                    >
-                      <DialogTrigger
-                        onClick={() => setSelectedSchedule(date)}
-                        asChild
+                      <div
+                        className="mb-3 pr-3"
+                        key={date.id}
+                        onClick={() => setScheduleID(date.id)}
                       >
-                        <div className="flex justify-between items-center w-full px-4 py-3 shadow-md rounded-2xl hover:bg-myBackgroundMuted cursor-pointer duration-500">
-                          <p className="text-[15px]">{date.date_name}</p>
-                          <p className="italic text-[10px] text-darkText60">
-                            in{" "}
-                            {date.date_schedule
-                              ? Math.round(
+                        <DialogTrigger
+                          onClick={() => setSelectedSchedule(date)}
+                          asChild
+                        >
+                          <div className="flex justify-between items-center w-full px-4 py-3 shadow-md rounded-2xl hover:bg-myBackgroundMuted cursor-pointer duration-500">
+                            <p className="text-[15px]">{date.date_name}</p>
+                            <p className="italic text-[10px] text-darkText60">
+                              in{" "}
+                              {date.date_schedule && futureTimeFromNow(date.date_schedule) <= -1
+                                ? Math.round(
+                                    Math.abs(
+                                      futureTimeFromNow(date.date_schedule)
+                                    )
+                                  ) + ' day' + checkForS(Math.round(
+                                    Math.abs(
+                                      futureTimeFromNow(date.date_schedule)
+                                    )
+                                  ))
+                                : Math.round(
                                   Math.abs(
-                                    futureTimeFromNow(date.date_schedule)
+                                    futureHoursFromNow(date.date_schedule)
                                   )
-                                ) + ' day' + checkForS(Math.round(
+                                ) + ' hour' + checkForS(Math.round(
                                   Math.abs(
-                                    futureTimeFromNow(date.date_schedule)
+                                    futureHoursFromNow(date.date_schedule)
                                   )
                                 ))
-                              : "- days"
-                            }
-                          </p>
-                        </div>
-                      </DialogTrigger>
-                    </div>
-                  ) : null
+                              }
+                            </p>
+                          </div>
+                        </DialogTrigger>
+                      </div>
+                    ) : null
                 );
               })
             ) : (
