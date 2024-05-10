@@ -37,6 +37,7 @@ import {
   scheduleFormat,
 } from "@/utils/general/dateTimeFile";
 import Loading from "@/components/Loading";
+import { checkForS } from "@/utils/general/isS";
 
 function BottomBar() {
   // HANDLES GETTING THE DIALOG FOR ONE INDIVIDUAL DATE
@@ -853,7 +854,7 @@ function BottomBar() {
           </Dialog>
         </div>
         <div className="max-h-[35vh] overflow-y-auto scrollbar">
-          {/* FULL SCHEDULE INFO DISPLAYING NAME AND DATE */}
+          {/* FULL SCHEDULE INFO DISPLAYING NAME AND RENDEZVOUS */}
           <Dialog open={open} onOpenChange={setOpen}>
             {upcomingLoading || !schedulesList ? (
               [0, 1, 2, 3, 4, 5].map((skeleton) => {
@@ -888,9 +889,13 @@ function BottomBar() {
                                   Math.abs(
                                     futureTimeFromNow(date.date_schedule)
                                   )
-                                )
-                              : "-"}{" "}
-                            days
+                                ) + ' day' + checkForS(Math.round(
+                                  Math.abs(
+                                    futureTimeFromNow(date.date_schedule)
+                                  )
+                                ))
+                              : "- days"
+                            }
                           </p>
                         </div>
                       </DialogTrigger>

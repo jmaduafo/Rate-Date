@@ -289,7 +289,7 @@ function DashboardEdit() {
     <div className="mb-6">
       {/* TOP HEADING */}
       <div className="text-darkText mb-8">
-        <Header2 title="Create a Date" />
+        <Header2 title="Edit Your Date" />
       </div>
       <form onSubmit={handleUpdate}>
         {/* DATE'S NAME OR NICKNAME */}
