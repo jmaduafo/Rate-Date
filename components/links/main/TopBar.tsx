@@ -14,6 +14,34 @@ import { getZodiac, getZodiacImage } from "@/utils/general/zodiacSign";
 import PrimaryButton from "@/components/PrimaryButton";
 import Emoji from "./Emoji";
 import { useToast } from "@/components/ui/use-toast";
+import {
+    BarChart,
+    Bar,
+    CartesianGrid,
+    XAxis,
+    YAxis,
+} from "recharts";
+
+// Goal: Use the schedules data from supabase backend to create a bar chart and style 
+
+// const App = () => {
+//     // Sample data
+//     const data = [
+//         { name: "Geeksforgeeks", students: 400 },
+//         { name: "Technical scripter", students: 700 },
+//         { name: "Geek-i-knack", students: 200 },
+//         { name: "Geek-o-mania", students: 1000 },
+//     ];
+ 
+//     return (
+//         <BarChart width={600} height={600} data={data}>
+//             <Bar dataKey="students" fill="green" />
+//             <CartesianGrid stroke="#ccc" />
+//             <XAxis dataKey="name" />
+//             <YAxis />
+//         </BarChart>
+//     );
+// };
 
 function TopBar() {
   const [chartLoading, setChartLoading] = useState(true);

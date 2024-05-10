@@ -20,6 +20,14 @@ export const relationStatus = [
         'innerText': 'Girlfriend'
     },
     {
+        'value': 'Husband',
+        'innerText': 'Husband'
+    },
+    {
+        'value': 'Wife',
+        'innerText': 'Wife'
+    },
+    {
         'value': 'Friend',
         'innerText': 'Friend'
     },
