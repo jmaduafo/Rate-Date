@@ -1,18 +1,23 @@
-import { createClient } from "@/utils/supabase/server";
+'use client'
+import { createClient } from "@/utils/supabase/client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default async function Index() {
-  // const canInitSupabaseClient = () => {
-  //   // This function is just for the interactive tutorial.
-  //   // Feel free to remove it once you have Supabase connected.
-  //   try {
-  //     createClient();
-  //     return true;
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // };
+  const supabase = createClient()
+  const router = useRouter()
 
-  // const isSupabaseConnected = canInitSupabaseClient();
+  useEffect(() => {
+    async function checkLoggedIn() {
+      const { error } = await supabase.auth.getUser()
+
+      if (!error) {
+        router.push('/dashboard')
+      }
+    }
+
+    checkLoggedIn()
+  }, [])
 
   return (
    <div>

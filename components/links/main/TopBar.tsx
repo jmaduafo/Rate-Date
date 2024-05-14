@@ -14,15 +14,11 @@ import { getZodiac, getZodiacImage } from "@/utils/general/zodiacSign";
 import PrimaryButton from "@/components/PrimaryButton";
 import Emoji from "./Emoji";
 import { useToast } from "@/components/ui/use-toast";
-import {
-    BarChart,
-    Bar,
-    CartesianGrid,
-    XAxis,
-    YAxis,
-} from "recharts";
+import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
+import Horoscope from "./Horoscope";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// Goal: Use the schedules data from supabase backend to create a bar chart and style 
+// Goal: Use the schedules data from supabase backend to create a bar chart and style
 
 // const App = () => {
 //     // Sample data
@@ -32,7 +28,7 @@ import {
 //         { name: "Geek-i-knack", students: 200 },
 //         { name: "Geek-o-mania", students: 1000 },
 //     ];
- 
+
 //     return (
 //         <BarChart width={600} height={600} data={data}>
 //             <Bar dataKey="students" fill="green" />
@@ -52,37 +48,13 @@ function TopBar() {
   const [userID, setUserID] = useState<string | null>("");
 
   const [selectedEmoji, setSelectedEmoji] = useState<string | undefined>("");
-  const [emojiDialogOpen, setEmojiDialogOpen] = useState<boolean>(false);
+  // const [emojiDialogOpen, setEmojiDialogOpen] = useState<boolean>(false);
   const [emojiLoading, setEmojiLoading] = useState<boolean>(false);
 
   const [emojiData, setEmojiData] = useState<ReactionDataProps | undefined>();
 
   const supabase = createClient();
   const { toast } = useToast();
-
-  async function fetchHoroscope(zodiac: string) {
-    try {
-      // const res = await fetch(`https://horoscope-app-api.vercel.app/api/v1/get-horoscope/daily?sign=${getZodiac(zodiac)}&day=TODAY`)
-      // const data = await res.json();
-
-      const URL = `https://aztro.sameerkumar.website/?sign=${getZodiac(
-        zodiac
-      )}&day=today`;
-      fetch(URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      })
-        .then((response) => response.json())
-        .then((data: any) => {
-          setHoroscope(data.description);
-        });
-    } catch (err: any) {
-      console.log(err.message);
-    }
-  }
 
   async function getUserData() {
     const { data: userData, error: userError } = await supabase.auth.getUser();
@@ -138,59 +110,61 @@ function TopBar() {
   }, []);
 
   useEffect(() => {
-    dateListen()
+    dateListen();
     reactionListen();
   }, [supabase, topData, setTopData, emojiData, setEmojiData]);
 
-    async function reactionListen() {
-      const channel = supabase
-        .channel("reaction changes")
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "reactions",
-            // Only care about dates where the user_id matches the user's id
-            filter: `user_id=eq.${userID}`,
-          },
-          (payload) => {
-            if (emojiData) {
-              setEmojiData(payload.new as ReactionDataProps);
-            }
+  console.log(horoscope)
+
+  async function reactionListen() {
+    const channel = supabase
+      .channel("reaction changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "reactions",
+          // Only care about dates where the user_id matches the user's id
+          filter: `user_id=eq.${userID}`,
+        },
+        (payload) => {
+          if (emojiData) {
+            setEmojiData(payload.new as ReactionDataProps);
           }
-        )
-        .subscribe();
+        }
+      )
+      .subscribe();
 
-      return () => {
-        supabase.removeChannel(channel);
-      };
-    }
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }
 
-    async function dateListen() {
-      const channel = supabase
-        .channel("date changes")
-        .on(
-          "postgres_changes",
-          {
-            event: "*",
-            schema: "public",
-            table: "dates",
-            // Only care about dates where the user_id matches the user's id
-            filter: `user_id=eq.${userID}`,
-          },
-          (payload) => {
-            if (topData) {
-              setTopData(payload.new as DateDataProps[]);
-            }
+  async function dateListen() {
+    const channel = supabase
+      .channel("date changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "dates",
+          // Only care about dates where the user_id matches the user's id
+          filter: `user_id=eq.${userID}`,
+        },
+        (payload) => {
+          if (topData) {
+            setTopData(payload.new as DateDataProps[]);
           }
-        )
-        .subscribe();
+        }
+      )
+      .subscribe();
 
-      return () => {
-        supabase.removeChannel(channel);
-      };
-    }
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }
 
   async function handleAddReaction(e: React.FormEvent) {
     e.preventDefault();
@@ -202,11 +176,13 @@ function TopBar() {
         title: "Sorry, you must select a reaction",
       });
     } else {
-      const { data, error } = await supabase.from("reactions").upsert({
-        user_id: userID,
-        reaction: selectedEmoji,
-      })
-      .select()
+      const { data, error } = await supabase
+        .from("reactions")
+        .upsert({
+          user_id: userID,
+          reaction: selectedEmoji,
+        })
+        .select();
 
       if (error) {
         toast({
@@ -219,7 +195,7 @@ function TopBar() {
           description: "Reaction added successfully!",
         });
 
-        setEmojiData(data[0])
+        setEmojiData(data[0]);
       }
     }
 
@@ -244,7 +220,7 @@ function TopBar() {
         )}
       </Card>
       {/* HOROSCOPE CARD */}
-      <Card className="flex-[1.5]">
+      <Card className="flex-[1.5] flex flex-col">
         <div className="flex justify-between items-center">
           <Header3 title="Daily Horoscope" />
           {zodiacData && zodiacData?.length ? (
@@ -263,12 +239,14 @@ function TopBar() {
             </div>
           )}
         </div>
-        {horoscope && horoscope.length ? (
+        {zodiacData &&
+        zodiacData[0].birthday &&
+        horoscope ? (
           // HOROSCOPE
-          <div className="">
-            {/* <p className="text-center px-6 text-[15px]">{horoscope}</p> */}
+          <div className="mt-auto pb-3 pl-16">
+            <Horoscope setHoroscope={setHoroscope} horoscope={horoscope} />
           </div>
-        ) : (
+        ) : zodiacData && !zodiacData[0].birthday ? (
           <div className="mt-9">
             <p className="text-center px-6 text-[15px]">
               Add your birthday when editing your profile to get your daily
@@ -277,6 +255,11 @@ function TopBar() {
             <div className="flex justify-center items-center mt-4">
               <PrimaryButton className="">Go To Profile</PrimaryButton>
             </div>
+          </div>
+        ) : (
+          <div className="mt-auto pb-3">
+            <Skeleton className="animate-skeleton h-5 w-full rounded" />
+            <Skeleton className="animate-skeleton h-5 w-full rounded mt-2" />
           </div>
         )}
       </Card>
@@ -295,7 +278,9 @@ function TopBar() {
             />
           </div>
           <div className="mt-1">
-            <p className="bg-myAccent text-darkText py-[3px] px-3 rounded-full text-[11px] w-fit">{topData[0]?.relationship_status}</p>
+            <p className="bg-myAccent text-darkText py-[3px] px-3 rounded-full text-[11px] w-fit">
+              {topData[0]?.relationship_status}
+            </p>
           </div>
           <div className="mt-auto">
             {topData?.map((data) => {
