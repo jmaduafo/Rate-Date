@@ -18,7 +18,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { createClient } from "@/utils/supabase/client";
 
-import { relationStatus, durationUnits } from "@/utils/general/createEditData";
+import { relationStatus, durationUnits, racialGroup } from "@/utils/general/createEditData";
 
 import Link from "next/link";
 import { useRouter, useParams } from "next/navigation";
@@ -44,6 +44,9 @@ function DashboardEdit() {
 
   const [status, setStatus] = useState<string | undefined>();
   const [otherStatus, setOtherStatus] = useState<string | undefined>();
+
+  const [ethnicity, setEthnicity] = useState<string | undefined>();
+  const [otherEthnicity, setOtherEthnicity] = useState<string | undefined>();
 
   const [duration, setDuration] = useState<string | undefined>();
   const [unitOfDuration, setUnitOfDuration] = useState<string | undefined>();
@@ -86,6 +89,8 @@ function DashboardEdit() {
       !meetCute ||
       !status ||
       !status.length ||
+      !ethnicity ||
+      !ethnicity.length ||
       !duration ||
       !unitOfDuration
     ) {
@@ -104,6 +109,7 @@ function DashboardEdit() {
           date_age: parseInt(age),
           is_seeing: isStillSeeing ? true : false,
           relationship_status: status === "Other" ? otherStatus : status,
+          ethnicity: ethnicity === "Other" ? otherEthnicity : ethnicity,
           first_meet: meetCute,
           duration_of_dating: duration,
           duration_metric: unitOfDuration,
@@ -194,15 +200,27 @@ function DashboardEdit() {
 
       // CHECKS THROUGH ARRAY TO SEE IF THE STATUS ENTERED IS INCLUDED IN THE ARRAY
       // IF NOT, CHECK THE VALUE OF 'OTHER' AND ADD THE STATUS TO THE 'OTHER STATUS' INPUT
-      const scout = relationStatus.find(
+      const relationshipScout = relationStatus.find(
         (status) => status.innerText === data[0]?.relationship_status
       );
 
-      if (!scout) {
+      if (!relationshipScout) {
         setStatus("Other");
         setOtherStatus(data[0]?.relationship_status);
       } else {
         setStatus(data[0]?.relationship_status);
+      }
+
+      // ETHNICITY
+      const ethnicityScout = racialGroup.find(
+        (group) => group.innerText === data[0]?.ethnicity
+      );
+
+      if (!ethnicityScout) {
+        setEthnicity("Other");
+        setOtherEthnicity(data[0]?.ethnicity);
+      } else {
+        setEthnicity(data[0]?.ethnicity);
       }
 
       // FUTURE DATES
@@ -431,6 +449,38 @@ function DashboardEdit() {
               </p>
             </div>
           </div>
+        </CreateEditCard>
+        {/* ETHNIC BACKGROUND */}
+        <CreateEditCard title="Ethnicity *">
+          <select
+            name=""
+            value={ethnicity}
+            onChange={(e) => setEthnicity(e.target.value)}
+            className="text-[14px] lg:w-[70%] md:w-[80%] w-full outline-none border-none rounded-lg py-2 px-5"
+          >
+            {racialGroup.map((stat) => {
+              return (
+                <option value={stat.value} key={stat.value}>
+                  {stat.innerText}
+                </option>
+              );
+            })}
+          </select>
+          {ethnicity === "Other" && (
+            <div className="mt-3">
+              <p className="text-[14px] text-darkText60 mb-1">
+                Type this person's ethnic background
+              </p>
+              <input
+                type="text"
+                name="ethnicity"
+                maxLength={30}
+                className="text-[14px] lg:w-[70%] md:w-[80%] w-full outline-none border-none rounded-lg py-2 px-5"
+                value={otherEthnicity}
+                onChange={(e) => setOtherEthnicity(e.target.value)}
+              />
+            </div>
+          )}
         </CreateEditCard>
         {/* RELATIONSHIP STATUS */}
         <CreateEditCard title="Relationship Status *">

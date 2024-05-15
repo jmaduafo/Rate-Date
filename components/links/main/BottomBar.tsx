@@ -35,18 +35,22 @@ import { UserProp, DateDataProps } from "@/types/type";
 import {
   futureTimeFromNow,
   scheduleFormat,
-  futureHoursFromNow
+  futureHoursFromNow,
 } from "@/utils/general/dateTimeFile";
 import Loading from "@/components/Loading";
 import { checkForS } from "@/utils/general/isS";
 import { useRouter } from "next/navigation";
+import { clearCachesByServerAction } from "@/utils/general/revalidatePath";
+import RealTimeSchedule from "./RealTimeSchedule";
 
 function BottomBar() {
   // HANDLES GETTING THE DIALOG FOR ONE INDIVIDUAL DATE
   const [selectedDate, setSelectedDate] = useState<DateDataProps | undefined>();
   // GETS ALL THE DATES DATA AND RENDERS INTO A TABLE
   const [datesList, setDatesList] = useState<DateDataProps[] | undefined>();
-  const [filteredDatesList, setFilteredDatesList] = useState<DateDataProps[] | undefined>();
+  const [filteredDatesList, setFilteredDatesList] = useState<
+    DateDataProps[] | undefined
+  >();
   const [dateLoading, setDateLoading] = useState<boolean>(false);
 
   const [schedulesList, setSchedulesList] = useState<
@@ -103,7 +107,7 @@ function BottomBar() {
 
   const supabase = createClient();
   const { toast } = useToast();
-  const router = useRouter()
+  const router = useRouter();
 
   // GETS LIST OF DATES ACCORDING TO THE AUTH ID IN ORDER OF WHEN DATE WAS CREATED
 
@@ -116,8 +120,8 @@ function BottomBar() {
     } = await supabase.auth.getUser();
 
     if (error) {
-      router.push('/login')
-      router.refresh()
+      router.push("/login");
+      router.refresh();
     } else {
       // GETS THE SCHEDULE DATA
       const { data: scheduleData, error: scheduleError } = await supabase
@@ -145,8 +149,8 @@ function BottomBar() {
     } = await supabase.auth.getUser();
 
     if (error) {
-      router.push('/login')
-      router.refresh()
+      router.push("/login");
+      router.refresh();
     } else {
       setUserID(user?.id);
       // GETS THE DATE LIST DATA
@@ -167,87 +171,35 @@ function BottomBar() {
     }
   }
 
-  async function schedulesInsertListen() {
-    const channel = supabase
-      .channel("schedule changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "schedules",
-          // Only care about dates where the user_id matches the user's id
-          filter: `user_id=eq.${userID}`,
-        },
-        (payload) => {
-          if (schedulesList) {
-            setSchedulesList([...schedulesList, payload.new as DateDataProps]);
-          }
-          console.log(payload);
-        }
-      )
-      .subscribe();
+  // function scheduleChannel() {
+  //   const channel = supabase
+  //     .channel("schedule changes")
+  //     .on(
+  //       "postgres_changes",
+  //       {
+  //         event: "*",
+  //         schema: "public",
+  //         table: "schedules",
+  //         // Only care about dates where the user_id matches the user's id
+  //         // filter: `user_id=eq.${userID}`,
+  //       },
+  //       (payload) => {
+  //         // if (schedulesList) {
+  //         //   setSchedulesList([...schedulesList, payload.new as DateDataProps]);
+  //         // }
+  //         // console.log(payload);
+  //         router.refresh()
+  //       }
+  //     )
+  //     .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }
+  //     return () => {
+  //       supabase.removeChannel(channel);
+  //     }
 
-  async function schedulesDeleteListen() {
-    const channel = supabase
-      .channel("schedule changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "DELETE",
-          schema: "public",
-          table: "schedules",
-          // Only care about dates where the user_id matches the user's id
-          filter: `user_id=eq.${userID}`,
-        },
-        (payload) => {
-          if (schedulesList) {
-            const filter = schedulesList?.filter(
-              (sch) => sch.id === scheduleID
-            );
-            setSchedulesList(filter);
-            console.log(payload);
-          }
-        }
-      )
-      .subscribe();
+  // }
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }
-
-  async function schedulesUpdateListen() {
-    const channel = supabase
-      .channel("schedule changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "schedules",
-          // Only care about dates where the user_id matches the user's id
-          filter: `user_id=eq.${userID}`,
-        },
-        (payload) => {
-          if (schedulesList) {
-            setSchedulesList([...schedulesList, payload.old as DateDataProps]);
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }
-
-  async function datesListen() {
+  function dateChannel() {
     const channel = supabase
       .channel("date changes")
       .on(
@@ -257,12 +209,13 @@ function BottomBar() {
           schema: "public",
           table: "dates",
           // Only care about dates where the user_id matches the user's id
-          filter: `user_id=eq.${userID}`,
+          // filter: `user_id=eq.${userID}`,
         },
-        (payload) => {
-          if (datesList) {
-            setDatesList([...datesList, payload.new as DateDataProps]);
-          }
+        () => {
+          // if (datesList) {
+          //   setDatesList([...datesList, payload.new as DateDataProps]);
+          // }
+          router.refresh();
         }
       )
       .subscribe();
@@ -278,17 +231,15 @@ function BottomBar() {
   }, []);
 
   useEffect(() => {
-    schedulesInsertListen();
-    // schedulesUpdateListen();
-    // schedulesDeleteListen();
-    datesListen();
+    // scheduleChannel();
+    dateChannel();
   }, [
-    userID,
     supabase,
-    datesList,
-    schedulesList,
-    setDatesList,
-    setSchedulesList,
+    router,
+    // datesList,
+    // schedulesList,
+    // setDatesList,
+    // setSchedulesList,
   ]);
 
   function checkOpen() {
@@ -322,7 +273,7 @@ function BottomBar() {
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchValue(e.target.value);
-    console.log(searchValue)
+    console.log(searchValue);
 
     setFilteredDatesList(
       datesList?.filter(
@@ -331,7 +282,6 @@ function BottomBar() {
           date?.short_desc?.toLowerCase()?.includes(searchValue.toLowerCase())
       )
     );
-    
   }
 
   async function handleAddDateSchedule(e: React.FormEvent) {
@@ -555,10 +505,14 @@ function BottomBar() {
                 </div>
               )}
 
-              {!filteredDatesList || !filteredDatesList?.length && 
-                <div className="my-8 text-darkText">
-                  <p className="text-center text-[14px]">No listed date applies to the search</p>
-                </div> }
+              {!filteredDatesList ||
+                (!filteredDatesList?.length && (
+                  <div className="my-8 text-darkText">
+                    <p className="text-center text-[14px]">
+                      No listed date applies to the search
+                    </p>
+                  </div>
+                ))}
 
               {/* DATES INFORMATION DIALOG POP UP */}
               <DialogContent>
@@ -870,53 +824,66 @@ function BottomBar() {
                 );
               })
             ) : schedulesList.length ? (
-              schedulesList?.map((date) => {
-                return (
-                  // futureTimeFromNow(...) returns negative numbers so should be rendered
-                  // when the output is less than 0 and not appear if greater than 0
-                  date.date_schedule &&
-                    futureTimeFromNow(date.date_schedule) <= 0 ? (
-                      <div
-                        className="mb-3 pr-3"
-                        key={date.id}
-                        onClick={() => setScheduleID(date.id)}
-                      >
-                        <DialogTrigger
-                          onClick={() => setSelectedSchedule(date)}
-                          asChild
-                        >
-                          <div className="flex justify-between items-center w-full px-4 py-3 shadow-md rounded-2xl hover:bg-myBackgroundMuted cursor-pointer duration-500">
-                            <p className="text-[15px]">{date.date_name}</p>
-                            <p className="italic text-[10px] text-darkText60">
-                              in{" "}
-                              {date.date_schedule && futureTimeFromNow(date.date_schedule) <= -1
-                                ? Math.round(
-                                    Math.abs(
-                                      futureTimeFromNow(date.date_schedule)
-                                    )
-                                  ) + ' day' + checkForS(Math.round(
-                                    Math.abs(
-                                      futureTimeFromNow(date.date_schedule)
-                                    )
-                                  ))
-                                : Math.round(
-                                  Math.abs(
-                                    futureHoursFromNow(date.date_schedule)
-                                  )
-                                ) + ' hour' + checkForS(Math.round(
-                                  Math.abs(
-                                    futureHoursFromNow(date.date_schedule)
-                                  )
-                                ))
-                              }
-                            </p>
-                          </div>
-                        </DialogTrigger>
-                      </div>
-                    ) : null
-                );
-              })
+              <RealTimeSchedule
+                schedulesList={schedulesList}
+                setScheduleID={setScheduleID}
+                setSelectedSchedule={setSelectedSchedule}
+              />
             ) : (
+              // schedulesList?.map((date) => {
+              //   return (
+              //     // futureTimeFromNow(...) returns negative numbers so should be rendered
+              //     // when the output is less than 0 and not appear if greater than 0
+              //     date.date_schedule &&
+              //       futureTimeFromNow(date.date_schedule) <= 0 ? (
+              //       <div
+              //         className="mb-3 pr-3"
+              //         key={date.id}
+              //         onClick={() => setScheduleID(date.id)}
+              //       >
+              //         <DialogTrigger
+              //           onClick={() => setSelectedSchedule(date)}
+              //           asChild
+              //         >
+              //           <div className="flex justify-between items-center w-full px-4 py-3 shadow-md rounded-2xl hover:bg-myBackgroundMuted cursor-pointer duration-500">
+              //             <p className="text-[15px]">{date.date_name}</p>
+              //             <p className="italic text-[10px] text-darkText60">
+              //               in{" "}
+              //               {date.date_schedule &&
+              //               futureTimeFromNow(date.date_schedule) <= -1
+              //                 ? Math.round(
+              //                     Math.abs(
+              //                       futureTimeFromNow(date.date_schedule)
+              //                     )
+              //                   ) +
+              //                   " day" +
+              //                   checkForS(
+              //                     Math.round(
+              //                       Math.abs(
+              //                         futureTimeFromNow(date.date_schedule)
+              //                       )
+              //                     )
+              //                   )
+              //                 : Math.round(
+              //                     Math.abs(
+              //                       futureHoursFromNow(date.date_schedule)
+              //                     )
+              //                   ) +
+              //                   " hour" +
+              //                   checkForS(
+              //                     Math.round(
+              //                       Math.abs(
+              //                         futureHoursFromNow(date.date_schedule)
+              //                       )
+              //                     )
+              //                   )}
+              //             </p>
+              //           </div>
+              //         </DialogTrigger>
+              //       </div>
+              //     ) : null
+              //   );
+              // })
               <div className="">
                 <p className="text-center text-[14px]">
                   No dates scheduled yet

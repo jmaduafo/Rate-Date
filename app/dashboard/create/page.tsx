@@ -17,7 +17,11 @@ import {
 } from "@heroicons/react/24/solid";
 import { createClient } from "@/utils/supabase/client";
 
-import { relationStatus, durationUnits } from "@/utils/general/createEditData";
+import {
+  relationStatus,
+  durationUnits,
+  racialGroup,
+} from "@/utils/general/createEditData";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -37,6 +41,9 @@ function DashboardCreate() {
 
   const [status, setStatus] = useState<string | undefined>();
   const [otherStatus, setOtherStatus] = useState<string | undefined>();
+
+  const [ethnicity, setEthnicity] = useState<string | undefined>();
+  const [otherEthnicity, setOtherEthnicity] = useState<string | undefined>();
 
   const [duration, setDuration] = useState<string | undefined>();
   const [unitOfDuration, setUnitOfDuration] = useState<string | undefined>();
@@ -76,25 +83,38 @@ function DashboardCreate() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!dateName || !age || !desc || !meetCute || !status || !status.length || !duration || !unitOfDuration) {
+    if (
+      !dateName ||
+      !age ||
+      !desc ||
+      !meetCute ||
+      !status ||
+      !status.length ||
+      !ethnicity ||
+      !ethnicity.length ||
+      !duration ||
+      !unitOfDuration
+    ) {
       toast({
         title: "Whoops! You left some entries empty",
         description: "Please fill in the starred entries accordingly",
       });
     } else {
-      setLoading(true)
+      setLoading(true);
 
       const { error } = await supabase.from("dates").insert({
         date_name: dateName,
         short_desc: desc,
         date_age: parseInt(age),
         is_seeing: isStillSeeing ? true : false,
-        relationship_status: status === 'Other' ? otherStatus : status,
+        relationship_status: status === "Other" ? otherStatus : status,
+        ethnicity: ethnicity === "Other" ? otherEthnicity : ethnicity,
         first_meet: meetCute,
         duration_of_dating: duration,
         duration_metric: unitOfDuration,
         physical_attraction: physicalSwitch && physical ? physical[0] : null,
-        emotional_attraction: emotionalSwitch && emotional ? emotional[0] : null,
+        emotional_attraction:
+          emotionalSwitch && emotional ? emotional[0] : null,
         icks,
         green_flags: greenFlags,
         red_flags: redFlags,
@@ -104,7 +124,8 @@ function DashboardCreate() {
         nsfw: NSFWSwitch,
         nsfw_oral_skills: NSFWSwitch && oralSkills ? oralSkills[0] : null,
         nsfw_stroke_game: NSFWSwitch && strokeGame ? strokeGame[0] : null,
-        nsfw_kissing_skills: NSFWSwitch && kissingSkills ? kissingSkills[0] : null,
+        nsfw_kissing_skills:
+          NSFWSwitch && kissingSkills ? kissingSkills[0] : null,
         nsfw_kink_level: NSFWSwitch && kinkLevel ? kinkLevel[0] : null,
         nsfw_creativity: NSFWSwitch && creativity ? creativity[0] : null,
         nsfw_dirty_talk: NSFWSwitch && dirtyTalk ? dirtyTalk[0] : null,
@@ -113,19 +134,19 @@ function DashboardCreate() {
 
       if (error) {
         toast({
-            title: 'Something went wrong!',
-            description: error.message
-        })
+          title: "Something went wrong!",
+          description: error.message,
+        });
 
-        setLoading(false)
+        setLoading(false);
       } else {
         toast({
-            title: 'Success!',
-            description: 'Your date was successfully created!'
-        })
+          title: "Success!",
+          description: "Your date was successfully created!",
+        });
 
-        setLoading(false)
-        router.push('/dashboard')
+        setLoading(false);
+        router.push("/dashboard");
       }
     }
   }
@@ -152,10 +173,7 @@ function DashboardCreate() {
           />
         </CreateEditCard>
         {/* DATE'S NAME OR NICKNAME */}
-        <CreateEditCard
-          title="Age *"
-          description="Enter their age"
-        >
+        <CreateEditCard title="Age *" description="Enter their age">
           <input
             type="number"
             name="age"
@@ -196,11 +214,17 @@ function DashboardCreate() {
           ></textarea>
         </CreateEditCard>
         {/* BIG O */}
-        <CreateEditCard title="In Contact *" description="Are you still seeing this person?">
-            <div className={`flex items-center gap-3`}>
-                <Switch checked={isStillSeeing} onCheckedChange={setisStillSeeing} />
-                <p className="text-[14px]">{isStillSeeing ? "Yes" : "No"}</p>
-            </div>
+        <CreateEditCard
+          title="In Contact *"
+          description="Are you still seeing this person?"
+        >
+          <div className={`flex items-center gap-3`}>
+            <Switch
+              checked={isStillSeeing}
+              onCheckedChange={setisStillSeeing}
+            />
+            <p className="text-[14px]">{isStillSeeing ? "Yes" : "No"}</p>
+          </div>
         </CreateEditCard>
         {/* PHYSICAL ATTRACTION */}
         <CreateEditCard
@@ -273,6 +297,38 @@ function DashboardCreate() {
               </p>
             </div>
           </div>
+        </CreateEditCard>
+        {/* ETHNIC BACKGROUND */}
+        <CreateEditCard title="Ethnicity *">
+          <select
+            name=""
+            value={ethnicity}
+            onChange={(e) => setEthnicity(e.target.value)}
+            className="text-[14px] lg:w-[70%] md:w-[80%] w-full outline-none border-none rounded-lg py-2 px-5"
+          >
+            {racialGroup.map((stat) => {
+              return (
+                <option value={stat.value} key={stat.value}>
+                  {stat.innerText}
+                </option>
+              );
+            })}
+          </select>
+          {ethnicity === "Other" && (
+            <div className="mt-3">
+              <p className="text-[14px] text-darkText60 mb-1">
+                Type this person's ethnic background
+              </p>
+              <input
+                type="text"
+                name="ethncity"
+                maxLength={30}
+                className="text-[14px] lg:w-[70%] md:w-[80%] w-full outline-none border-none rounded-lg py-2 px-5"
+                value={otherEthnicity}
+                onChange={(e) => setOtherEthnicity(e.target.value)}
+              />
+            </div>
+          )}
         </CreateEditCard>
         {/* RELATIONSHIP STATUS */}
         <CreateEditCard title="Relationship Status *">
@@ -535,13 +591,16 @@ function DashboardCreate() {
           ></textarea>
         </CreateEditCard>
         <div className="flex justify-end items-center gap-4 mt-4">
-            <PrimaryButton type="submit">
-            {loading ?
-                <Loading classNameColor='border-t-myForeground' classNameSize="w-[30px] h-[30px]" />
-                :
-                'Add Date' 
-            }
-            </PrimaryButton>
+          <PrimaryButton type="submit">
+            {loading ? (
+              <Loading
+                classNameColor="border-t-myForeground"
+                classNameSize="w-[30px] h-[30px]"
+              />
+            ) : (
+              "Add Date"
+            )}
+          </PrimaryButton>
           <Link href={"/dashboard"}>
             <SecondaryButton>Cancel</SecondaryButton>
           </Link>
@@ -568,7 +627,7 @@ function List({ array, setArray, name }: ListProps) {
   function addElement() {
     if (value.length) {
       setArray([...array, value]);
-      setValue('')
+      setValue("");
     }
   }
 

@@ -61,6 +61,53 @@ export const relationStatus = [
     },
 ]
 
+export const racialGroup = [
+    {
+        'value': '',
+        'innerText': 'Select one'
+    },
+    {
+        'value': 'Native American',
+        'innerText': 'Native American'
+    },
+    {
+        'value': 'Black/African Descent',
+        'innerText': 'Black/African Descent'
+    },
+    {
+        'value': 'East Asian',
+        'innerText': 'East Asian'
+    },
+    {
+        'value': 'South Asian',
+        'innerText': 'South Asian'
+    },
+    {
+        'value': 'Pacific Islander',
+        'innerText': 'Pacific Islander'
+    },
+    {
+        'value': 'White/Caucasian',
+        'innerText': 'White/Caucasian'
+    },
+    {
+        'value': 'Hispanic/Latino(a)',
+        'innerText': 'Hispanic/Latino(a)'
+    },
+    {
+        'value': 'Middle Eastern',
+        'innerText': 'Middle Eastern'
+    },
+    {
+        'value': 'Other',
+        'innerText': 'Other'
+    },
+    {
+        'value': "Don't Know",
+        'innerText': "Don't Know"
+    },
+]
+
 export const durationUnits = [
     'second',
     'seconds',

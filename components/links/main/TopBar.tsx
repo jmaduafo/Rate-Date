@@ -17,6 +17,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
 import Horoscope from "./Horoscope";
 import { Skeleton } from "@/components/ui/skeleton";
+import { clearCachesByServerAction } from "@/utils/general/revalidatePath";
 
 // Goal: Use the schedules data from supabase backend to create a bar chart and style
 
@@ -109,62 +110,62 @@ function TopBar() {
     getUserData();
   }, []);
 
-  useEffect(() => {
-    dateListen();
-    reactionListen();
-  }, [supabase, topData, setTopData, emojiData, setEmojiData]);
+  // useEffect(() => {
+  //   dateListen();
+  //   reactionListen();
+  // }, [supabase, topData, setTopData, emojiData, setEmojiData]);
 
-  console.log(horoscope)
+  // console.log(horoscope)
 
-  async function reactionListen() {
-    const channel = supabase
-      .channel("reaction changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "reactions",
-          // Only care about dates where the user_id matches the user's id
-          filter: `user_id=eq.${userID}`,
-        },
-        (payload) => {
-          if (emojiData) {
-            setEmojiData(payload.new as ReactionDataProps);
-          }
-        }
-      )
-      .subscribe();
+  // async function reactionListen() {
+  //   const channel = supabase
+  //     .channel("reaction changes")
+  //     .on(
+  //       "postgres_changes",
+  //       {
+  //         event: "*",
+  //         schema: "public",
+  //         table: "reactions",
+  //         // Only care about dates where the user_id matches the user's id
+  //         filter: `user_id=eq.${userID}`,
+  //       },
+  //       (payload) => {
+  //         if (emojiData) {
+  //           setEmojiData(payload.new as ReactionDataProps);
+  //         }
+  //       }
+  //     )
+  //     .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }
+  //   return () => {
+  //     supabase.removeChannel(channel);
+  //   };
+  // }
 
-  async function dateListen() {
-    const channel = supabase
-      .channel("date changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "dates",
-          // Only care about dates where the user_id matches the user's id
-          filter: `user_id=eq.${userID}`,
-        },
-        (payload) => {
-          if (topData) {
-            setTopData(payload.new as DateDataProps[]);
-          }
-        }
-      )
-      .subscribe();
+  // async function dateListen() {
+  //   const channel = supabase
+  //     .channel("date changes")
+  //     .on(
+  //       "postgres_changes",
+  //       {
+  //         event: "*",
+  //         schema: "public",
+  //         table: "dates",
+  //         // Only care about dates where the user_id matches the user's id
+  //         filter: `user_id=eq.${userID}`,
+  //       },
+  //       (payload) => {
+  //         if (topData) {
+  //           setTopData(payload.new as DateDataProps[]);
+  //         }
+  //       }
+  //     )
+  //     .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }
+  //   return () => {
+  //     supabase.removeChannel(channel);
+  //   };
+  // }
 
   async function handleAddReaction(e: React.FormEvent) {
     e.preventDefault();
@@ -196,6 +197,7 @@ function TopBar() {
         });
 
         setEmojiData(data[0]);
+        clearCachesByServerAction('/dashboard')
       }
     }
 
