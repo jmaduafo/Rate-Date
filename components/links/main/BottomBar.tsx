@@ -558,6 +558,10 @@ function BottomBar() {
                         title="Relationship Status"
                         data={`${selectedDate?.relationship_status}`}
                       />
+                      <DialogNormalDisplay
+                        title="Ethnicity"
+                        data={`${selectedDate?.ethnicity}`}
+                      />
                       {selectedDate?.physical_attraction && (
                         <DialogNormalDisplay
                           title="Physical Attraction"
@@ -830,60 +834,6 @@ function BottomBar() {
                 setSelectedSchedule={setSelectedSchedule}
               />
             ) : (
-              // schedulesList?.map((date) => {
-              //   return (
-              //     // futureTimeFromNow(...) returns negative numbers so should be rendered
-              //     // when the output is less than 0 and not appear if greater than 0
-              //     date.date_schedule &&
-              //       futureTimeFromNow(date.date_schedule) <= 0 ? (
-              //       <div
-              //         className="mb-3 pr-3"
-              //         key={date.id}
-              //         onClick={() => setScheduleID(date.id)}
-              //       >
-              //         <DialogTrigger
-              //           onClick={() => setSelectedSchedule(date)}
-              //           asChild
-              //         >
-              //           <div className="flex justify-between items-center w-full px-4 py-3 shadow-md rounded-2xl hover:bg-myBackgroundMuted cursor-pointer duration-500">
-              //             <p className="text-[15px]">{date.date_name}</p>
-              //             <p className="italic text-[10px] text-darkText60">
-              //               in{" "}
-              //               {date.date_schedule &&
-              //               futureTimeFromNow(date.date_schedule) <= -1
-              //                 ? Math.round(
-              //                     Math.abs(
-              //                       futureTimeFromNow(date.date_schedule)
-              //                     )
-              //                   ) +
-              //                   " day" +
-              //                   checkForS(
-              //                     Math.round(
-              //                       Math.abs(
-              //                         futureTimeFromNow(date.date_schedule)
-              //                       )
-              //                     )
-              //                   )
-              //                 : Math.round(
-              //                     Math.abs(
-              //                       futureHoursFromNow(date.date_schedule)
-              //                     )
-              //                   ) +
-              //                   " hour" +
-              //                   checkForS(
-              //                     Math.round(
-              //                       Math.abs(
-              //                         futureHoursFromNow(date.date_schedule)
-              //                       )
-              //                     )
-              //                   )}
-              //             </p>
-              //           </div>
-              //         </DialogTrigger>
-              //       </div>
-              //     ) : null
-              //   );
-              // })
               <div className="">
                 <p className="text-center text-[14px]">
                   No dates scheduled yet

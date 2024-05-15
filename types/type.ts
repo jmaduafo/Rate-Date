@@ -34,6 +34,7 @@ export type DateDataProps = {
     first_meet?: string | null;
     date_schedule?: Date | undefined | null;
     relationship_status?: string | null;
+    ethnicity?: string | null;
 }
 
 export type UserDataProps = {
