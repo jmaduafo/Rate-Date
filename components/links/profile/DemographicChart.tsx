@@ -5,6 +5,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { EthnicDataProps } from "@/types/type";
 import { PieChart, Pie, Tooltip } from "recharts";
+import Loading from "@/components/Loading";
 
 function DemographicChart() {
   const [ethnicData, setEthnicData] = useState<EthnicDataProps[] | undefined>();
@@ -30,32 +31,17 @@ function DemographicChart() {
         let array: EthnicDataProps[] = [];
 
         data?.forEach((list, i) => {
-          const someOccur = data?.some((el) => el.ethnicity === list.ethnicity);
+          const filterCount = data?.filter(
+            (el) => el.ethnicity === list.ethnicity
+          ).length;
 
-          if (someOccur) {
-            array.forEach((k) => {
-              if (k.ethnicity === list.ethnicity && k.ethnicityCount) {
-                k['ethnicityCount']++
-              }
-            });
-          } else {
-            let a: EthnicDataProps= {...list};
-            // a['id'] = list.id
-            // a['user_id'] = list.user_id
-            // a['ethnicity'] = list.ethnicity
-            a['ethnicityCount'] = 1;
-            array.push(a);
-
-          }
-
-          // const filterCount = data?.filter(
-          //   (el) => el.ethnicity === list.ethnicity
-          // ).length;
+          array.push({ ...list, ethnicityCount: filterCount });
         });
 
-        // let obj = new Set(array)
-        console.log(array)
-        setEthnicData(array);
+        // SETS A UNIQUE OBJECT ARRAY BASED ON THE ETHNICITY
+        setEthnicData([
+          ...new Map(array.map((item) => [item["ethnicity"], item])).values(),
+        ]);
       }
     }
   }
@@ -66,14 +52,21 @@ function DemographicChart() {
 
   return (
     <div>
-      {ethnicData &&
-        ethnicData?.map((data) => {
-          return (
-            <p key={data.id}>
-              {data.ethnicity} {data.ethnicityCount}
-            </p>
-          );
-        })}
+      {ethnicData ? (
+        <PieChart width={700} height={700} style={{ scale: 0.4 }}>
+          <Tooltip />
+          <Pie
+            data={ethnicData}
+            dataKey="ethnicityCount"
+            outerRadius={250}
+            innerRadius={150}
+            fill="gray"
+            label={({ ethnicity }) => `${ethnicity}`}
+          />
+        </PieChart>
+      )
+      :
+      <Loading classNameColor="border-t-darkText60" classNameSize="w-8 h-8"/> }
     </div>
   );
 }
