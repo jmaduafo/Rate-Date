@@ -5,7 +5,12 @@ import Header3 from "@/components/Header3";
 import Gif from "@/app/graphLoading.gif";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
-import { DateDataProps, ReactionDataProps, UserDataProps } from "@/types/type";
+import {
+  DateDataProps,
+  ReactionDataProps,
+  UserDataProps,
+  ScheduleChartDataProps,
+} from "@/types/type";
 import SingleDateList from "@/components/SingleDateList";
 import { FireIcon } from "@heroicons/react/24/solid";
 import { PlusIcon } from "@heroicons/react/24/outline";
@@ -14,10 +19,11 @@ import { getZodiac, getZodiacImage } from "@/utils/general/zodiacSign";
 import PrimaryButton from "@/components/PrimaryButton";
 import Emoji from "./Emoji";
 import { useToast } from "@/components/ui/use-toast";
-import { BarChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
 import Horoscope from "./Horoscope";
 import { Skeleton } from "@/components/ui/skeleton";
 import { clearCachesByServerAction } from "@/utils/general/revalidatePath";
+import ScheduleBarChart from "./ScheduleBarChart";
+import { scheduleDayFormat } from "@/utils/general/dateTimeFile";
 
 // Goal: Use the schedules data from supabase backend to create a bar chart and style
 
@@ -42,6 +48,9 @@ import { clearCachesByServerAction } from "@/utils/general/revalidatePath";
 
 function TopBar() {
   const [chartLoading, setChartLoading] = useState(true);
+  const [chartData, setChartData] = useState<
+    ScheduleChartDataProps[] | undefined
+  >();
   const [topData, setTopData] = useState<DateDataProps[] | undefined>();
   const [zodiacData, setZodiacData] = useState<UserDataProps[] | undefined>();
   const [horoscope, setHoroscope] = useState<string | undefined>();
@@ -83,6 +92,12 @@ function TopBar() {
         .select()
         .eq("user_id", userData?.user?.id);
 
+      const { data: scheduleData, error: scheduleError } = await supabase
+        .from("schedules")
+        .select()
+        .eq("user_id", userData?.user?.id)
+        .order("date_schedule", { ascending: true });
+
       if (zodiacError) {
         console.log(zodiacError.message);
       } else {
@@ -102,6 +117,29 @@ function TopBar() {
       } else {
         setEmojiData(reactionData[0]);
         setSelectedEmoji(reactionData[0]?.reaction);
+      }
+
+      if (scheduleError) {
+        console.log(scheduleError.message);
+      } else {
+        let array: ScheduleChartDataProps[] = [];
+
+        scheduleData?.forEach((list, i) => {
+          const filterCount = scheduleData?.filter(
+            (el) => scheduleDayFormat(el.date_schedule) === scheduleDayFormat(list.date_schedule)
+          ).length;
+
+          array.push({
+            date_schedule: scheduleDayFormat(list.date_schedule),
+            date_schedule_count: filterCount,
+          });
+        });
+
+        const newArray = [
+          ...new Map(array.map((item) => [item["date_schedule"], item])).values(),
+        ];
+
+        setChartData(newArray);
       }
     }
   }
@@ -197,7 +235,7 @@ function TopBar() {
         });
 
         setEmojiData(data[0]);
-        clearCachesByServerAction('/dashboard')
+        clearCachesByServerAction("/dashboard");
       }
     }
 
@@ -205,21 +243,10 @@ function TopBar() {
   }
 
   return (
-    <div className="flex md:flex-row flex-col gap-6 md:h-[30vh] md:mt-0 mt-8">
+    <div className="flex md:flex-row flex-col gap-6 md:mt-0 mt-8">
       {/* CHART CARD */}
       <Card className="flex-[1.5]">
-        {chartLoading ? (
-          <div className="w-full h-full flex justify-center items-center">
-            <Loading
-              classNameColor="border-t-darkText60"
-              classNameSize="w-[50px] h-[50px]"
-            />
-          </div>
-        ) : (
-          <div>
-            <Header3 title="Chart Overview" />
-          </div>
-        )}
+        <ScheduleBarChart chartData={chartData}/>
       </Card>
       {/* HOROSCOPE CARD */}
       <Card className="flex-[1.5] flex flex-col">
@@ -241,9 +268,7 @@ function TopBar() {
             </div>
           )}
         </div>
-        {zodiacData &&
-        zodiacData[0].birthday &&
-        horoscope ? (
+        {zodiacData && zodiacData[0].birthday && horoscope ? (
           // HOROSCOPE
           <div className="mt-auto pb-3 pl-16">
             <Horoscope setHoroscope={setHoroscope} horoscope={horoscope} />

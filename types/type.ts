@@ -45,6 +45,14 @@ export type EthnicDataProps = {
     ethnicityCount: number;
 }
 
+export type ScheduleChartDataProps = {
+    id?: string;
+    date_name?: string;
+    user_id?: string;
+    date_schedule: string | null;
+    date_schedule_count: number;
+}
+
 export type UserDataProps = {
     id: string;
     email?: string;
