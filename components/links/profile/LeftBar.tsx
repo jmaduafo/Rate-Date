@@ -128,81 +128,82 @@ function LeftBar() {
     <section>
       <section>
         <Card className="w-full">
-        <div className="p-3 flex items-start gap-8">
-          <div className="">
-            {userData && userData[0]?.name && !userData[0].image ? (
-              <div className="w-[10rem] h-[10rem] bg-background rounded-full flex justify-center items-center">
-                <h2 className="text-[3rem] text-foreground font-bold uppercase">
-                  {getInitials(userData[0]?.name)}
-                </h2>
-              </div>
-            ) : userData && userData[0].image ? (
+          <div className="p-3 flex md:flex-row flex-col items-start gap-8">
+            <div className="md:block md:w-fit w-full flex items-center justify-center">
+              {userData && userData[0]?.name && !userData[0].image ? (
+                <div className="w-[10rem] h-[10rem] bg-background rounded-full flex justify-center items-center">
+                  <h2 className="text-[3rem] text-foreground font-bold uppercase">
+                    {getInitials(userData[0]?.name)}
+                  </h2>
+                </div>
+              ) : userData && userData[0].image ? (
                 <div></div>
-                ) : (
-                    <Skeleton className="animate-skeleton w-[10rem] h-[10rem] rounded-full" />
-                    )}
-          </div>
-          <div className="flex-[1]">
-            {userData && userData[0]?.name ? (
+              ) : (
+                <Skeleton className="animate-skeleton w-[10rem] h-[10rem] rounded-full" />
+              )}
+            </div>
+            <div className="flex-[1]">
+              {userData && userData[0]?.name ? (
                 <div>
-                <div className="flex justify-between items-start mb-8 px-3">
-                  <div>
-                    <Header2 title={userData[0]?.name} />
-                    <p className="mt-[-10px] tracking-tighter text-darkText60">
-                      @{userData[0]?.username}
+                  <div className="flex justify-between items-start mb-8 px-3">
+                    <div>
+                      <Header2 title={userData[0]?.name} />
+                      <p className="mt-[-10px] tracking-tighter text-darkText60">
+                        @{userData[0]?.username}
+                      </p>
+                    </div>
+                    <EditProfile
+                      userData={userData}
+                      loading={loading}
+                      updateProfile={updateProfile}
+                      setBio={setBio}
+                      bio={bio}
+                      setBirthday={setBirthday}
+                      setOrientation={setOrientation}
+                      setIsPrivate={setIsPrivate}
+                      setUsername={setUsername}
+                      setName={setName}
+                      setPronounsText={setPronounsText}
+                      setRelationStatus={setRelationStatus}
+                      birthday={birthday}
+                      orientation={orientation}
+                      isPrivate={isPrivate}
+                      username={username}
+                      name={name}
+                      pronounsText={pronounsText}
+                      relationStatus={relationStatus}
+                    />
+                  </div>
+                  <LineBreak />
+                  <div className="mt-3 px-3">
+                    <p className="text-[15px] text-darkText60 tracking-tight leading-tight">
+                      {userData[0]?.bio}
                     </p>
                   </div>
-                  <EditProfile
-                    userData={userData}
-                    loading={loading}
-                    updateProfile={updateProfile}
-                    setBio={setBio}
-                    bio={bio}
-                    setBirthday={setBirthday}
-                    setOrientation={setOrientation}
-                    setIsPrivate={setIsPrivate}
-                    setUsername={setUsername}
-                    setName={setName}
-                    setPronounsText={setPronounsText}
-                    setRelationStatus={setRelationStatus}
-                    birthday={birthday}
-                    orientation={orientation}
-                    isPrivate={isPrivate}
-                    username={username}
-                    name={name}
-                    pronounsText={pronounsText}
-                    relationStatus={relationStatus}
-                    />
                 </div>
-                <LineBreak />
-                <div className="mt-3 px-3">
-                  <p className="text-[15px] text-darkText60 tracking-tight leading-tight">
-                    {userData[0]?.bio}
-                  </p>
-                </div>
-              </div>
-            ) : (
-                <div>
-
-              </div>
-            )}
+              ) : (
+                <div></div>
+              )}
             </div>
           </div>
         </Card>
       </section>
       <section className="mt-6">
         <div className="flex items-center gap-2 text-darkText px-3">
-            <PlusCircleIcon className="w-6"/>
-            <p className="text-[15px] tracking-tighter">Add collection</p>
+          <PlusCircleIcon className="w-6" />
+          <p className="text-[15px] tracking-tighter">Add collection</p>
         </div>
         <Card className="max-h-[60vh] w-full grid grid-cols-4 gap-4 mt-2 overflow-auto">
-            {[0, 1, 2, 3, 4, 5, 6, 7].map(col => {
-                return (
-                    <Fragment key={col}>
-                        <CollectionCard title='Steven McQueen' classNameBgColor="bg-orange-400"/>
-                    </Fragment>
-                )
-            })}
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((col) => {
+            return (
+              <Fragment key={col}>
+                <CollectionCard
+                  title="Steven McQueen"
+                  classNameBgColor="bg-orange-400"
+                />
+              </Fragment>
+            );
+          })}
         </Card>
       </section>
     </section>
