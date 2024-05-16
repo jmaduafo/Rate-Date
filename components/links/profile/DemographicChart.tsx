@@ -7,6 +7,9 @@ import { EthnicDataProps } from "@/types/type";
 import { PieChart, Pie, Tooltip, ResponsiveContainer } from "recharts";
 import Loading from "@/components/Loading";
 import Header4 from "@/components/Header4";
+import { Skeleton } from "@/components/ui/skeleton";
+import PrimaryButton from "@/components/PrimaryButton";
+import Link from "next/link";
 
 function DemographicChart() {
   const [ethnicData, setEthnicData] = useState<EthnicDataProps[] | undefined>();
@@ -48,8 +51,6 @@ function DemographicChart() {
 
         // SETS A UNIQUE OBJECT ARRAY BASED ON THE ETHNICITY
         setEthnicData(newArray);
-
-        console.log(newArray);
       }
     }
   }
@@ -60,46 +61,53 @@ function DemographicChart() {
 
   return (
     <div className="w-full">
-      <Header4 title="Dates by Ethnicity"/>
-      {ethnicData ? (
-        <div className="z-[0] my-5">
-          <ResponsiveContainer width={'100%'} minHeight={200} >
-            <PieChart>
-              <Tooltip />
-              <Pie
-                data={ethnicData}
-                dataKey="ethnicityCount"
-                nameKey="ethnicity"
-                cx="50%"
-                cy="50%"
-                innerRadius={50}
-                outerRadius={80}
-                style={{
-                  fontSize: '10px'
-                }}
-                paddingAngle={3}
-                type="monotone"
-                fill="#CEC7C7"
-                // label={({ ethnicity }) => `${ethnicity}`}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-          {/* <div className="flex justify-end mt-6">
-            <div>
-            {
-              ethnicData?.map(data => {
-                return (
-                  <div key={data.ethnicity}>
-                    <p className="text-right text-[14px]">{data.ethnicity}</p>
-                  </div>
-                )
-              })
-            }
-            </div>
-          </div> */}
+      {ethnicData && ethnicData?.length ? (
+        <div className="z-[0]">
+          <Header4 title="Dates by Ethnicity" />
+          <div>
+            <ResponsiveContainer width={"100%"} minHeight={200}>
+              <PieChart>
+                <Tooltip />
+                <Pie
+                  data={ethnicData}
+                  dataKey="ethnicityCount"
+                  nameKey="ethnicity"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={50}
+                  outerRadius={80}
+                  style={{
+                    fontSize: "10px",
+                  }}
+                  paddingAngle={3}
+                  type="monotone"
+                  fill="#CEC7C7"
+                  // label={({ ethnicity }) => `${ethnicity}`}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      ) : ethnicData && !ethnicData?.length ? (
+        <div className="my-14">
+          <div className="flex justify-center items-center">
+            <p className="w-[70%] text-[15px] text-center mb-5">
+              Create past or current dates to get a data chart
+            </p>
+          </div>
+          <div className="flex justify-center items-center">
+            <Link href={"/dashboard/create"}>
+              <PrimaryButton>Create a Date</PrimaryButton>
+            </Link>
+          </div>
         </div>
       ) : (
-        <Loading classNameColor="border-t-darkText60" classNameSize="w-8 h-8" />
+        <div className="w-full">
+          <Skeleton className="w-[80%] h-6 rounded animate-skeleton" />
+          <div className="flex justify-center items-center my-8">
+            <Skeleton className="w-[11vw] h-[11vw] rounded-full animate-skeleton" />
+          </div>
+        </div>
       )}
     </div>
   );

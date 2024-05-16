@@ -1,9 +1,9 @@
 import React from 'react'
 
-function Chart() {
+function BarChart() {
   return (
     <div>Chart</div>
   )
 }
 
-export default Chart
+export default BarChart
