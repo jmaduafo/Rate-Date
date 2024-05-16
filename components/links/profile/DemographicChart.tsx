@@ -10,6 +10,7 @@ import Header4 from "@/components/Header4";
 import { Skeleton } from "@/components/ui/skeleton";
 import PrimaryButton from "@/components/PrimaryButton";
 import Link from "next/link";
+import QuestionPopUp from "@/components/QuestionPopUp";
 
 function DemographicChart() {
   const [ethnicData, setEthnicData] = useState<EthnicDataProps[] | undefined>();
@@ -63,7 +64,14 @@ function DemographicChart() {
     <div className="w-full">
       {ethnicData && ethnicData?.length ? (
         <div className="z-[0]">
-          <Header4 title="Dates by Ethnicity" />
+          <div className="flex justify-between gap-2 items-start">
+            <Header4 title="Dates by Ethnicity" />
+            <QuestionPopUp description="The purpose of this chart is to evaluate how you date and what your dating preferences are. Keep in mind that everyone is attracted to different things and what you're drawn to is valid as long as it's legal.">
+              <div className="cursor-pointer w-5 h-5 border-darkText border-[1.5px] rounded-full flex justify-center items-center">
+                <p className="text-[14px] font-medium">?</p>
+              </div>
+            </QuestionPopUp>
+          </div>
           <div>
             <ResponsiveContainer width={"100%"} minHeight={200}>
               <PieChart>
