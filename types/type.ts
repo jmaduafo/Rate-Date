@@ -38,11 +38,11 @@ export type DateDataProps = {
 }
 
 export type EthnicDataProps = {
-    id: string;
-    date_name: string;
-    user_id: string;
-    ethnicity?: string | null;
-    ethnicityCount?: number;
+    id?: string;
+    date_name?: string;
+    user_id?: string;
+    ethnicity: string | null;
+    ethnicityCount: number;
 }
 
 export type UserDataProps = {

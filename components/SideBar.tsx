@@ -139,7 +139,7 @@ function SideBar() {
             </div>
         </div>
     </Link>
-    <nav className='md:mt-[10rem] md:block w-full flex flex-row justify-evenly items-center'>
+    <nav className='md:mt-[10rem] md:block w-full flex flex-row justify-evenly items-center z-[100]'>
         {navigations.map(nav => {
             return (
                 <Link key={nav.name} href={nav.link}>

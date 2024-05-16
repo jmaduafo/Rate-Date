@@ -4,8 +4,9 @@ import React, { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { EthnicDataProps } from "@/types/type";
-import { PieChart, Pie, Tooltip } from "recharts";
+import { PieChart, Pie, Tooltip, ResponsiveContainer } from "recharts";
 import Loading from "@/components/Loading";
+import Header4 from "@/components/Header4";
 
 function DemographicChart() {
   const [ethnicData, setEthnicData] = useState<EthnicDataProps[] | undefined>();
@@ -35,13 +36,20 @@ function DemographicChart() {
             (el) => el.ethnicity === list.ethnicity
           ).length;
 
-          array.push({ ...list, ethnicityCount: filterCount });
+          array.push({
+            ethnicity: list.ethnicity,
+            ethnicityCount: filterCount,
+          });
         });
 
-        // SETS A UNIQUE OBJECT ARRAY BASED ON THE ETHNICITY
-        setEthnicData([
+        const newArray = [
           ...new Map(array.map((item) => [item["ethnicity"], item])).values(),
-        ]);
+        ];
+
+        // SETS A UNIQUE OBJECT ARRAY BASED ON THE ETHNICITY
+        setEthnicData(newArray);
+
+        console.log(newArray);
       }
     }
   }
@@ -51,22 +59,48 @@ function DemographicChart() {
   }, []);
 
   return (
-    <div>
+    <div className="w-full">
+      <Header4 title="Dates by Ethnicity"/>
       {ethnicData ? (
-        <PieChart width={700} height={700} style={{ scale: 0.4 }}>
-          <Tooltip />
-          <Pie
-            data={ethnicData}
-            dataKey="ethnicityCount"
-            outerRadius={250}
-            innerRadius={150}
-            fill="gray"
-            label={({ ethnicity }) => `${ethnicity}`}
-          />
-        </PieChart>
-      )
-      :
-      <Loading classNameColor="border-t-darkText60" classNameSize="w-8 h-8"/> }
+        <div className="z-[0] my-5">
+          <ResponsiveContainer width={'100%'} minHeight={200} >
+            <PieChart>
+              <Tooltip />
+              <Pie
+                data={ethnicData}
+                dataKey="ethnicityCount"
+                nameKey="ethnicity"
+                cx="50%"
+                cy="50%"
+                innerRadius={50}
+                outerRadius={80}
+                style={{
+                  fontSize: '10px'
+                }}
+                paddingAngle={3}
+                type="monotone"
+                fill="#CEC7C7"
+                // label={({ ethnicity }) => `${ethnicity}`}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+          {/* <div className="flex justify-end mt-6">
+            <div>
+            {
+              ethnicData?.map(data => {
+                return (
+                  <div key={data.ethnicity}>
+                    <p className="text-right text-[14px]">{data.ethnicity}</p>
+                  </div>
+                )
+              })
+            }
+            </div>
+          </div> */}
+        </div>
+      ) : (
+        <Loading classNameColor="border-t-darkText60" classNameSize="w-8 h-8" />
+      )}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import DemographicChart from './DemographicChart'
 function RightBar() {
   return (
     <section>
-        <Card className='w-full h-[40vh] flex justify-center items-center'>
+        <Card className='w-full flex justify-center items-center'>
             <DemographicChart/>
         </Card>
         <Card className='w-full mt-5'>
