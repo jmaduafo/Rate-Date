@@ -1,8 +1,11 @@
 import React from 'react'
+import CreateDateStories from '@/components/links/the-corner/CreateDateStories'
 
 function CreateStory() {
   return (
-    <div>CreateStory</div>
+    <div>
+        <CreateDateStories/>
+    </div>
   )
 }
 
