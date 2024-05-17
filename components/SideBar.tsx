@@ -42,9 +42,9 @@ function SideBar() {
         //     link: '/charts'
         // },
         {
-            name: 'My Corner',
+            name: 'The Corner',
             icon: <QueueListIcon className='xs:w-[5.5vw] sm:w-[4vw] md:w-[20px] w-[7vw]'/>,
-            link: '/wishlist'
+            link: '/the-corner'
         },
         {
             name: 'Profile',
@@ -143,15 +143,15 @@ function SideBar() {
         {navigations.map(nav => {
             return (
                 <Link key={nav.name} href={nav.link}>
-                    <div className={`${pathname.slice(1).split('/')[0] === nav.name.toLowerCase() ? 'md:bg-myBackground md:shadow-3xl rounded-2xl' : 'md:bg-transparent text-text60'} group duration-500 md:py-3 md:px-8 md:mb-2 flex md:flex-row md:items-center md:justify-start md:gap-6 flex-col justify-center items-center`}>
+                    <div className={`${pathname.slice(1).split('/')[0] === nav.name.toLowerCase() || pathname.slice(1).split('/')[0]  === 'the-corner' && nav.name === 'The Corner' ? 'md:bg-myBackground md:shadow-3xl rounded-2xl' : 'md:bg-transparent text-text60'} group duration-500 md:py-3 md:px-8 md:mb-2 flex md:flex-row md:items-center md:justify-start md:gap-6 flex-col justify-center items-center`}>
                         {/* CHANGES ICON COLOR BASED ON PATHNAME */}
-                        <div className={`${pathname.slice(1).split('/')[0] === nav.name.toLowerCase() ? 'md:text-darkText text-lightText' : 'group-hover:text-lightText group-hover:md:text-darkText md:text-darkText60 text-lightText60 duration-500'}`}>
+                        <div className={`${pathname.slice(1).split('/')[0] === nav.name.toLowerCase() || pathname.slice(1).split('/')[0]  === 'the-corner' && nav.name === 'The Corner' ? 'md:text-darkText text-lightText' : 'group-hover:text-lightText group-hover:md:text-darkText md:text-darkText60 text-lightText60 duration-500'}`}>
                             {nav.icon}
                         </div>
                         {/* CHANGES TEXT COLOR BASED ON PATHNAME */}
                         <div className=''>
-                            <p className={`${pathname.slice(1).split('/')[0]  === nav.name.toLowerCase() ? 'md:text-darkText text-lightText' : 'group-hover:md:text-darkText group-hover:text-lightText md:text-darkText60 text-lightText60'} duration-500 md:text-[15px] text-[9px]`}>{nav.name}</p>
-                            {pathname.slice(1).split('/')[0]  === nav.name.toLowerCase() && <div className='md:hidden w-[40%] mx-auto h-[1.5px] rounded-full bg-myForeground mt-1'></div>}
+                            <p className={`${pathname.slice(1).split('/')[0]  === nav.name.toLowerCase() || pathname.slice(1).split('/')[0]  === 'the-corner' && nav.name === 'The Corner' ? 'md:text-darkText text-lightText' : 'group-hover:md:text-darkText group-hover:text-lightText md:text-darkText60 text-lightText60'} duration-500 md:text-[15px] text-[9px]`}>{nav.name}</p>
+                            {pathname.slice(1).split('/')[0]  === nav.name.toLowerCase() || pathname.slice(1).split('/')[0]  === 'the-corner' && nav.name === 'The Corner' && <div className='md:hidden w-[40%] mx-auto h-[1.5px] rounded-full bg-myForeground mt-1'></div>}
                         </div>
                     </div>
                 </Link>

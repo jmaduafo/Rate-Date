@@ -21,6 +21,8 @@ import EditProfile from "./EditProfile";
 import LineBreak from "@/components/LineBreak";
 import CollectionCard from "../CollectionCard";
 import SelectedBanner from "@/components/SelectedBanner";
+import { PlusIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 function LeftBar() {
   const supabase = createClient();
@@ -199,12 +201,18 @@ function LeftBar() {
       </section>
 
       {/* USER'S STORIES AND DATE IDEAS SECTION */}
-      <section className="mt-6">
-        <div className="flex items-center gap-2 text-darkText px-3">
-          <PlusCircleIcon className="w-6" />
-          <p className="text-[15px] tracking-tighter">Add collection</p>
-        </div>
-        <div className="flex justify-center items-center gap-3">
+      <section className="mt-10">
+        {/* <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 text-darkText">
+            <PlusCircleIcon className="w-6" />
+            <p className="text-[15px] tracking-tighter">Create a date idea</p>
+          </div>
+          <div className="flex items-center gap-2 text-darkText">
+            <PlusCircleIcon className="w-6" />
+            <p className="text-[15px] tracking-tighter">Create a date story</p>
+          </div>
+        </div> */}
+        <div className="flex justify-center items-center gap-3 mb-4">
           <SelectedBanner
             title="Date Ideas"
             setSelect={setUserSelect}
@@ -217,6 +225,11 @@ function LeftBar() {
           />
         </div>
         <Card className="max-h-[60vh] w-full grid grid-cols-4 gap-4 mt-2 overflow-auto">
+          <Link href={userSelect === 'Date Ideas' ? '/the-corner/ideas/create' : '/the-corner/stories/create'}>
+            <div className="flex justify-center items-center h-full">
+              <PlusIcon className="w-16 text-darkText" strokeWidth={1} />
+            </div>
+          </Link>
           {[0, 1, 2, 3, 4, 5, 6, 7].map((col) => {
             return (
               <Fragment key={col}>
