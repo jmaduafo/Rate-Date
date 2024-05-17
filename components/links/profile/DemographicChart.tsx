@@ -1,65 +1,18 @@
-"use client";
+import React from "react";
 
-import React, { useState, useEffect } from "react";
-import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
-import { EthnicDataProps } from "@/types/type";
 import { PieChart, Pie, Tooltip, ResponsiveContainer } from "recharts";
-import Loading from "@/components/Loading";
 import Header4 from "@/components/Header4";
 import { Skeleton } from "@/components/ui/skeleton";
 import PrimaryButton from "@/components/PrimaryButton";
 import Link from "next/link";
 import QuestionPopUp from "@/components/QuestionPopUp";
+import { EthnicDataProps } from "@/types/type";
 
-function DemographicChart() {
-  const [ethnicData, setEthnicData] = useState<EthnicDataProps[] | undefined>();
+type EthnicProps = {
+  ethnicData: EthnicDataProps[] | undefined;
+};
 
-  const supabase = createClient();
-  const router = useRouter();
-
-  async function getEthnicities() {
-    const { data: userData, error: userError } = await supabase.auth.getUser();
-
-    if (userError) {
-      router.push("/login");
-    } else {
-      const { data, error } = await supabase
-        .from("dates")
-        .select("id, user_id, ethnicity, date_name")
-        .neq("ethnicity", "Don't know")
-        .eq("user_id", userData?.user?.id);
-
-      if (error) {
-        console.error(error.message);
-      } else {
-        let array: EthnicDataProps[] = [];
-
-        data?.forEach((list, i) => {
-          const filterCount = data?.filter(
-            (el) => el.ethnicity === list.ethnicity
-          ).length;
-
-          array.push({
-            ethnicity: list.ethnicity,
-            ethnicityCount: filterCount,
-          });
-        });
-
-        const newArray = [
-          ...new Map(array.map((item) => [item["ethnicity"], item])).values(),
-        ];
-
-        // SETS A UNIQUE OBJECT ARRAY BASED ON THE ETHNICITY
-        setEthnicData(newArray);
-      }
-    }
-  }
-
-  useEffect(() => {
-    getEthnicities();
-  }, []);
-
+function DemographicChart({ ethnicData }: EthnicProps) {
   return (
     <div className="w-full">
       {ethnicData && ethnicData?.length ? (

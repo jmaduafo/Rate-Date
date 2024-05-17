@@ -15,12 +15,7 @@ import Loading from "@/components/Loading";
 import QuestionPopUp from "@/components/QuestionPopUp";
 
 type ChartProps = {
-  setChartData?: React.Dispatch<
-    React.SetStateAction<ScheduleChartDataProps[] | undefined>
-  >;
-  setChartLoading?: React.Dispatch<React.SetStateAction<boolean>>;
-  chartLoading?: boolean;
-  chartData?: ScheduleChartDataProps[] | undefined;
+  chartData: ScheduleChartDataProps[] | undefined;
 };
 
 function ScheduleBarChart({ chartData }: ChartProps) {
@@ -43,7 +38,7 @@ function ScheduleBarChart({ chartData }: ChartProps) {
                   stroke="hsl(var(--muted))"
                   strokeDasharray="3 3"
                 />
-                <XAxis dataKey="date_schedule" style={{ fontSize: "13px" }} />
+                <XAxis dataKey="date_schedule" stroke='rgba(0, 0, 0, .4)' style={{ fontSize: "12px" }} />
                 {/* <YAxis allowDecimals={false} style={{ fontSize: '13px'}}/> */}
                 <Tooltip cursor={{ fill: "rgba(0, 0, 0, .03)" }} />
                 <Bar

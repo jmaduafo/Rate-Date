@@ -20,6 +20,7 @@ import Header2 from "@/components/Header2";
 import EditProfile from "./EditProfile";
 import LineBreak from "@/components/LineBreak";
 import CollectionCard from "../CollectionCard";
+import SelectedBanner from "@/components/SelectedBanner";
 
 function LeftBar() {
   const supabase = createClient();
@@ -27,6 +28,9 @@ function LeftBar() {
   const { toast } = useToast();
 
   const [userData, setUserData] = useState<UserDataProps[] | null>();
+  const [userSelect, setUserSelect] = useState<string | undefined>(
+    "Date Ideas"
+  );
 
   const [name, setName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
@@ -126,9 +130,11 @@ function LeftBar() {
   }
   return (
     <section>
+      {/* USER INFORMATION WITH NAME, USERNAME, IMAGE, EDIT PROFILE, AND BIO */}
       <section>
         <Card className="w-full">
           <div className="p-3 flex md:flex-row flex-col items-start gap-8">
+            {/* USER'S IMAGE OR INITIALS IF IMAGE IS NULL */}
             <div className="md:block md:w-fit w-full flex items-center justify-center">
               {userData && userData[0]?.name && !userData[0].image ? (
                 <div className="w-[10rem] h-[10rem] bg-background rounded-full flex justify-center items-center">
@@ -146,12 +152,14 @@ function LeftBar() {
               {userData && userData[0]?.name ? (
                 <div>
                   <div className="flex justify-between items-start mb-8 px-3">
+                    {/* NAME AND USERNAME */}
                     <div>
                       <Header2 title={userData[0]?.name} />
                       <p className="mt-[-10px] tracking-tighter text-darkText60">
                         @{userData[0]?.username}
                       </p>
                     </div>
+                    {/* EDIT PROFILE BUTTON */}
                     <EditProfile
                       userData={userData}
                       loading={loading}
@@ -175,6 +183,7 @@ function LeftBar() {
                     />
                   </div>
                   <LineBreak />
+                  {/* USER BIO */}
                   <div className="mt-3 px-3">
                     <p className="text-[15px] text-darkText60 tracking-tight leading-tight">
                       {userData[0]?.bio}
@@ -188,10 +197,24 @@ function LeftBar() {
           </div>
         </Card>
       </section>
+
+      {/* USER'S STORIES AND DATE IDEAS SECTION */}
       <section className="mt-6">
         <div className="flex items-center gap-2 text-darkText px-3">
           <PlusCircleIcon className="w-6" />
           <p className="text-[15px] tracking-tighter">Add collection</p>
+        </div>
+        <div className="flex justify-center items-center gap-3">
+          <SelectedBanner
+            title="Date Ideas"
+            setSelect={setUserSelect}
+            select={userSelect}
+          />
+          <SelectedBanner
+            title="Date Stories"
+            setSelect={setUserSelect}
+            select={userSelect}
+          />
         </div>
         <Card className="max-h-[60vh] w-full grid grid-cols-4 gap-4 mt-2 overflow-auto">
           {[0, 1, 2, 3, 4, 5, 6, 7].map((col) => {
