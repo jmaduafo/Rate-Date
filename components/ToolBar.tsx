@@ -2,7 +2,7 @@
 
 import React from "react";
 import { type Editor } from "@tiptap/react";
-import { Bold, Italic, Strikethrough, Code, TextQuote, MessageSquareCode, ListOrdered } from "lucide-react";
+import { Bold, Italic, Strikethrough, Code, TextQuote, List, MessageSquareCode, ListOrdered } from "lucide-react";
 
 type Props = {
   editor: Editor | null;
@@ -54,6 +54,14 @@ function ToolBar({ editor, title }: Props) {
         } p-2 outline-none border-none duration-500 hover:bg-dark10 rounded cursor-pointer`}
       >
         <MessageSquareCode className="w-5 text-darkText" strokeWidth={1.5} />
+      </div>
+      <div
+        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        className={`${
+          editor.isActive("bulletList") ? "bg-dark10" : ""
+        } p-2 outline-none border-none duration-500 hover:bg-dark10 rounded cursor-pointer`}
+      >
+        <List className="w-5 text-darkText" strokeWidth={1.5} />
       </div>
       <div
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
