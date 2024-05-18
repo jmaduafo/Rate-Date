@@ -169,3 +169,7 @@
     height: 0;
     pointer-events: none;
   }
+
+  ul, ol {
+    list-style: revert;
+  }

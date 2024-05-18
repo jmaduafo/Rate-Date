@@ -105,5 +105,5 @@ module.exports = {
       "skeleton": "skeleton 2s ease-in-out infinite alternate",
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require('@tailwindcss/typography')],
 };

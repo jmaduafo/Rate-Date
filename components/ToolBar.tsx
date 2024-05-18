@@ -2,7 +2,7 @@
 
 import React from "react";
 import { type Editor } from "@tiptap/react";
-import { Bold, Italic, Strikethrough, Code, TextQuote } from "lucide-react";
+import { Bold, Italic, Strikethrough, Code, TextQuote, MessageSquareCode, ListOrdered } from "lucide-react";
 
 type Props = {
   editor: Editor | null;
@@ -48,12 +48,20 @@ function ToolBar({ editor, title }: Props) {
         <Code className="w-5 text-darkText" />
       </div>
       <div
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         className={`${
-          editor.isActive("blockquote") ? "bg-dark10" : ""
+          editor.isActive("codeBlock") ? "bg-dark10" : ""
         } p-2 outline-none border-none duration-500 hover:bg-dark10 rounded cursor-pointer`}
       >
-        <TextQuote className="w-5 text-darkText" strokeWidth={1.5} />
+        <MessageSquareCode className="w-5 text-darkText" strokeWidth={1.5} />
+      </div>
+      <div
+        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        className={`${
+          editor.isActive("orderedList") ? "bg-dark10" : ""
+        } p-2 outline-none border-none duration-500 hover:bg-dark10 rounded cursor-pointer`}
+      >
+        <ListOrdered className="w-5 text-darkText" strokeWidth={1.5} />
       </div>
     
     </div>
