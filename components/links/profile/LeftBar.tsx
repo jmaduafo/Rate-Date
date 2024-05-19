@@ -19,7 +19,7 @@ import { UserDataProps } from "@/types/type";
 import Header2 from "@/components/Header2";
 import EditProfile from "./EditProfile";
 import LineBreak from "@/components/LineBreak";
-import CollectionCard from "../CollectionCard";
+import CollectionCard from "../../CollectionCard";
 import SelectedBanner from "@/components/SelectedBanner";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -28,191 +28,36 @@ function LeftBar() {
   const supabase = createClient();
 
   const { toast } = useToast();
-
-  const [userData, setUserData] = useState<UserDataProps[] | null>();
   const [userSelect, setUserSelect] = useState<string | undefined>(
     "Date Ideas"
   );
 
-  const [name, setName] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
-  const [pronounsText, setPronounsText] = useState<string | undefined>("");
-  const [birthday, setBirthday] = useState<string | undefined>("");
-  const [relationStatus, setRelationStatus] = useState<string | undefined>("");
-  const [orientation, setOrientation] = useState<string | undefined>("");
-  const [bio, setBio] = useState<string | undefined>("");
-  const [isPrivate, setIsPrivate] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-
   const router = useRouter();
 
-  async function getUserInfo() {
-    const { data, error } = await supabase.auth.getUser();
+  useEffect(() => {}, []);
 
-    if (error) {
-      router.push("/login");
-      router.refresh();
-    } else {
-      // FINDS WHERE ID MATCHES
-      const { data: dataInfo, error: errorMessage } = await supabase
-        .from("users")
-        .select()
-        .eq("id", data?.user?.id);
-
-      if (errorMessage) {
-        toast({
-          title: "Uh oh! Something went wrong",
-          description: errorMessage.message,
-        });
-      }
-
-      setUserData(dataInfo);
-
-      if (dataInfo) {
-        setName(dataInfo[0]?.name);
-        setUsername(dataInfo[0]?.username);
-        setPronounsText(
-          dataInfo[0]?.pronouns ? dataInfo[0]?.pronouns : undefined
-        );
-        setBirthday(dataInfo[0]?.birthday ? dataInfo[0]?.birthday : undefined);
-        setRelationStatus(dataInfo[0]?.relationship_status ?? undefined);
-        setOrientation(dataInfo[0]?.sexual_orientation ?? undefined);
-        setBio(dataInfo[0]?.bio ?? undefined);
-        setIsPrivate(dataInfo[0]?.private ?? false);
-      }
-    }
-  }
-
-  useEffect(() => {
-    getUserInfo();
-  }, []);
-
-  async function updateProfile(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    if (!name.length || !username.length) {
-      toast({
-        title: "Whoops!",
-        description:
-          "Name and username cannot be left empty. Please fill in these fields.",
-      });
-    } else {
-      setLoading(true);
-      if (userData) {
-        const { error } = await supabase
-          .from("users")
-          .update({
-            username,
-            bio,
-            pronouns: pronounsText,
-            birthday,
-            relationship_status:
-              relationStatus === "" || relationStatus === "n/a"
-                ? null
-                : relationStatus,
-            sexual_orientation:
-              orientation === "" || orientation === "n/a" ? null : orientation,
-            private: isPrivate,
-          })
-          .eq("id", userData[0]?.id);
-
-        if (error) {
-          toast({
-            title: error.message,
-          });
-        } else {
-          toast({
-            title: "Profile updated successfully!",
-          });
-        }
-
-        setLoading(false);
-      }
-    }
-  }
   return (
     <section>
-      {/* USER INFORMATION WITH NAME, USERNAME, IMAGE, EDIT PROFILE, AND BIO */}
-      <section>
-        <Card className="w-full">
-          <div className="p-3 flex md:flex-row flex-col items-start gap-8">
-            {/* USER'S IMAGE OR INITIALS IF IMAGE IS NULL */}
-            <div className="md:block md:w-fit w-full flex items-center justify-center">
-              {userData && userData[0]?.name && !userData[0].image ? (
-                <div className="w-[10rem] h-[10rem] bg-background rounded-full flex justify-center items-center">
-                  <h2 className="text-[3rem] text-foreground font-bold uppercase">
-                    {getInitials(userData[0]?.name)}
-                  </h2>
-                </div>
-              ) : userData && userData[0].image ? (
-                <div></div>
-              ) : (
-                <Skeleton className="animate-skeleton w-[10rem] h-[10rem] rounded-full" />
-              )}
-            </div>
-            <div className="flex-[1]">
-              {userData && userData[0]?.name ? (
-                <div>
-                  <div className="flex justify-between items-start mb-8 px-3">
-                    {/* NAME AND USERNAME */}
-                    <div>
-                      <Header2 title={userData[0]?.name} />
-                      <p className="mt-[-10px] tracking-tighter text-darkText60">
-                        @{userData[0]?.username}
-                      </p>
-                    </div>
-                    {/* EDIT PROFILE BUTTON */}
-                    <EditProfile
-                      userData={userData}
-                      loading={loading}
-                      updateProfile={updateProfile}
-                      setBio={setBio}
-                      bio={bio}
-                      setBirthday={setBirthday}
-                      setOrientation={setOrientation}
-                      setIsPrivate={setIsPrivate}
-                      setUsername={setUsername}
-                      setName={setName}
-                      setPronounsText={setPronounsText}
-                      setRelationStatus={setRelationStatus}
-                      birthday={birthday}
-                      orientation={orientation}
-                      isPrivate={isPrivate}
-                      username={username}
-                      name={name}
-                      pronounsText={pronounsText}
-                      relationStatus={relationStatus}
-                    />
-                  </div>
-                  <LineBreak />
-                  {/* USER BIO */}
-                  <div className="mt-3 px-3">
-                    <p className="text-[15px] text-darkText60 tracking-tight leading-tight">
-                      {userData[0]?.bio}
-                    </p>
-                  </div>
-                </div>
-              ) : (
-                <div></div>
-              )}
-            </div>
-          </div>
-        </Card>
-      </section>
-
       {/* USER'S STORIES AND DATE IDEAS SECTION */}
-      <section className="mt-10">
-        {/* <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-darkText">
-            <PlusCircleIcon className="w-6" />
-            <p className="text-[15px] tracking-tighter">Create a date idea</p>
-          </div>
-          <div className="flex items-center gap-2 text-darkText">
-            <PlusCircleIcon className="w-6" />
-            <p className="text-[15px] tracking-tighter">Create a date story</p>
-          </div>
-        </div> */}
-        <div className="flex justify-center items-center gap-3 mb-4">
+      <section className="">
+        <div className="">
+          {userSelect === "Date Ideas" ? (
+            <div className="flex items-center gap-2 text-darkText mb-3">
+              <PlusCircleIcon className="w-6" />
+              <p className="text-[15px] tracking-tighter">Create a date idea</p>
+            </div>
+          ) : (
+            userSelect === "Date Stories" && (
+              <div className="flex items-center gap-2 text-darkText mb-3">
+                <PlusCircleIcon className="w-6" />
+                <p className="text-[15px] tracking-tighter">
+                  Create a date story
+                </p>
+              </div>
+            )
+          )}
+        </div>
+        <div className="flex justify-center items-center gap-3 mb-10">
           <SelectedBanner
             title="Date Ideas"
             setSelect={setUserSelect}
@@ -223,24 +68,22 @@ function LeftBar() {
             setSelect={setUserSelect}
             select={userSelect}
           />
+          <SelectedBanner
+            title="My Saves"
+            setSelect={setUserSelect}
+            select={userSelect}
+          />
         </div>
-        <Card className="max-h-[60vh] w-full grid grid-cols-4 gap-4 mt-2 overflow-auto">
-          <Link href={userSelect === 'Date Ideas' ? '/the-corner/ideas/create' : '/the-corner/stories/create'}>
-            <div className="flex justify-center items-center h-full">
-              <PlusIcon className="w-16 text-darkText" strokeWidth={1} />
-            </div>
-          </Link>
+        <div>
           {[0, 1, 2, 3, 4, 5, 6, 7].map((col) => {
             return (
               <Fragment key={col}>
                 <CollectionCard
-                  title="Steven McQueen"
-                  classNameBgColor="bg-orange-400"
                 />
               </Fragment>
             );
           })}
-        </Card>
+        </div>
       </section>
     </section>
   );

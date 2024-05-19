@@ -57,7 +57,7 @@ export type UserDataProps = {
     id: string;
     email?: string;
     name?: string;
-    username?: number;
+    username?: string;
     sexual_orientation?: string | null;
     bio?: string;
     birthday?: string | null;

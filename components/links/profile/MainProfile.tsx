@@ -5,7 +5,7 @@ import LeftBar from './LeftBar'
 
 function MainProfile() {
   return (
-    <div className='flex gap-4 md:flex-row flex-col'>
+    <div className='flex gap-4 md:flex-row flex-col-reverse'>
       <div className='flex-[3]'>
         <LeftBar/>
       </div>

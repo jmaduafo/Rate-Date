@@ -17,6 +17,7 @@ module.exports = {
         myBackground60: "rgba(206, 199, 199, .6)",
         myForeground: "#E9E9E9",
         myAccent: "#DF8E74",
+        myWarning: '#E62020',
         mutedBorder: 'rgba(255, 255, 255, .4)',
         darkText: "black",
         dark10: "rgba(0, 0, 0, .05)",
