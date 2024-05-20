@@ -1,46 +1,28 @@
-import { UserDataProps } from "@/types/type";
-import React from "react";
-import Header6 from "./Header6";
+import React from 'react'
+import Header5 from '@/components/Header5';
 import {
-  EllipsisVerticalIcon,
-  EyeIcon,
-  ChatBubbleOvalLeftEllipsisIcon as CommentIcon,
-  BookmarkIcon,
-  HeartIcon,
-} from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/24/solid";
-import Header5 from "./Header5";
+    EyeIcon,
+    ChatBubbleOvalLeftEllipsisIcon as CommentIcon,
+    BookmarkIcon,
+  } from "@heroicons/react/24/outline";
 
-type PostProps = {
-  user: UserDataProps | undefined;
-};
-
-function CollectionCard({}: // title,
-// classNameBgColor,
-{
-  // title: string;
-  // classNameBgColor: string;
-}) {
-  const checkTags = [
-    {
-      category: "NSFW",
-      name: "NSFW",
-    },
-    {
-      category: "Date Idea",
-      name: "Date Idea",
-    },
-    {
-      category: "Location",
-      name: "Outdoors",
-    },
-  ];
+function RecommendedList() {
+    const checkTags = [
+        {
+          category: "NSFW",
+          name: "NSFW",
+        },
+        {
+          category: "Date Idea",
+          name: "Date Idea",
+        },
+      ];
 
   return (
     <div
-      className={`text-darkText py-5 px-4 border-b-dark10 border-b-[1px] hover:bg-dark10 duration-500 rounded-xl`}
+      className={`text-darkText py-3 px-2 border-b-dark10 border-b-[1px] hover:bg-dark10 duration-500 rounded-xl`}
     >
-      <div className="flex justify-between items-start">
+      <div className="">
         <div className="flex items-center gap-2">
           <div className="cursor-pointer w-[40px] h-[40px] rounded-full bg-white"></div>
           <div className="">
@@ -54,17 +36,11 @@ function CollectionCard({}: // title,
             </div>
           </div>
         </div>
-        <div className="cursor-pointer z-[5]">
-          <EllipsisVerticalIcon className="text-darkText w-6" strokeWidth={1} />
-        </div>
       </div>
       <div className="mt-2">
         <div className="cursor-pointer">
           <Header5 title="Winter at Barbados" />
         </div>
-        <p className="text-[12px] text-darkText60 mt-[-5px]">
-          Located at Bridgetown, Barbados
-        </p>
       </div>
       <div className="flex items-center gap-3 mt-2">
         <div className="flex items-center gap-2">
@@ -84,17 +60,10 @@ function CollectionCard({}: // title,
         </div>
         <p className="text-[14px] text-darkText60">+ 4 tags</p>
       </div>
-      <div className="text-darkText60 mt-1 flex items-center gap-1">
-        <StarIcon className="w-3" />
-        <p className="text-[12px]">4.6</p>
-      </div>
       <div className="mt-3">
         <p className="text-[14px]">
           Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
-          commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus
-          et magnis dis parturient montes, nascetur ridiculus mus. Donec quam
-          felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla
-          consequat massa quis e...
+          commodo ligula eget dolor. Aenean...
         </p>
       </div>
       <div className="flex justify-between items-center mt-2">
@@ -104,10 +73,6 @@ function CollectionCard({}: // title,
             <p className="text-[13px] font-medium whitespace-nowrap">
               3 comments
             </p>
-          </div>
-          <div className="flex items-center gap-1">
-            <HeartIcon className="w-5" strokeWidth={1.5} />
-            <p className="text-[13px] font-medium whitespace-nowrap">3 likes</p>
           </div>
           <div className="flex items-center gap-1">
             <BookmarkIcon className="w-5" strokeWidth={1.5} />
@@ -120,7 +85,7 @@ function CollectionCard({}: // title,
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default CollectionCard;
+export default RecommendedList
