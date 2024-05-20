@@ -9,13 +9,13 @@ type CategoryProps = {
 function CategoriesSelect({ children, title, bgColor }: CategoryProps) {
   return (
     <div
-      className={`text-darkText shadow-md w-[50px] h-[40px] flex justify-center items-center rounded-xl ${bgColor}`}
+      className={`cursor-pointer text-darkText shadow-md px-[5rem] my-2 py-7 flex justify-center items-center rounded-xl ${bgColor}`}
     >
       <div>
         <div className="flex justify-center">
             {children}
         </div>
-        <p className="text-center">{title}</p>
+        <p className="text-center whitespace-nowrap">{title}</p>
       </div>
     </div>
   );

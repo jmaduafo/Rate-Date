@@ -67,6 +67,7 @@
     
   }
 
+  /* VERTICAL SCROLLBAR */
   .scrollbar::-webkit-scrollbar {
     width: 4px;
   }
@@ -95,6 +96,36 @@
     border-radius: 5px;
   }
 
+  /* HORIZONTAL SCROLLBAR */
+  .horizontal::-webkit-scrollbar {
+    height: 0px;
+  }
+
+  .horizontal::-webkit-scrollbar-thumb {
+    background-color: rgb(210, 210, 210);
+    border-radius: 5px;
+  }
+
+  .horizontal::-webkit-scrollbar-track {
+    background-color: transparent;
+    border-radius: 5px;
+  }
+
+  .horizontal::-moz-scrollbar {
+    height: 0px;
+  }
+
+  .horizontal::-moz-scrollbar-thumb {
+    background-color: rgb(210, 210, 210);
+    border-radius: 5px;
+  }
+
+  .horizontal::-moz-scrollbar-track {
+    background-color: transparent;
+    border-radius: 5px;
+  }
+
+  /* BODY DOCUMENT SCROLL */
   .bodyScroll::-webkit-scrollbar {
     width: 4px;
   }

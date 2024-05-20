@@ -4,11 +4,11 @@ import MainRightBar from "./MainRightBar";
 
 function MainCornerPage() {
   return (
-    <div className="flex gap-6">
-      <div className="flex-[3]">
+    <div className="md:flex md:gap-6">
+      <div className="md:flex-[3] overflow-x-hidden">
         <MainLeftBar />
       </div>
-      <div className="flex-[1]">
+      <div className="md:flex-[1] md:block hidden">
         <MainRightBar />
       </div>
     </div>
