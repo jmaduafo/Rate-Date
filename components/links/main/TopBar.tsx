@@ -10,6 +10,7 @@ import {
   ReactionDataProps,
   UserDataProps,
   ScheduleChartDataProps,
+  EthnicDataProps
 } from "@/types/type";
 import SingleDateList from "@/components/SingleDateList";
 import { FireIcon } from "@heroicons/react/24/solid";
@@ -24,33 +25,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { clearCachesByServerAction } from "@/utils/general/revalidatePath";
 import ScheduleBarChart from "./ScheduleBarChart";
 import { scheduleDayFormat } from "@/utils/general/dateTimeFile";
-
-// Goal: Use the schedules data from supabase backend to create a bar chart and style
-
-// const App = () => {
-//     // Sample data
-//     const data = [
-//         { name: "Geeksforgeeks", students: 400 },
-//         { name: "Technical scripter", students: 700 },
-//         { name: "Geek-i-knack", students: 200 },
-//         { name: "Geek-o-mania", students: 1000 },
-//     ];
-
-//     return (
-//         <BarChart width={600} height={600} data={data}>
-//             <Bar dataKey="students" fill="green" />
-//             <CartesianGrid stroke="#ccc" />
-//             <XAxis dataKey="name" />
-//             <YAxis />
-//         </BarChart>
-//     );
-// };
+import DemographicChart from "../profile/DemographicChart";
 
 function TopBar() {
   const [chartLoading, setChartLoading] = useState(true);
   const [chartData, setChartData] = useState<
     ScheduleChartDataProps[] | undefined
   >();
+  const [ethnicData, setEthnicData] = useState<EthnicDataProps[] | undefined>();
   const [topData, setTopData] = useState<DateDataProps[] | undefined>();
   const [zodiacData, setZodiacData] = useState<UserDataProps[] | undefined>();
   const [horoscope, setHoroscope] = useState<string | undefined>();
@@ -74,10 +56,10 @@ function TopBar() {
     } else {
       setUserID(userData?.user?.id);
 
-      const { data: zodiac, error: zodiacError } = await supabase
-        .from("users")
-        .select("id, birthday")
-        .eq("id", userData?.user?.id);
+      // const { data: zodiac, error: zodiacError } = await supabase
+      //   .from("users")
+      //   .select("id, birthday")
+      //   .eq("id", userData?.user?.id);
 
       const { data: topData, error: topError } = await supabase
         .from("dates")
@@ -98,13 +80,19 @@ function TopBar() {
         .eq("user_id", userData?.user?.id)
         .order("date_schedule", { ascending: true });
 
-      if (zodiacError) {
-        console.log(zodiacError.message);
-      } else {
-        setZodiacData(zodiac);
-        // CALL HOROSCOPE FUNCTION TO GET THE DAILY HOROSCOPE
-        // fetchHoroscope(zodiac[0].birthday)
-      }
+      const { data: ethnicityData, error: ethnicityError } = await supabase
+        .from("dates")
+        .select("id, user_id, ethnicity, date_name")
+        .neq("ethnicity", "Don't know")
+        .eq("user_id", userData?.user?.id);
+
+      // if (zodiacError) {
+      //   console.log(zodiacError.message);
+      // } else {
+      //   setZodiacData(zodiac);
+      //   // CALL HOROSCOPE FUNCTION TO GET THE DAILY HOROSCOPE
+      //   // fetchHoroscope(zodiac[0].birthday)
+      // }
 
       if (topError) {
         console.log(topError.message);
@@ -126,7 +114,9 @@ function TopBar() {
 
         scheduleData?.forEach((list, i) => {
           const filterCount = scheduleData?.filter(
-            (el) => scheduleDayFormat(el.date_schedule) === scheduleDayFormat(list.date_schedule)
+            (el) =>
+              scheduleDayFormat(el.date_schedule) ===
+              scheduleDayFormat(list.date_schedule)
           ).length;
 
           array.push({
@@ -136,10 +126,36 @@ function TopBar() {
         });
 
         const newArray = [
-          ...new Map(array.map((item) => [item["date_schedule"], item])).values(),
+          ...new Map(
+            array.map((item) => [item["date_schedule"], item])
+          ).values(),
         ];
 
         setChartData(newArray);
+      }
+
+      if (ethnicityError) {
+        console.error(ethnicityError.message);
+      } else {
+        let array: EthnicDataProps[] = [];
+
+        ethnicityData?.forEach((list, i) => {
+          const filterCount = ethnicityData?.filter(
+            (el) => el.ethnicity === list.ethnicity
+          ).length;
+
+          array.push({
+            ethnicity: list.ethnicity,
+            ethnicityCount: filterCount,
+          });
+        });
+
+        const newArray = [
+          ...new Map(array.map((item) => [item["ethnicity"], item])).values(),
+        ];
+
+        // SETS A UNIQUE OBJECT ARRAY BASED ON THE ETHNICITY
+        setEthnicData(newArray);
       }
     }
   }
@@ -246,11 +262,11 @@ function TopBar() {
     <div className="flex md:flex-row flex-col gap-6 md:mt-0 mt-8">
       {/* CHART CARD */}
       <Card className="flex-[1.5]">
-        <ScheduleBarChart chartData={chartData}/>
+        <ScheduleBarChart chartData={chartData} />
       </Card>
       {/* HOROSCOPE CARD */}
       <Card className="flex-[1.5] flex flex-col">
-        <div className="flex justify-between items-center">
+        {/* <div className="flex justify-between items-center">
           <Header3 title="Daily Horoscope" />
           {zodiacData && zodiacData?.length ? (
             <div className="w-[30px] object-cover">
@@ -288,7 +304,8 @@ function TopBar() {
             <Skeleton className="animate-skeleton h-5 w-full rounded" />
             <Skeleton className="animate-skeleton h-5 w-full rounded mt-2" />
           </div>
-        )}
+        )} */}
+        <DemographicChart ethnicData={ethnicData}/>
       </Card>
       {/* TOP DATE CARD */}
       {topData && topData.length ? (

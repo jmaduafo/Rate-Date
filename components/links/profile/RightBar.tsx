@@ -12,7 +12,6 @@ import SecondaryButton from "@/components/SecondaryButton";
 import { Skeleton } from "@/components/ui/skeleton";
 
 function RightBar() {
-  const [ethnicData, setEthnicData] = useState<EthnicDataProps[] | undefined>();
   const [userData, setUserData] = useState<UserDataProps[] | undefined>();
   const [followingCount, setFollowingCount] = useState<number>(0);
   const [followerCount, setFollowerCount] = useState<number>(0);
@@ -114,43 +113,7 @@ function RightBar() {
     }
   }
 
-  // async function getEthnicities() {
-  //   const { data: userData, error: userError } = await supabase.auth.getUser();
-
-  //   if (userError) {
-  //     router.push("/login");
-  //   } else {
-  //     const { data, error } = await supabase
-  //       .from("dates")
-  //       .select("id, user_id, ethnicity, date_name")
-  //       .neq("ethnicity", "Don't know")
-  //       .eq("user_id", userData?.user?.id);
-
-  //     if (error) {
-  //       console.error(error.message);
-  //     } else {
-  //       let array: EthnicDataProps[] = [];
-
-  //       data?.forEach((list, i) => {
-  //         const filterCount = data?.filter(
-  //           (el) => el.ethnicity === list.ethnicity
-  //         ).length;
-
-  //         array.push({
-  //           ethnicity: list.ethnicity,
-  //           ethnicityCount: filterCount,
-  //         });
-  //       });
-
-  //       const newArray = [
-  //         ...new Map(array.map((item) => [item["ethnicity"], item])).values(),
-  //       ];
-
-  //       // SETS A UNIQUE OBJECT ARRAY BASED ON THE ETHNICITY
-  //       setEthnicData(newArray);
-  //     }
-  //   }
-  // }
+  
 
   useEffect(() => {
     // getEthnicities();

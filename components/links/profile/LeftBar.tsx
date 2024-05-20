@@ -42,18 +42,24 @@ function LeftBar() {
       <section className="">
         <div className="">
           {userSelect === "Date Ideas" ? (
-            <div className="flex items-center gap-2 text-darkText mb-3">
-              <PlusCircleIcon className="w-6" />
-              <p className="text-[15px] tracking-tighter">Create a date idea</p>
-            </div>
-          ) : (
-            userSelect === "Date Stories" && (
+            <Link href="/the-corner/ideas/create">
               <div className="flex items-center gap-2 text-darkText mb-3">
                 <PlusCircleIcon className="w-6" />
                 <p className="text-[15px] tracking-tighter">
-                  Create a date story
+                  Create a date idea
                 </p>
               </div>
+            </Link>
+          ) : (
+            userSelect === "Date Stories" && (
+              <Link href='/the-corner/stories/create'>
+                <div className="flex items-center gap-2 text-darkText mb-3">
+                  <PlusCircleIcon className="w-6" />
+                  <p className="text-[15px] tracking-tighter">
+                    Create a date story
+                  </p>
+                </div>
+              </Link>
             )
           )}
         </div>
@@ -78,8 +84,7 @@ function LeftBar() {
           {[0, 1, 2, 3, 4, 5, 6, 7].map((col) => {
             return (
               <Fragment key={col}>
-                <CollectionCard
-                />
+                <CollectionCard />
               </Fragment>
             );
           })}
