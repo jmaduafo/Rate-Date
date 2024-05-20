@@ -73,10 +73,10 @@ function RecommendedList() {
               3 comments
             </p>
           </div>
-          <div className="flex items-center gap-1">
+          {/* <div className="flex items-center gap-1">
             <BookmarkIcon className="w-5" strokeWidth={1.5} />
             <p className="text-[13px] font-medium whitespace-nowrap">2 saves</p>
-          </div>
+          </div> */}
         </div>
         <div className="flex items-center gap-1">
           <EyeIcon className="w-5" strokeWidth={1.5} />
