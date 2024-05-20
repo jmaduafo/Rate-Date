@@ -42,7 +42,7 @@ function RecommendedList() {
           <Header5 title="Winter at Barbados" />
         </div>
       </div>
-      <div className="flex items-center gap-3 mt-2">
+      <div className="flex items-center gap-3 mt-1">
         <div className="flex items-center gap-2">
           {checkTags.map((tag) => {
             return (
@@ -61,13 +61,12 @@ function RecommendedList() {
         <p className="text-[14px] text-darkText60">+ 4 tags</p>
       </div>
       <div className="mt-3">
-        <p className="text-[14px]">
-          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
-          commodo ligula eget dolor. Aenean...
+        <p className="text-[13px]">
+          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean...
         </p>
       </div>
-      <div className="flex justify-between items-center mt-2">
-        <div className="flex items-center gap-4">
+      <div className="flex justify-between items-center gap-2 mt-2">
+        <div className="flex items-center gap-2">
           <div className="flex items-center gap-1">
             <CommentIcon className="w-5" strokeWidth={1.5} />
             <p className="text-[13px] font-medium whitespace-nowrap">

@@ -1,8 +1,9 @@
 import React from 'react'
+import MainCornerPage from '@/components/links/the-corner/MainCornerPage'
 
 function TheCorner() {
   return (
-    <div>TheCorner</div>
+    <div><MainCornerPage/></div>
   )
 }
 
