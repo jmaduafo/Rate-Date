@@ -13,6 +13,10 @@ import TagsList from "./TagsList";
 import { useRouter } from "next/navigation";
 import { ImageProps } from "@/types/type";
 import { Switch } from "@/components/ui/switch";
+import { createClient } from "@/utils/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
+import Loading from "@/components/Loading";
+import { v4 as uuidv4 } from "uuid";
 
 function CreateDateIdeas() {
   const [title, setTitle] = useState("");
@@ -22,11 +26,14 @@ function CreateDateIdeas() {
   const [cost, setCost] = useState("");
   const [tagArray, setTagArray] = useState<string[]>([]);
   const [imageIdea, setImageIdea] = useState<ImageProps | undefined>();
-  const [ NSFWSwitch, setNSFWSwitch ] = useState(false)
+  const [NSFWSwitch, setNSFWSwitch] = useState(false);
 
   const [isNext, setIsNext] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
+  const supabase = createClient();
+  const { toast } = useToast();
 
   function goBack() {
     router.back();
@@ -49,12 +56,94 @@ function CreateDateIdeas() {
     }
   };
 
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (!title.length || !content.length || !cost.length || !category.length) {
+      toast({
+        title: "Whoops!",
+        description: "All entries must not be left empty",
+      });
+    } else {
+      setLoading(true);
+      const { data: authData, error: authError } =
+        await supabase.auth.getUser();
+
+      if (authError) {
+        router.push("/login");
+        router.refresh();
+      } else {
+        if (imageIdea) {
+          const { data: storageData, error: storageError } =
+            await supabase.storage
+              .from("corner")
+              .upload(
+                "ideas/" + authData?.user?.id + "/" + uuidv4(),
+                imageIdea?.file as File
+              );
+
+          if (storageError) {
+            console.log(storageError.message);
+          } else {
+            const { data: userData, error: userError } = await supabase
+              .from("users")
+              .select("id, username, name, image")
+              .eq("id", authData?.user?.id);
+
+            if (userError) {
+              toast({
+                title: "Whoops, something went wrong!",
+                description: userError.message,
+              });
+            } else {
+              const { error } = await supabase.from("corner").insert({
+                title,
+                content,
+                date_type: "Date Idea",
+                is_mature: NSFWSwitch ?? false,
+                cost,
+                location,
+                user: userData[0],
+                tags: tagArray,
+                image: imageIdea
+                  ? `https://oevsvjkpdlznvfenlttz.supabase.co/storage/v1/object/public/corner/${storageData?.path}`
+                  : null,
+              });
+
+              if (error) {
+                toast({
+                  title: "Oh no! Something went wrong",
+                  description: error.message,
+                });
+              } else {
+                toast({
+                  title: "Success!",
+                  description: "Your story was posted successfully!",
+                });
+
+                setTitle("");
+                setContent("");
+                setNSFWSwitch(false);
+                setTagArray([])
+                setImageIdea(undefined)
+
+                goBack();
+              }
+            }
+          }
+        }
+      }
+
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="mb-6">
       <div className="text-darkText mb-8">
         <Header2 title="Create Your Idea" />
       </div>
-      <form>
+      <form onSubmit={handleSubmit}>
         {isNext ? (
           <>
             <div className="">
@@ -66,7 +155,16 @@ function CreateDateIdeas() {
               />
             </div>
             <div className="flex justify-end gap-3 items-center mt-10 px-6">
-              <PrimaryButton type="submit">Publish</PrimaryButton>
+              <PrimaryButton type="submit">
+                {loading ? (
+                  <Loading
+                    classNameColor="border-t-myForeground"
+                    classNameSize="w-10 h-10"
+                  />
+                ) : (
+                  "Publish"
+                )}
+              </PrimaryButton>
               <SecondaryButton actionFunction={goBack} type="button">
                 Back
               </SecondaryButton>
@@ -115,7 +213,7 @@ function CreateDateIdeas() {
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 name="location"
-                placeholder="Location"
+                placeholder="New Orleans"
                 className="text-[14px] lg:w-[70%] md:w-[80%] w-full outline-none border-none rounded-lg py-2 px-5"
               />
             </CreateEditCard>
