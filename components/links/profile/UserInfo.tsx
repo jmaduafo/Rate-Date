@@ -31,6 +31,8 @@ function UserInfo({
               src={user?.image}
               alt={`${user?.username}'s profile`}
               className="w-full h-full rounded-full"
+              width={500}
+              height={500}
             />
           </div>
         ) : user && !user?.image && user?.name && (

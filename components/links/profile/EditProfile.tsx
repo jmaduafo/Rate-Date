@@ -22,8 +22,10 @@ import Image from "next/image";
 type EditProps = {
   userData: UserDataProps[] | undefined;
   loading: boolean;
-  setImage?: React.Dispatch<React.SetStateAction<ImageProps | undefined>>;
-  image?: ImageProps | undefined;
+  setChangeImage?: React.Dispatch<React.SetStateAction<ImageProps | undefined>>;
+  changeImage?: ImageProps | undefined;
+  setImage?: React.Dispatch<React.SetStateAction<string | undefined>>;
+  image?: string | undefined;
   updateProfile: React.FormEventHandler<HTMLFormElement>;
   setName: React.Dispatch<React.SetStateAction<string>>;
   name: string;
@@ -49,6 +51,8 @@ function EditProfile({
   updateProfile,
   setImage,
   image,
+  setChangeImage,
+  changeImage,
   setName,
   name,
   setUsername,
@@ -66,7 +70,7 @@ function EditProfile({
   setRelationStatus,
   relationStatus,
 }: EditProps) {
-
+  
   const onImageChange = (e: React.ChangeEvent) => {
     if (
       (e.target as HTMLInputElement).files &&
@@ -77,7 +81,8 @@ function EditProfile({
       const file = target.files && target.files[0];
 
       reader.onloadend = (e: any) => {
-        setImage && setImage({ imagePreview: e.target.result, file: file });
+        setChangeImage &&
+          setChangeImage({ imagePreview: e.target.result, file: file });
       };
       reader.readAsDataURL(file as Blob);
     }
@@ -95,11 +100,32 @@ function EditProfile({
           <Header4 title="Edit Profile" />
         </SheetHeader>
         {/* EDIT PROFILE FORM */}
-        <div className="flex justify-center items-center">
-          <div className="w-[100px] h-[100px]  object-cover mt-4">
-            <Image src={image?.imagePreview} alt="" width={500} height={500} className="w-full h-full rounded-full" />
+        {changeImage && (
+          <div className="flex justify-center items-center">
+            <div className="w-[100px] h-[100px]  object-cover mt-4">
+              <Image
+                src={changeImage?.imagePreview}
+                alt="user selected profile"
+                width={500}
+                height={500}
+                className="w-full h-full rounded-full"
+              />
+            </div>
           </div>
-        </div>
+        )}
+        {image && !changeImage && (
+          <div className="flex justify-center items-center">
+            <div className="w-[100px] h-[100px]  object-cover mt-4">
+              <Image
+                src={image}
+                alt="user selected profile"
+                width={500}
+                height={500}
+                className="w-full h-full rounded-full"
+              />
+            </div>
+          </div>
+        )}
         <div className="mt-8">
           {userData ? (
             <form className="" onSubmit={updateProfile}>

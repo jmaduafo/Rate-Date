@@ -10,6 +10,7 @@ import EditProfile from "./EditProfile";
 import { useToast } from "@/components/ui/use-toast";
 import SecondaryButton from "@/components/SecondaryButton";
 import { Skeleton } from "@/components/ui/skeleton";
+import { v4 as uuidv4 } from "uuid";
 
 function RightBar() {
   const [userData, setUserData] = useState<UserDataProps[] | undefined>();
@@ -17,7 +18,10 @@ function RightBar() {
   const [followerCount, setFollowerCount] = useState<number>(0);
 
   const [name, setName] = useState<string>("");
-  const [ profileImage, setProfileImage ] = useState<ImageProps | undefined>()
+  const [profileImage, setProfileImage] = useState<string | undefined>();
+  const [changeImage, setChangeImage] = useState<ImageProps | undefined>(
+    undefined
+  );
   const [username, setUsername] = useState<string>("");
   const [pronounsText, setPronounsText] = useState<string | undefined>("");
   const [birthday, setBirthday] = useState<string | undefined>("");
@@ -26,6 +30,7 @@ function RightBar() {
   const [bio, setBio] = useState<string | undefined>("");
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [userID, setUserID] = useState<string | undefined>();
 
   const supabase = createClient();
   const router = useRouter();
@@ -33,6 +38,8 @@ function RightBar() {
 
   async function getUserProfile() {
     const { data: userData, error: userError } = await supabase.auth.getUser();
+
+    setUserID(userData?.user?.id);
 
     if (userError) {
       router.push("/login");
@@ -58,6 +65,7 @@ function RightBar() {
           setPronounsText(
             dataInfo[0]?.pronouns ? dataInfo[0]?.pronouns : undefined
           );
+          setProfileImage(dataInfo[0]?.image ? dataInfo[0]?.image : undefined);
           setBirthday(
             dataInfo[0]?.birthday ? dataInfo[0]?.birthday : undefined
           );
@@ -81,40 +89,53 @@ function RightBar() {
       });
     } else {
       setLoading(true);
-      if (userData) {
-        const { error } = await supabase
-          .from("users")
-          .update({
-            username,
-            bio,
-            pronouns: pronounsText,
-            birthday,
-            relationship_status:
-              relationStatus === "" || relationStatus === "n/a"
-                ? null
-                : relationStatus,
-            sexual_orientation:
-              orientation === "" || orientation === "n/a" ? null : orientation,
-            private: isPrivate,
-          })
-          .eq("id", userData[0]?.id);
+      if (userData && userID) {
+        // console.log(profileImage?.imagePreview + ';' + profileImage?.file)
+        const { data: storageData, error: storageError } =
+          await supabase.storage
+            .from("profile")
+            .upload(userID + "/" + uuidv4(), changeImage?.file as File);
 
-        if (error) {
-          toast({
-            title: error.message,
-          });
+        if (storageError) {
+          console.log(storageError.message);
         } else {
-          toast({
-            title: "Profile updated successfully!",
-          });
+          const { error } = await supabase
+            .from("users")
+            .update({
+              username,
+              bio,
+              pronouns: pronounsText,
+              birthday,
+              image: profileImage
+                ? `https://oevsvjkpdlznvfenlttz.supabase.co/storage/v1/object/public/profile/${storageData?.path}`
+                : null,
+              relationship_status:
+                relationStatus === "" || relationStatus === "n/a"
+                  ? null
+                  : relationStatus,
+              sexual_orientation:
+                orientation === "" || orientation === "n/a"
+                  ? null
+                  : orientation,
+              private: isPrivate,
+            })
+            .eq("id", userData[0]?.id);
+
+          if (error) {
+            toast({
+              title: error.message,
+            });
+          } else {
+            toast({
+              title: "Profile updated successfully!",
+            });
+          }
         }
 
         setLoading(false);
       }
     }
   }
-
-  
 
   useEffect(() => {
     // getEthnicities();
@@ -138,6 +159,8 @@ function RightBar() {
                 updateProfile={updateProfile}
                 setImage={setProfileImage}
                 image={profileImage}
+                setChangeImage={setChangeImage}
+                changeImage={changeImage}
                 setBio={setBio}
                 bio={bio}
                 setBirthday={setBirthday}
