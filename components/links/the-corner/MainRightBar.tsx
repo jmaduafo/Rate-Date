@@ -26,7 +26,7 @@ function MainRightBar() {
     } else {
         const { data, error } = await supabase
           .from("users")
-          .select("id, name, username")
+          .select("id, name, username, image")
           .order("created_at", { ascending: false })
           .limit(4);
     
@@ -34,7 +34,6 @@ function MainRightBar() {
           console.log(error.message);
         } else {
           setLateUsers(data);
-          console.log("read");
         }
 
     }

@@ -12,6 +12,7 @@ import { getInitials } from '@/utils/general/initials'
 import { HomeIcon, ChartBarIcon, QueueListIcon, UserCircleIcon, ArrowRightEndOnRectangleIcon as LogoutIcon, Cog6ToothIcon } from '@heroicons/react/24/solid'
 import { Skeleton } from "@/components/ui/skeleton"
 import ScreenLoading from './ScreenLoading'
+import Image from 'next/image'
 import Loading from './Loading'
 
 type User = {
@@ -20,7 +21,7 @@ type User = {
 }
 
 function SideBar() {
-    const [ userData, setUserData ] = useState<User[] | null>()
+    const [ userData, setUserData ] = useState<User | null>()
     const [ loading, setLoading ] = useState<boolean>(false)
     const [ logOutLoading, setLogOutLoading ] = useState<boolean>(false)
 
@@ -90,9 +91,10 @@ function SideBar() {
                     title: "Uh oh! Something went wrong.",
                     description: errorMessage.message,
                 })
+            } else {
+                setUserData(dataName[0])
             }
 
-            setUserData(dataName)
             setLoading(false)
         }
     }
@@ -104,20 +106,20 @@ function SideBar() {
   return (
     <>
     <Link href='/profile'>
-        <div className='hover:bg-dark10 p-3 rounded-xl cursor-pointer duration-500 gap-6 items-center md:flex hidden'>
+        <div className='hover:bg-dark10 p-3 rounded-xl cursor-pointer duration-500 gap-4 items-center md:flex hidden'>
             {/* PROFILE IMAGE */}
-            {userData && !userData[0].image
+            {userData && !userData?.image
             ?
             <div className='w-[50px] h-[50px] bg-myForeground rounded-full flex justify-center items-center'>
                     <h5 className='text-[18px] text-darkText60 font-bold uppercase'>
-                        {getInitials(userData[0]?.name)}
+                        {getInitials(userData?.name)}
                     </h5>
                 </div>
             :
                 (
-                userData && userData[0].image ?
-                    <div>
-
+                userData && userData?.image && userData?.name ?
+                    <div className='w-[50px] h-[50px] object-cover rounded-full'>
+                        <Image src={userData?.image} alt={userData?.name} width={500} height={500} className='w-full h-full rounded-full'/>
                     </div>
                     :
                     <Skeleton className='animate-skeleton w-[50px] h-[50px] rounded-full'/>
@@ -128,7 +130,7 @@ function SideBar() {
                 {userData ?
                     <>
                         <p className='text-[14px] md:mb-[-5px]'>Good {greetings()},</p>
-                        <p className='text-[14px]'>{userData[0]?.name}</p>
+                        <p className='text-[14px]'>{userData?.name}</p>
                     </>
                     :
                     <>
