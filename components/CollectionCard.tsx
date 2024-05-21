@@ -1,6 +1,5 @@
-import { UserDataProps } from "@/types/type";
 import React from "react";
-import Header6 from "./Header6";
+import Image from "next/image";
 import {
   EllipsisVerticalIcon,
   EyeIcon,
@@ -10,29 +9,31 @@ import {
 } from "@heroicons/react/24/outline";
 import { StarIcon } from "@heroicons/react/24/solid";
 import Header5 from "./Header5";
+import { PostProps } from "@/types/type";
+import { getInitials } from "@/utils/general/initials";
+import {
+  futureHoursFromNow,
+  futureTimeFromNow,
+} from "@/utils/general/dateTimeFile";
+import parse from 'html-react-parser';
 
-type PostProps = {
-  user: UserDataProps | undefined;
+type PostTypeProps = {
+  info: PostProps | undefined;
 };
 
-function CollectionCard({}: // title,
-// classNameBgColor,
-{
-  // title: string;
-  // classNameBgColor: string;
-}) {
+function CollectionCard({ info }: PostTypeProps) {
   const checkTags = [
     {
       category: "NSFW",
-      name: "NSFW",
+      name: info?.is_nsfw ? "NSFW" : null,
     },
     {
-      category: "Date Idea",
-      name: "Date Idea",
+      category: "Date Type",
+      name: info?.date_type ?? null,
     },
     {
-      category: "Location",
-      name: "Outdoors",
+      category: "Date Category",
+      name: info?.category ?? null,
     },
   ];
 
@@ -42,15 +43,43 @@ function CollectionCard({}: // title,
     >
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-2">
-          <div className="cursor-pointer w-[40px] h-[40px] rounded-full bg-white"></div>
-          <div className="">
-            <div className="flex items-center gap-1">
-              <p className="text-[16px]">Gianna</p>
-              <p className="text-[14px] text-darkText60">&#x2022;</p>
-              <p className="text-[14px] text-darkText60">@gia87</p>
+          {info?.user?.image ? (
+            <div className="cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
+              <Image
+                src={info?.user?.image}
+                alt={`${info?.user?.name}'s profile`}
+                width={500}
+                height={500}
+                className="w-full h-full rounded-full"
+              />
             </div>
+          ) : (
+            <div className="flex justify-center items-center cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
+              {info?.user?.name ? <p>{getInitials(info?.user?.name)}</p> : null}
+            </div>
+          )}
+          <div className="">
+            {info?.user ? (
+              <div className="flex items-center gap-1">
+                <p className="text-[16px]">{info?.user?.name}</p>
+                <p className="text-[14px] text-darkText60">&#x2022;</p>
+                <p className="text-[14px] text-darkText60">
+                  @{info?.user?.username}
+                </p>
+              </div>
+            ) : null}
             <div className="mt-[-3px]">
-              <p className="italic text-[13px] text-darkText60">1 day ago</p>
+              {info?.created_at ? (
+                <p className="italic text-[13px] text-darkText60">
+                  {futureHoursFromNow(new Date(info?.created_at)) >= 24
+                    ? Math.round(futureTimeFromNow(new Date(info?.created_at)))
+                    : Math.round(futureHoursFromNow(new Date(info?.created_at)))}{" "}
+                  {futureHoursFromNow(new Date(info?.created_at)) >= 24
+                    ? "days"
+                    : "hours"}{" "}
+                  ago
+                </p>
+              ) : null}
             </div>
           </div>
         </div>
@@ -58,44 +87,61 @@ function CollectionCard({}: // title,
           <EllipsisVerticalIcon className="text-darkText w-6" strokeWidth={1} />
         </div>
       </div>
+      {info?.image ? (
+        <div className="w-full rounded object-cover mt-4">
+          <Image
+            src={info?.image}
+            alt={`${info?.title} display`}
+            width={500}
+            height={500}
+            className="w-full h-full rounded-xl"
+          />
+        </div>
+      ) : null}
       <div className="mt-2">
         <div className="cursor-pointer">
-          <Header5 title="Winter at Barbados" />
+          {info?.title ? <Header5 title={info?.title} /> : null}
         </div>
-        <p className="text-[12px] text-darkText60 mt-[-5px]">
-          Located at Bridgetown, Barbados
-        </p>
+        {info?.location ? (
+          <p className="text-[12px] text-darkText60 mt-[-5px]">
+            Located at {info?.location}
+          </p>
+        ) : null}
       </div>
       <div className="flex items-center gap-3 mt-2">
         <div className="flex items-center gap-2">
           {checkTags.map((tag) => {
-            return (
-              <div className="" key={tag.category}>
-                <p
-                  className={`${
-                    tag.name === "NSFW" ? "bg-myWarning" : "bg-myAccent"
-                  } text-[13px] rounded-full px-3 py-[2px]`}
-                >
-                  {tag.name}
-                </p>
-              </div>
-            );
+            if (tag.name) {
+              return (
+                <div className="" key={tag.category}>
+                  <p
+                    className={`${
+                      tag.name === "NSFW" ? "bg-myWarning" : "bg-myAccent"
+                    } text-[13px] rounded-full px-3 py-[2px]`}
+                  >
+                    {tag.name}
+                  </p>
+                </div>
+              );
+            }
           })}
         </div>
-        <p className="text-[14px] text-darkText60">+ 4 tags</p>
+        {info?.tags ? (
+          <p className="text-[14px] text-darkText60">
+            + {info?.tags?.length} tags
+          </p>
+        ) : null}
       </div>
       <div className="text-darkText60 mt-1 flex items-center gap-1">
         <StarIcon className="w-3" />
         <p className="text-[12px]">4.6</p>
       </div>
       <div className="mt-3">
-        <p className="text-[14px]">
-          Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
-          commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus
-          et magnis dis parturient montes, nascetur ridiculus mus. Donec quam
-          felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla
-          consequat massa quis e...
-        </p>
+        {info?.content ? (
+          <p className="text-[14px]">
+            {parse(info?.content)}
+          </p>
+        ) : null}
       </div>
       <div className="flex justify-between items-center mt-2">
         <div className="flex items-center gap-4">
@@ -114,10 +160,12 @@ function CollectionCard({}: // title,
             <p className="text-[13px] font-medium whitespace-nowrap">2 saves</p>
           </div>
         </div>
-        <div className="flex items-center gap-1">
-          <EyeIcon className="w-5" strokeWidth={1.5} />
-          <p className="text-[13px] font-medium whitespace-nowrap">300</p>
-        </div>
+        {typeof info?.views === 'number' ? (
+          <div className="flex items-center gap-1">
+            <EyeIcon className="w-5" strokeWidth={1.5} />
+            <p className="text-[13px] font-medium whitespace-nowrap">{info?.views}</p>
+          </div>
+        ) : null}
       </div>
     </div>
   );
