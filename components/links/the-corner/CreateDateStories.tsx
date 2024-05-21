@@ -15,6 +15,7 @@ import { ImageProps } from "@/types/type";
 import Image from "next/image";
 import TagsList from "./TagsList";
 import { v4 as uuidv4 } from "uuid";
+import Loading from "@/components/Loading";
 
 function CreateDateStories() {
   const [title, setTitle] = useState<string>("");
@@ -23,6 +24,7 @@ function CreateDateStories() {
   const [tagArray, setTagArray] = useState<string[]>([]);
   const [imageIdea, setImageIdea] = useState<ImageProps | undefined>();
   const [isNext, setIsNext] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { toast } = useToast();
   const supabase = createClient();
@@ -45,16 +47,17 @@ function CreateDateStories() {
     }
   };
 
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     if (!title.length || !content.length) {
       toast({
         title: "Whoops!",
-        description: "All entries must not be left empty",
+        description: "All starred entries must not be left empty",
       });
     } else {
+      setLoading(true);
+
       const { data: authData, error: authError } =
         await supabase.auth.getUser();
 
@@ -67,7 +70,7 @@ function CreateDateStories() {
             await supabase.storage
               .from("corner")
               .upload(
-                "stories/" + authData?.user?.id + "/" + uuidv4(),
+                authData?.user?.id + '/' + uuidv4(),
                 imageIdea?.file as File
               );
 
@@ -95,7 +98,7 @@ function CreateDateStories() {
                 image: imageIdea
                   ? `https://oevsvjkpdlznvfenlttz.supabase.co/storage/v1/object/public/corner/${storageData?.path}`
                   : null,
-              });
+              })
 
               if (error) {
                 toast({
@@ -118,13 +121,58 @@ function CreateDateStories() {
               }
             }
           }
+        } else {
+          const { data: userData, error: userError } = await supabase
+              .from("users")
+              .select("id, username, name, image")
+              .eq("id", authData?.user?.id);
+
+            if (userError) {
+              toast({
+                title: "Whoops, something went wrong!",
+                description: userError.message,
+              });
+            } else {
+              const { error } = await supabase.from("corner").insert({
+                title,
+                content,
+                date_type: "Date Story",
+                is_nsfw: isNSFW ?? false,
+                user: userData[0],
+                tags: tagArray,
+                image: null,
+              })
+
+              if (error) {
+                toast({
+                  title: "Oh no! Something went wrong",
+                  description: error.message,
+                });
+              } else {
+                toast({
+                  title: "Success!",
+                  description: "Your story was posted successfully!",
+                });
+
+                setTitle("");
+                setContent("");
+                setIsNSFW(false);
+                setTagArray([])
+                setImageIdea(undefined)
+
+                goBack();
+              }
+            }
+          
         }
       }
+
+      setLoading(false);
     }
   }
 
   function goBack() {
-    router.back()
+    router.back();
   }
 
   return (
@@ -144,7 +192,16 @@ function CreateDateStories() {
               />
             </div>
             <div className="flex justify-end gap-3 items-center mt-10 px-6">
-              <PrimaryButton type="submit">Publish</PrimaryButton>
+              <PrimaryButton type="submit">
+                {loading ? (
+                  <Loading
+                    classNameColor="border-t-myForeground"
+                    classNameSize="w-5 h-5 rounded-full"
+                  />
+                ) : (
+                  "Publish"
+                )}
+              </PrimaryButton>
               <SecondaryButton actionFunction={goBack} type="button">
                 Back
               </SecondaryButton>
@@ -154,20 +211,20 @@ function CreateDateStories() {
           <>
             <CreateEditCard
               title="Title *"
-              description="Give a title for this date idea"
+              description="Give a title for this date story"
             >
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 name="title"
-                placeholder="Sky Diving in the Alps"
+                placeholder="I'm a straight man but I accidentally went on a date with a guy"
                 className="text-[14px] lg:w-[70%] md:w-[80%] w-full outline-none border-none rounded-lg py-2 px-5"
               />
             </CreateEditCard>
             <CreateEditCard
               title="Add an Image"
-              description="Select an image that best encapsulates the date. This field is optional."
+              description="Select an image that best encapsulates the story. This field is optional."
             >
               <div className="">
                 <div className={`${imageIdea ? "mb-6" : "mb-0"}`}>
@@ -236,7 +293,7 @@ function CreateDateStories() {
             isNext
               ? "bg-dark30 cursor-not-allowed"
               : "bg-darkText cursor-pointer"
-          } p-2 bg-darkText border-none outline-none rounded-full`}
+          } p-2 border-none outline-none rounded-full`}
         >
           <ChevronRightIcon className="text-myForeground w-7" />
         </button>

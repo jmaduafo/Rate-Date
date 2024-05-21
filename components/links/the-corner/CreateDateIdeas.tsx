@@ -78,7 +78,7 @@ function CreateDateIdeas() {
             await supabase.storage
               .from("corner")
               .upload(
-                "ideas/" + authData?.user?.id + "/" + uuidv4(),
+                authData?.user?.id + "/" + uuidv4(),
                 imageIdea?.file as File
               );
 
@@ -124,11 +124,55 @@ function CreateDateIdeas() {
                 setTitle("");
                 setContent("");
                 setNSFWSwitch(false);
-                setTagArray([])
-                setImageIdea(undefined)
+                setTagArray([]);
+                setImageIdea(undefined);
 
                 goBack();
               }
+            }
+          }
+        } else {
+          const { data: userData, error: userError } = await supabase
+            .from("users")
+            .select("id, username, name, image")
+            .eq("id", authData?.user?.id);
+
+          if (userError) {
+            toast({
+              title: "Whoops, something went wrong!",
+              description: userError.message,
+            });
+          } else {
+            const { error } = await supabase.from("corner").insert({
+              title,
+              content,
+              date_type: "Date Idea",
+              is_mature: NSFWSwitch ?? false,
+              cost,
+              location,
+              user: userData[0],
+              tags: tagArray,
+              image: null,
+            });
+
+            if (error) {
+              toast({
+                title: "Oh no! Something went wrong",
+                description: error.message,
+              });
+            } else {
+              toast({
+                title: "Success!",
+                description: "Your story was posted successfully!",
+              });
+
+              setTitle("");
+              setContent("");
+              setNSFWSwitch(false);
+              setTagArray([]);
+              setImageIdea(undefined);
+
+              goBack();
             }
           }
         }
@@ -159,7 +203,7 @@ function CreateDateIdeas() {
                 {loading ? (
                   <Loading
                     classNameColor="border-t-myForeground"
-                    classNameSize="w-10 h-10"
+                    classNameSize="w-5 h-5 rounded-full"
                   />
                 ) : (
                   "Publish"
@@ -304,7 +348,7 @@ function CreateDateIdeas() {
             isNext
               ? "bg-dark30 cursor-not-allowed"
               : "bg-darkText cursor-pointer"
-          } p-2 bg-darkText border-none outline-none rounded-full`}
+          } p-2 border-none outline-none rounded-full`}
         >
           <ChevronRightIcon className="text-myForeground w-7" />
         </button>
