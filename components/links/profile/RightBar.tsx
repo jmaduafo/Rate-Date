@@ -4,7 +4,7 @@ import Card from "@/components/Card";
 import DemographicChart from "./DemographicChart";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
-import { EthnicDataProps, UserDataProps } from "@/types/type";
+import { EthnicDataProps, ImageProps, UserDataProps } from "@/types/type";
 import UserInfo from "./UserInfo";
 import EditProfile from "./EditProfile";
 import { useToast } from "@/components/ui/use-toast";
@@ -17,6 +17,7 @@ function RightBar() {
   const [followerCount, setFollowerCount] = useState<number>(0);
 
   const [name, setName] = useState<string>("");
+  const [ profileImage, setProfileImage ] = useState<ImageProps | undefined>()
   const [username, setUsername] = useState<string>("");
   const [pronounsText, setPronounsText] = useState<string | undefined>("");
   const [birthday, setBirthday] = useState<string | undefined>("");
@@ -135,6 +136,8 @@ function RightBar() {
                 userData={userData}
                 loading={loading}
                 updateProfile={updateProfile}
+                setImage={setProfileImage}
+                image={profileImage}
                 setBio={setBio}
                 bio={bio}
                 setBirthday={setBirthday}

@@ -73,3 +73,8 @@ export type ReactionDataProps = {
     user_id: string;
 
 }
+
+export type ImageProps = {
+    imagePreview: any;
+    file: File | null;
+  };

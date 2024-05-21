@@ -9,18 +9,21 @@ import {
 } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 import Loading from "@/components/Loading";
-
+import { ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 import Header4 from "@/components/Header4";
 import {
   pronouns,
   sexualOrientation,
   relationshipStatus,
 } from "@/utils/general/userFormData";
-import { UserDataProps } from "@/types/type";
+import { UserDataProps, ImageProps } from "@/types/type";
+import Image from "next/image";
 
 type EditProps = {
   userData: UserDataProps[] | undefined;
   loading: boolean;
+  setImage?: React.Dispatch<React.SetStateAction<ImageProps | undefined>>;
+  image?: ImageProps | undefined;
   updateProfile: React.FormEventHandler<HTMLFormElement>;
   setName: React.Dispatch<React.SetStateAction<string>>;
   name: string;
@@ -44,6 +47,8 @@ function EditProfile({
   userData,
   loading,
   updateProfile,
+  setImage,
+  image,
   setName,
   name,
   setUsername,
@@ -61,6 +66,23 @@ function EditProfile({
   setRelationStatus,
   relationStatus,
 }: EditProps) {
+
+  const onImageChange = (e: React.ChangeEvent) => {
+    if (
+      (e.target as HTMLInputElement).files &&
+      (e.target as HTMLInputElement).files?.length
+    ) {
+      let reader = new FileReader();
+      const target = e.target as HTMLInputElement;
+      const file = target.files && target.files[0];
+
+      reader.onloadend = (e: any) => {
+        setImage && setImage({ imagePreview: e.target.result, file: file });
+      };
+      reader.readAsDataURL(file as Blob);
+    }
+  };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -73,9 +95,29 @@ function EditProfile({
           <Header4 title="Edit Profile" />
         </SheetHeader>
         {/* EDIT PROFILE FORM */}
+        <div className="flex justify-center items-center">
+          <div className="w-[100px] h-[100px]  object-cover mt-4">
+            <Image src={image?.imagePreview} alt="" width={500} height={500} className="w-full h-full rounded-full" />
+          </div>
+        </div>
         <div className="mt-8">
           {userData ? (
             <form className="" onSubmit={updateProfile}>
+              <div className="flex items-center gap-3 bg-darkText60 mb-3">
+                <label
+                  htmlFor="fileUpload"
+                  className="shadow-md hover:opacity-75 duration-500 cursor-pointer w-full px-3 py-2 bg-darkText60 text-myForeground rounded-xl border-[1px] border-[#ffffff20]"
+                >
+                  Upload an Image
+                </label>
+                {/* <ArrowDownTrayIcon className="w-6 text-myForeground" strokeWidth={1}/> */}
+                <input
+                  id="fileUpload"
+                  type="file"
+                  className="hidden"
+                  onChange={onImageChange}
+                />
+              </div>
               {/* NAME INPUT */}
               <div className="flex flex-col gap-2 mb-3">
                 <label htmlFor="name">Name</label>
