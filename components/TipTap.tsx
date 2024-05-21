@@ -9,17 +9,19 @@ const Tiptap = ({
   setDescription,
   description,
   title,
+  placeholder
 }: {
   setDescription?: (value: React.SetStateAction<string>) => void;
   description: string;
   title: string;
+  placeholder: string
 }) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure(),
       Placeholder.configure({
         // Use a placeholder:
-        placeholder: "Write your story …",
+        placeholder: placeholder,
       }),
     ],
     content: description,
@@ -35,7 +37,7 @@ const Tiptap = ({
 
   return (
     <>
-      <ToolBar editor={editor} title={title} />
+      <ToolBar editor={editor} />
       <EditorContent editor={editor} />
     </>
   );

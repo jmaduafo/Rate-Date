@@ -68,7 +68,7 @@ function CreateDateStories() {
           className="placeholder-dark30 text-[30px] tracking-tight text-darkText font-medium px-4 py-2 rounded-xl outline-none border-none bg-transparent mb-2 w-full"
         />
       </div>
-      <Tiptap title={title} description={content} setDescription={setContent} />
+      <Tiptap placeholder='Write your story...' title={title} description={content} setDescription={setContent} />
       <div className="flex items-center justify-end gap-3 my-6 px-6">
         <p className="text-darkText">Mature?</p>
         <Switch checked={isNSFW} onCheckedChange={setIsNSFW} />

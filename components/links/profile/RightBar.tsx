@@ -65,7 +65,7 @@ function RightBar() {
           setPronounsText(
             dataInfo[0]?.pronouns ? dataInfo[0]?.pronouns : undefined
           );
-          setProfileImage(dataInfo[0]?.image ? dataInfo[0]?.image : undefined);
+          setProfileImage(dataInfo[0]?.image ? dataInfo[0]?.image : null);
           setBirthday(
             dataInfo[0]?.birthday ? dataInfo[0]?.birthday : undefined
           );
@@ -91,44 +91,46 @@ function RightBar() {
       setLoading(true);
       if (userData && userID) {
         // console.log(profileImage?.imagePreview + ';' + profileImage?.file)
-        const { data: storageData, error: storageError } =
-          await supabase.storage
-            .from("profile")
-            .upload(userID + "/" + uuidv4(), changeImage?.file as File);
+        if (changeImage) {
+          const { data: storageData, error: storageError } =
+            await supabase.storage
+              .from("profile")
+              .upload(userID + "/" + uuidv4(), changeImage?.file as File);
 
-        if (storageError) {
-          console.log(storageError.message);
-        } else {
-          const { error } = await supabase
-            .from("users")
-            .update({
-              username,
-              bio,
-              pronouns: pronounsText,
-              birthday,
-              image: profileImage
-                ? `https://oevsvjkpdlznvfenlttz.supabase.co/storage/v1/object/public/profile/${storageData?.path}`
-                : null,
-              relationship_status:
-                relationStatus === "" || relationStatus === "n/a"
-                  ? null
-                  : relationStatus,
-              sexual_orientation:
-                orientation === "" || orientation === "n/a"
-                  ? null
-                  : orientation,
-              private: isPrivate,
-            })
-            .eq("id", userData[0]?.id);
-
-          if (error) {
-            toast({
-              title: error.message,
-            });
+          if (storageError) {
+            console.log(storageError.message);
           } else {
-            toast({
-              title: "Profile updated successfully!",
-            });
+            const { error } = await supabase
+              .from("users")
+              .update({
+                username,
+                bio,
+                pronouns: pronounsText,
+                birthday,
+                image: changeImage
+                  ? `https://oevsvjkpdlznvfenlttz.supabase.co/storage/v1/object/public/profile/${storageData?.path}`
+                  : profileImage,
+                relationship_status:
+                  relationStatus === "" || relationStatus === "n/a"
+                    ? null
+                    : relationStatus,
+                sexual_orientation:
+                  orientation === "" || orientation === "n/a"
+                    ? null
+                    : orientation,
+                private: isPrivate,
+              })
+              .eq("id", userData[0]?.id);
+
+            if (error) {
+              toast({
+                title: error.message,
+              });
+            } else {
+              toast({
+                title: "Profile updated successfully!",
+              });
+            }
           }
         }
 

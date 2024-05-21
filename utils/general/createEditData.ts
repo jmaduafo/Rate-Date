@@ -123,3 +123,53 @@ export const durationUnits = [
     'years'    
 ]
 
+export const costList = [
+    {
+        'value': '',
+        'innerText': 'Select one'
+    },
+    {
+        'value': 'Free',
+        'innerText': 'Free'
+    },
+    {
+        'value': 'Budget-Friendly',
+        'innerText': 'Budget-Friendly'
+    },
+    {
+        'value': 'Moderate',
+        'innerText': 'Moderate'
+    },
+    {
+        'value': 'Expensive',
+        'innerText': 'Expensive'
+    },
+]
+
+export const ideasCategory = [
+    {
+        'value': '',
+        'innerText': 'Select one'
+    },
+    {
+        'value': 'Indoor',
+        'innerText': 'Indoor'
+    },
+    {
+        'value': 'Outdoor',
+        'innerText': 'Outdoor'
+    },
+    {
+        'value': 'Adventurous',
+        'innerText': 'Adventurous'
+    },
+    {
+        'value': 'Romantic',
+        'innerText': 'Romantic'
+    },
+    {
+        'value': 'Sensual',
+        'innerText': 'Sensual'
+    },
+]
+

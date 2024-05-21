@@ -1,8 +1,9 @@
 import React from 'react'
+import CreateDateIdeas from '@/components/links/the-corner/CreateDateIdeas'
 
 function CreateIdea() {
   return (
-    <div>CreateIdea</div>
+    <div><CreateDateIdeas/></div>
   )
 }
 
