@@ -1,14 +1,5 @@
 import React from "react";
 import Image from "next/image";
-import {
-  EllipsisVerticalIcon,
-  EyeIcon,
-  ChatBubbleOvalLeftEllipsisIcon as CommentIcon,
-  BookmarkIcon,
-  HeartIcon,
-} from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/24/solid";
-import Header5 from "./Header5";
 import { PostProps } from "@/types/type";
 import { getInitials } from "@/utils/general/initials";
 import {
@@ -17,13 +8,21 @@ import {
 } from "@/utils/general/dateTimeFile";
 import parse from "html-react-parser";
 import { checkForS } from "@/utils/general/isS";
-import Link from "next/link";
+import {
+  EllipsisVerticalIcon,
+  EyeIcon,
+  ChatBubbleOvalLeftEllipsisIcon as CommentIcon,
+  BookmarkIcon,
+  HeartIcon,
+} from "@heroicons/react/24/outline";
+import { StarIcon } from "@heroicons/react/24/solid";
+import Header5 from "@/components/Header5";
 
-type PostTypeProps = {
-  info: PostProps | undefined;
+type Post = {
+  info: PostProps;
 };
 
-function CollectionCard({ info }: PostTypeProps) {
+function DetailPage({ info }: Post) {
   const checkTags = [
     {
       category: "NSFW",
@@ -38,11 +37,8 @@ function CollectionCard({ info }: PostTypeProps) {
       name: info?.category ?? null,
     },
   ];
-
   return (
-    <div
-      className={`text-darkText py-5 px-4 border-b-dark10 border-b-[1px] hover:bg-dark10 duration-500 rounded-xl`}
-    >
+    <div className={`text-darkText w-[70%] mx-auto`}>
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-2">
           {info?.user?.image ? (
@@ -104,7 +100,7 @@ function CollectionCard({ info }: PostTypeProps) {
       ) : null}
       <div className="mt-2">
         <div className="cursor-pointer">
-          {info?.title ? <Link href={`/the-corner/${info?.id}`}><Header5 title={info?.title} /></Link> : null}
+          {info?.title ? <Header5 title={info?.title} /> : null}
         </div>
         {info?.location ? (
           <p className="text-[12px] text-darkText60 mt-[-5px]">
@@ -190,4 +186,4 @@ function CollectionCard({ info }: PostTypeProps) {
   );
 }
 
-export default CollectionCard;
+export default DetailPage;

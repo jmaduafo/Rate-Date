@@ -78,6 +78,20 @@ export type ImageProps = {
   file: File | null;
 };
 
+type CommentProps = {
+    id?: string;
+    content?: string;
+    user_id?: string;
+    corner_id?: string;
+}
+
+type OtherProps = {
+    id?: string;
+    user_id?: string;
+    corner_id?: string;
+}
+
+
 export type PostProps = {
   id: string;
   title?: string;
@@ -92,6 +106,9 @@ export type PostProps = {
   is_mature?: boolean;
   user_id?: string;
   user?: UserDataProps;
+  likes?: OtherProps[];
+  saves?: OtherProps[];
+  comments?: CommentProps[];
   views?: number;
   created_at?: string;
 };

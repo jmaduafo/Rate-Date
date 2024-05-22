@@ -1,4 +1,5 @@
-import React, { Fragment } from "react";
+"use client";
+import React, { Fragment, useEffect, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import {
   LightBulbIcon,
@@ -8,8 +9,17 @@ import {
 import { Speech } from "lucide-react";
 import CategoriesSelect from "./CategoriesSelect";
 import CollectionCard from "@/components/CollectionCard";
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
+import { PostProps } from "@/types/type";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function MainLeftBar() {
+  const supabase = createClient();
+  const router = useRouter();
+
+  const [infoData, setInfoData] = useState<PostProps[] | undefined>();
+
   const categories = [
     {
       title: "Date Ideas",
@@ -32,6 +42,36 @@ function MainLeftBar() {
       bgColor: "bg-[#5C7ED640]",
     },
   ];
+
+  const getInfo = async () => {
+    const { data: cornerData, error: cornerError } = await supabase
+      .from("corner")
+      .select(
+        `
+          *,
+          saves (
+            *
+          ),
+          comments (
+            *
+          ),
+          likes (
+            *
+          )
+        `
+      )
+      .order("created_at", { ascending: false });
+
+    if (cornerError) {
+      console.log(cornerError.message);
+    } else {
+      setInfoData(cornerData);
+    }
+  };
+
+  useEffect(() => {
+    getInfo();
+  }, []);
 
   return (
     <section>
@@ -61,14 +101,22 @@ function MainLeftBar() {
         </div>
       </section>
       <section className="mt-4">
-        <div className="">
-          {[0, 1, 2, 3, 4, 5].map((cat) => {
-            return (
-              <Fragment key={cat}>
-                <CollectionCard/>
-              </Fragment>
-            );
-          })}
+        <div>
+          {infoData
+            ? infoData.map((info) => {
+                return (
+                  <Fragment key={info?.id}>
+                    <CollectionCard info={info} />
+                  </Fragment>
+                );
+              })
+            : [0, 1, 2, 3, 4, 5, 6, 7].map((col) => {
+                return (
+                  <Fragment key={col}>
+                    <Skeleton className=""/>
+                  </Fragment>
+                );
+              })}
         </div>
       </section>
     </section>

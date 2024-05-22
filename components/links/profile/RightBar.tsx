@@ -145,8 +145,8 @@ function RightBar() {
   }, []);
 
   return (
-    <section className="relative">
-      <Card className="md:sticky top-0 w-full flex justify-center items-center">
+    <section className="md:sticky top-[20px]">
+      <Card className="w-full flex justify-center items-center">
         {/* <DemographicChart ethnicData={ethnicData}/> */}
         {userData ? (
           <UserInfo

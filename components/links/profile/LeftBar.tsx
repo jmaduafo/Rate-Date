@@ -56,7 +56,18 @@ function LeftBar() {
     } else {
       const { data: cornerData, error: cornerError } = await supabase
         .from("corner")
-        .select()
+        .select(`
+          *,
+          saves (
+            *
+          ),
+          comments (
+            *
+          ),
+          likes (
+            *
+          )
+        `)
         .eq("user_id", authData?.user?.id);
 
       if (cornerError) {
