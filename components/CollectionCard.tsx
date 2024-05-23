@@ -79,8 +79,16 @@ function CollectionCard({ info }: PostTypeProps) {
                         futureHoursFromNow(new Date(info?.created_at))
                       )}{" "}
                   {futureHoursFromNow(new Date(info?.created_at)) >= 24
-                    ? "days"
-                    : "hours"}{" "}
+                    ? `day${checkForS(
+                        Math.round(
+                          futureTimeFromNow(new Date(info?.created_at))
+                        )
+                      )}`
+                    : `hour${checkForS(
+                        Math.round(
+                          futureHoursFromNow(new Date(info?.created_at))
+                        )
+                      )}`}{" "}
                   ago
                 </p>
               ) : null}
@@ -104,7 +112,11 @@ function CollectionCard({ info }: PostTypeProps) {
       ) : null}
       <div className="mt-2">
         <div className="cursor-pointer">
-          {info?.title ? <Link href={`/the-corner/${info?.id}`}><Header5 title={info?.title} /></Link> : null}
+          {info?.title ? (
+            <Link href={`/the-corner/${info?.id}`}>
+              <Header5 title={info?.title} />
+            </Link>
+          ) : null}
         </div>
         {info?.location ? (
           <p className="text-[12px] text-darkText60 mt-[-5px]">

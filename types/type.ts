@@ -78,11 +78,13 @@ export type ImageProps = {
   file: File | null;
 };
 
-type CommentProps = {
+export type CommentProps = {
     id?: string;
     content?: string;
     user_id?: string;
     corner_id?: string;
+    users?: UserDataProps;
+    created_at?: string;
 }
 
 type OtherProps = {

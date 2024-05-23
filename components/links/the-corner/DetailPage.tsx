@@ -13,10 +13,13 @@ import {
   EyeIcon,
   ChatBubbleOvalLeftEllipsisIcon as CommentIcon,
   BookmarkIcon,
-  HeartIcon,
+  HeartIcon as HeartOutline,
 } from "@heroicons/react/24/outline";
+import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
 import { StarIcon } from "@heroicons/react/24/solid";
 import Header5 from "@/components/Header5";
+import Header1 from "@/components/Header1";
+import LineBreak from "@/components/LineBreak";
 
 type Post = {
   info: PostProps;
@@ -38,8 +41,11 @@ function DetailPage({ info }: Post) {
     },
   ];
   return (
-    <div className={`text-darkText w-[70%] mx-auto`}>
-      <div className="flex justify-between items-start">
+    <div className={`text-darkText`}>
+      <div className="">
+        {info?.title ? <Header1 title={info?.title} /> : null}
+      </div>
+      <div className="flex justify-between items-start mt-5">
         <div className="flex items-center gap-2">
           {info?.user?.image ? (
             <div className="cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
@@ -75,8 +81,8 @@ function DetailPage({ info }: Post) {
                         futureHoursFromNow(new Date(info?.created_at))
                       )}{" "}
                   {futureHoursFromNow(new Date(info?.created_at)) >= 24
-                    ? "days"
-                    : "hours"}{" "}
+                    ? `day${checkForS(Math.round(futureTimeFromNow(new Date(info?.created_at))))}`
+                    : `hour${checkForS(Math.round(futureHoursFromNow(new Date(info?.created_at))))}`}{" "}
                   ago
                 </p>
               ) : null}
@@ -87,6 +93,12 @@ function DetailPage({ info }: Post) {
           <EllipsisVerticalIcon className="text-darkText w-6" strokeWidth={1} />
         </div>
       </div>
+      <div className="mt-3">
+        <LineBreak />
+      </div>
+      {/* <div className="mt-3">
+        <HeartOutline className="w-7 text-darkText" strokeWidth={1} />
+      </div> */}
       {info?.image ? (
         <div className="w-full rounded object-cover mt-4">
           <Image
@@ -99,16 +111,13 @@ function DetailPage({ info }: Post) {
         </div>
       ) : null}
       <div className="mt-2">
-        <div className="cursor-pointer">
-          {info?.title ? <Header5 title={info?.title} /> : null}
-        </div>
         {info?.location ? (
           <p className="text-[12px] text-darkText60 mt-[-5px]">
             Located at {info?.location}
           </p>
         ) : null}
       </div>
-      <div className="flex items-center gap-3 mt-2">
+      <div className="flex items-center gap-3 mt-3">
         <div className="flex items-center gap-2">
           {checkTags.map((tag) => {
             if (tag.name) {
@@ -132,55 +141,58 @@ function DetailPage({ info }: Post) {
           </p>
         ) : null}
       </div>
-      <div className="text-darkText60 mt-1 flex items-center gap-1">
+      {/* <div className="text-darkText60 mt-1 flex items-center gap-1">
         <StarIcon className="w-3" />
         <p className="text-[12px]">4.6</p>
-      </div>
-      <div className="mt-3">
+      </div> */}
+      <div className="mt-5">
         {info?.content ? (
-          <p className="text-[14px]">{parse(info?.content)}</p>
+          parse(info?.content)
         ) : null}
       </div>
-      <div className="flex justify-between items-center mt-2">
+      <div className="flex justify-between items-center mt-5">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1">
+          {/* <div className="flex items-center gap-1">
             {info?.comments ? (
               <>
-                <CommentIcon className="w-5" strokeWidth={1.5} />
+                <CommentIcon className="w-6" strokeWidth={1.5} />
                 <p className="text-[13px] font-medium whitespace-nowrap">
                   {info?.comments?.length} comment
                   {checkForS(info?.comments?.length)}
                 </p>
               </>
             ) : null}
-          </div>
+          </div> */}
           {info?.likes ? (
             <div className="flex items-center gap-1">
-              <HeartIcon className="w-5" strokeWidth={1.5} />
+              <HeartOutline className="w-7" strokeWidth={1.2} />
               <p className="text-[13px] font-medium whitespace-nowrap">
-                {info?.likes?.length} like
-                {checkForS(info?.likes?.length)}
+                {info?.likes?.length} 
+                {/* like{checkForS(info?.likes?.length)} */}
               </p>
             </div>
           ) : null}
           {info?.saves ? (
             <div className="flex items-center gap-1">
-              <BookmarkIcon className="w-5" strokeWidth={1.5} />
+              <BookmarkIcon className="w-6" strokeWidth={1.2} />
               <p className="text-[13px] font-medium whitespace-nowrap">
-                {info?.saves?.length} save
-                {checkForS(info?.saves?.length)}
+                {info?.saves?.length} 
+                {/* save{checkForS(info?.saves?.length)} */}
               </p>
             </div>
           ) : null}
         </div>
         {typeof info?.views === "number" ? (
           <div className="flex items-center gap-1">
-            <EyeIcon className="w-5" strokeWidth={1.5} />
+            <EyeIcon className="w-6" strokeWidth={1.2} />
             <p className="text-[13px] font-medium whitespace-nowrap">
               {info?.views}
             </p>
           </div>
         ) : null}
+      </div>
+      <div className="mt-3">
+        <LineBreak/>
       </div>
     </div>
   );
