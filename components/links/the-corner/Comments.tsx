@@ -19,7 +19,7 @@ type Comment = {
 
 function Comments({ comment }: Comment) {
   return (
-    <div>
+    <div className='text-darkText py-2'>
         <div className="flex justify-between items-start mt-5">
         <div className="flex items-center gap-2">
           {comment?.users?.image ? (
@@ -68,8 +68,8 @@ function Comments({ comment }: Comment) {
           <EllipsisVerticalIcon className="text-darkText w-6" strokeWidth={1} />
         </div>
       </div>
-        <div>
-            {comment?.content ? <p>{comment?.content}</p>: null}
+        <div className='mt-2'>
+            {comment?.content ? <p className='text-[14px]'>{comment?.content}</p>: null}
         </div>
         <div>
 
