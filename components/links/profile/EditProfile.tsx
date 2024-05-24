@@ -140,6 +140,7 @@ function EditProfile({
                 <input
                   id="fileUpload"
                   type="file"
+                  accept="image/png, image/jpeg, image/jpg, image/gif"
                   className="hidden"
                   onChange={onImageChange}
                 />

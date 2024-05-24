@@ -237,6 +237,7 @@ function CreateDateStories() {
                   <input
                     type="file"
                     onChange={onImageChange}
+                    accept="image/png, image/jpeg, image/jpg, image/gif"
                     name="image"
                     id="image"
                     className="hidden"
