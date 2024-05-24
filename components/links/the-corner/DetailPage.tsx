@@ -12,20 +12,23 @@ import {
   EllipsisVerticalIcon,
   EyeIcon,
   ChatBubbleOvalLeftEllipsisIcon as CommentIcon,
-  BookmarkIcon,
+  BookmarkIcon as BookmarkOutline,
   HeartIcon as HeartOutline,
 } from "@heroicons/react/24/outline";
-import { HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
-import { StarIcon } from "@heroicons/react/24/solid";
+import { HeartIcon as HeartSolid, BookmarkIcon as BookmarkSolid } from "@heroicons/react/24/solid";
 import Header5 from "@/components/Header5";
 import Header1 from "@/components/Header1";
 import LineBreak from "@/components/LineBreak";
 
 type Post = {
   info: PostProps;
+  handleLike?: () => void;
+  handleSave?: () => void;
+  isLiked?: boolean;
+  isSaved?: boolean;
 };
 
-function DetailPage({ info }: Post) {
+function DetailPage({ info, handleLike, handleSave, isLiked, isSaved }: Post) {
   const checkTags = [
     {
       category: "NSFW",
@@ -81,8 +84,16 @@ function DetailPage({ info }: Post) {
                         futureHoursFromNow(new Date(info?.created_at))
                       )}{" "}
                   {futureHoursFromNow(new Date(info?.created_at)) >= 24
-                    ? `day${checkForS(Math.round(futureTimeFromNow(new Date(info?.created_at))))}`
-                    : `hour${checkForS(Math.round(futureHoursFromNow(new Date(info?.created_at))))}`}{" "}
+                    ? `day${checkForS(
+                        Math.round(
+                          futureTimeFromNow(new Date(info?.created_at))
+                        )
+                      )}`
+                    : `hour${checkForS(
+                        Math.round(
+                          futureHoursFromNow(new Date(info?.created_at))
+                        )
+                      )}`}{" "}
                   ago
                 </p>
               ) : null}
@@ -117,7 +128,13 @@ function DetailPage({ info }: Post) {
           </p>
         ) : null}
       </div>
-      <div className="flex items-center gap-3 mt-3">
+
+      {/* <div className="text-darkText60 mt-1 flex items-center gap-1">
+        <StarIcon className="w-3" />
+        <p className="text-[12px]">4.6</p>
+      </div> */}
+      <div className="mt-5">{info?.content ? parse(info?.content) : null}</div>
+      <div className="flex items-center gap-3 mt-5">
         <div className="flex items-center gap-2">
           {checkTags.map((tag) => {
             if (tag.name) {
@@ -135,48 +152,41 @@ function DetailPage({ info }: Post) {
             }
           })}
         </div>
-        {info?.tags ? (
-          <p className="text-[14px] text-darkText60">
-            + {info?.tags?.length} tags
-          </p>
-        ) : null}
-      </div>
-      {/* <div className="text-darkText60 mt-1 flex items-center gap-1">
-        <StarIcon className="w-3" />
-        <p className="text-[12px]">4.6</p>
-      </div> */}
-      <div className="mt-5">
-        {info?.content ? (
-          parse(info?.content)
-        ) : null}
+        {info?.tags
+          ? info?.tags?.map((tag) => {
+              return (
+                <div className="" key={tag}>
+                  <p
+                    className={`bg-myAccent text-[13px] rounded-full px-3 py-[2px]`}
+                  >
+                    {tag}
+                  </p>
+                </div>
+              );
+            })
+          : null}
       </div>
       <div className="flex justify-between items-center mt-5">
         <div className="flex items-center gap-4">
-          {/* <div className="flex items-center gap-1">
-            {info?.comments ? (
-              <>
-                <CommentIcon className="w-6" strokeWidth={1.5} />
-                <p className="text-[13px] font-medium whitespace-nowrap">
-                  {info?.comments?.length} comment
-                  {checkForS(info?.comments?.length)}
-                </p>
-              </>
-            ) : null}
-          </div> */}
           {info?.likes ? (
             <div className="flex items-center gap-1">
-              <HeartOutline className="w-7" strokeWidth={1.2} />
+              <div onClick={handleLike} className="cursor-pointer">
+                {isLiked ? <HeartSolid className="w-7" strokeWidth={1.2} /> : <HeartOutline className="w-7" strokeWidth={1.2} />}
+              </div>
+
               <p className="text-[13px] font-medium whitespace-nowrap">
-                {info?.likes?.length} 
+                {info?.likes?.length}
                 {/* like{checkForS(info?.likes?.length)} */}
               </p>
             </div>
           ) : null}
           {info?.saves ? (
             <div className="flex items-center gap-1">
-              <BookmarkIcon className="w-6" strokeWidth={1.2} />
+              <div onClick={handleSave} className="cursor-pointer">
+                {isSaved ? <BookmarkSolid className="w-6" strokeWidth={1.2} /> : <BookmarkOutline className="w-6" strokeWidth={1.2} />}
+              </div>
               <p className="text-[13px] font-medium whitespace-nowrap">
-                {info?.saves?.length} 
+                {info?.saves?.length}
                 {/* save{checkForS(info?.saves?.length)} */}
               </p>
             </div>
@@ -192,7 +202,7 @@ function DetailPage({ info }: Post) {
         ) : null}
       </div>
       <div className="mt-3">
-        <LineBreak/>
+        <LineBreak />
       </div>
     </div>
   );

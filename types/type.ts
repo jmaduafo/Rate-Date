@@ -87,7 +87,7 @@ export type CommentProps = {
     created_at?: string;
 }
 
-type OtherProps = {
+export type OtherProps = {
     id?: string;
     user_id?: string;
     corner_id?: string;

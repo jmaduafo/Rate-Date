@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, Fragment } from "react";
 import DetailPage from "@/components/links/the-corner/DetailPage";
-import { PostProps, CommentProps } from "@/types/type";
+import { PostProps, CommentProps, OtherProps } from "@/types/type";
 import { createClient } from "@/utils/supabase/client";
 import { useParams } from "next/navigation";
 import Comments from "@/components/links/the-corner/Comments";
@@ -13,6 +13,7 @@ import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import TextareaAutosize from "react-textarea-autosize";
 import { useToast } from "@/components/ui/use-toast";
 import Loading from "@/components/Loading";
+import { clearCachesByServerAction } from "@/utils/general/revalidatePath";
 
 function TheCornerDetailPage() {
   const [cornerDetail, setCornerDetail] = useState<PostProps | undefined>();
@@ -22,11 +23,23 @@ function TheCornerDetailPage() {
     CommentProps[] | undefined
   >();
 
+  const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+  const [userID, setUserID] = useState<string | null>();
+
   const supabase = createClient();
   const { toast } = useToast();
   const { id } = useParams();
 
   async function getDetail() {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+
+    if (userError) {
+      console.log(userError.message);
+    }
+
+    setUserID(userData?.user?.id);
+
     const { data, error } = await supabase
       .from("corner")
       .select(
@@ -46,17 +59,38 @@ function TheCornerDetailPage() {
     if (error) {
       console.log(error.message);
     } else {
+      setCornerDetail(data[0]);
+
+      const isLiked = data[0]?.likes?.some(
+        (like: { user_id: string | string[] }) =>
+          like.user_id === userData?.user?.id
+      );
+
+      if (isLiked) {
+        setIsLiked(true);
+      }
+
+      const isSaved = data[0]?.saves?.some(
+        (save: { user_id: string | string[] }) =>
+          save.user_id === userData?.user?.id
+      );
+      if (isSaved) {
+        setIsSaved(true);
+      }
+    }
+  }
+
+  async function getViews() {
+    if (cornerDetail && cornerDetail?.views) {
       const { error: viewError } = await supabase
         .from("corner")
         .update({
-          views: data[0]?.views + 1,
+          views: cornerDetail?.views + 1,
         })
         .eq("id", id);
 
       if (viewError) {
         console.log(viewError.message);
-      } else {
-        setCornerDetail(data[0]);
       }
     }
   }
@@ -108,6 +142,8 @@ function TheCornerDetailPage() {
           description: "Your comment was published successfully!",
         });
 
+        clearCachesByServerAction(`/the-corner/${id}`);
+
         setCommentText("");
       }
 
@@ -115,15 +151,104 @@ function TheCornerDetailPage() {
     }
   }
 
+  async function handleLike() {
+    if (!isLiked) {
+      const { error } = await supabase.from("likes").insert({
+        corner_id: id,
+      });
+
+      if (error) {
+        console.log("Something wrong with like insert", error.message);
+      }
+
+      setIsLiked(true);
+    } else if (userID && isLiked) {
+      const { error } = await supabase
+        .from("likes")
+        .delete()
+        .eq("corner_id", id)
+        .eq("user_id", userID);
+
+      if (error) {
+        console.log("Something wrong with like delete", error.message);
+      }
+
+      setIsLiked(false);
+    }
+  }
+
+  async function handleSave() {
+    if (!isSaved) {
+      const { error } = await supabase.from("saves").insert({
+        corner_id: id,
+      });
+
+      if (error) {
+        console.log("Something wrong with like insert", error.message);
+      }
+
+      setIsSaved(true);
+    } else if (userID && isSaved) {
+      const { error } = await supabase
+        .from("saves")
+        .delete()
+        .eq("corner_id", id)
+        .eq("user_id", userID);
+
+      if (error) {
+        console.log("Something wrong with like delete", error.message);
+      }
+
+      setIsSaved(false);
+    }
+  }
+
+  function listen() {
+    const channel = supabase
+      .channel("save_likes_changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "likes" },
+        (payload) => {
+            getDetail()
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "saves" },
+        (payload) => {
+          getDetail()
+        }
+      )
+      .subscribe();
+  }
+
   useEffect(() => {
     getDetail();
     getComments();
+    listen()
+  }, []);
+
+  useEffect(() => {
+    getViews()
   }, []);
 
   return (
     <div className="md:w-[70%] w-full mx-auto mb-[4rem]">
-      {cornerDetail ? <DetailPage info={cornerDetail} /> : <div></div>}
+      {cornerDetail ? (
+        <DetailPage
+          info={cornerDetail}
+          handleLike={handleLike}
+          handleSave={handleSave}
+          isLiked={isLiked}
+          isSaved={isSaved}
+        />
+      ) : (
+        <div></div>
+      )}
+      {/* COMMENT SECTION */}
       {commentsData ? (
+        // COMMENT HEADER
         <div className="text-darkText mt-8">
           <Header2
             title={`${commentsData?.length} Comment${checkForS(
@@ -136,6 +261,7 @@ function TheCornerDetailPage() {
           <Skeleton className="w-[30%] h-10 rounded-xl animate-skeleton" />
         </div>
       )}
+      {/* COMMENT TEXT AREA */}
       <form className="my-4" onSubmit={handleCommentSubmit}>
         <div>
           <TextareaAutosize
@@ -160,6 +286,7 @@ function TheCornerDetailPage() {
           </PrimaryButton>
         </div>
       </form>
+      {/* RENDER COMMENTS */}
       {commentsData
         ? commentsData?.map((com) => {
             return (

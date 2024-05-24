@@ -19,6 +19,8 @@ function MainLeftBar() {
   const router = useRouter();
 
   const [infoData, setInfoData] = useState<PostProps[] | undefined>();
+  const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const categories = [
     {
@@ -44,6 +46,12 @@ function MainLeftBar() {
   ];
 
   const getInfo = async () => {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+
+    if (userError) {
+      console.log(userError.message);
+    }
+    
     const { data: cornerData, error: cornerError } = await supabase
       .from("corner")
       .select(
@@ -66,6 +74,23 @@ function MainLeftBar() {
       console.log(cornerError.message);
     } else {
       setInfoData(cornerData);
+
+      const isLiked = cornerData[0]?.likes?.some(
+        (like: { user_id: string | string[] }) =>
+          like.user_id === userData?.user?.id
+      );
+
+      if (isLiked) {
+        setIsLiked(true);
+      }
+
+      const isSaved = cornerData[0]?.saves?.some(
+        (save: { user_id: string | string[] }) =>
+          save.user_id === userData?.user?.id
+      );
+      if (isSaved) {
+        setIsSaved(true);
+      }
     }
   };
 
@@ -106,7 +131,7 @@ function MainLeftBar() {
             ? infoData.map((info) => {
                 return (
                   <Fragment key={info?.id}>
-                    <CollectionCard info={info} />
+                    <CollectionCard info={info} isLiked={isLiked} isSaved={isSaved}/>
                   </Fragment>
                 );
               })

@@ -4,10 +4,11 @@ import {
   EllipsisVerticalIcon,
   EyeIcon,
   ChatBubbleOvalLeftEllipsisIcon as CommentIcon,
-  BookmarkIcon,
-  HeartIcon,
+  BookmarkIcon as BookmarkOutline,
+  HeartIcon as HeartOutline,
 } from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/24/solid";
+import { StarIcon, BookmarkIcon as BookmarkSolid,
+  HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
 import Header5 from "./Header5";
 import { PostProps } from "@/types/type";
 import { getInitials } from "@/utils/general/initials";
@@ -21,9 +22,13 @@ import Link from "next/link";
 
 type PostTypeProps = {
   info: PostProps | undefined;
+  handleLike?: () => void;
+  handleSave?: () => void;
+  isLiked?: boolean;
+  isSaved?: boolean;
 };
 
-function CollectionCard({ info }: PostTypeProps) {
+function CollectionCard({ info, handleLike, handleSave, isLiked, isSaved }: PostTypeProps) {
   const checkTags = [
     {
       category: "NSFW",
@@ -152,10 +157,8 @@ function CollectionCard({ info }: PostTypeProps) {
         <StarIcon className="w-3" />
         <p className="text-[12px]">4.6</p>
       </div>
-      <div className="mt-3">
-        {info?.content ? (
-          <p className="text-[14px]">{parse(info?.content)}</p>
-        ) : null}
+      <div className="mt-3 text-[14px]">
+        {info?.content ? parse(info?.content) : null}
       </div>
       <div className="flex justify-between items-center mt-2">
         <div className="flex items-center gap-4">
@@ -172,7 +175,9 @@ function CollectionCard({ info }: PostTypeProps) {
           </div>
           {info?.likes ? (
             <div className="flex items-center gap-1">
-              <HeartIcon className="w-5" strokeWidth={1.5} />
+              <div onClick={handleLike} className="">
+                {isLiked ? <HeartSolid className="w-5" strokeWidth={1.2} /> : <HeartOutline className="w-5" strokeWidth={1.2} />}
+              </div>
               <p className="text-[13px] font-medium whitespace-nowrap">
                 {info?.likes?.length} like
                 {checkForS(info?.likes?.length)}
@@ -181,7 +186,9 @@ function CollectionCard({ info }: PostTypeProps) {
           ) : null}
           {info?.saves ? (
             <div className="flex items-center gap-1">
-              <BookmarkIcon className="w-5" strokeWidth={1.5} />
+              <div onClick={handleSave} className="">
+                {isSaved ? <BookmarkSolid className="w-5" strokeWidth={1.2} /> : <BookmarkOutline className="w-5" strokeWidth={1.2} />}
+              </div>
               <p className="text-[13px] font-medium whitespace-nowrap">
                 {info?.saves?.length} save
                 {checkForS(info?.saves?.length)}
