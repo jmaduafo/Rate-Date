@@ -26,6 +26,7 @@ function TheCornerDetailPage() {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [userID, setUserID] = useState<string | null>();
+  const [ viewCount, setViewCount ] = useState<number | null>(null)
 
   const supabase = createClient();
   const { toast } = useToast();
@@ -60,7 +61,7 @@ function TheCornerDetailPage() {
       console.log(error.message);
     } else {
       setCornerDetail(data[0]);
-
+      setViewCount(data[0]?.views)
       const isLiked = data[0]?.likes?.some(
         (like: { user_id: string | string[] }) =>
           like.user_id === userData?.user?.id
@@ -74,6 +75,7 @@ function TheCornerDetailPage() {
         (save: { user_id: string | string[] }) =>
           save.user_id === userData?.user?.id
       );
+
       if (isSaved) {
         setIsSaved(true);
       }
@@ -81,11 +83,11 @@ function TheCornerDetailPage() {
   }
 
   async function getViews() {
-    if (cornerDetail && cornerDetail?.views) {
+    if (viewCount) {
       const { error: viewError } = await supabase
         .from("corner")
         .update({
-          views: cornerDetail?.views + 1,
+          views: viewCount + 1,
         })
         .eq("id", id);
 
@@ -107,7 +109,8 @@ function TheCornerDetailPage() {
         image
         ) `
       )
-      .eq("corner_id", id);
+      .eq("corner_id", id)
+      .order('created_at', { ascending: false})
 
     if (error) {
       console.log(error.message);
@@ -142,9 +145,7 @@ function TheCornerDetailPage() {
           description: "Your comment was published successfully!",
         });
 
-        clearCachesByServerAction(`/the-corner/${id}`);
-
-        setCommentText("");
+        setCommentText('');
       }
 
       setLoading(false);
@@ -184,10 +185,10 @@ function TheCornerDetailPage() {
       });
 
       if (error) {
-        console.log("Something wrong with like insert", error.message);
+        console.log("Something wrong with like insert:", error.message);
       }
 
-      setIsSaved(true);
+    //   setIsSaved(true);
     } else if (userID && isSaved) {
       const { error } = await supabase
         .from("saves")
@@ -196,7 +197,7 @@ function TheCornerDetailPage() {
         .eq("user_id", userID);
 
       if (error) {
-        console.log("Something wrong with like delete", error.message);
+        console.log("Something wrong with like delete:", error.message);
       }
 
       setIsSaved(false);
@@ -220,18 +221,26 @@ function TheCornerDetailPage() {
           getDetail()
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "comments" },
+        (payload) => {
+          getComments()
+        }
+      )
       .subscribe();
   }
 
   useEffect(() => {
     getDetail();
     getComments();
+    getViews()
     listen()
   }, []);
 
-  useEffect(() => {
-    getViews()
-  }, []);
+//   useEffect(() => {
+//     getViews()
+//   }, [viewCount]);
 
   return (
     <div className="md:w-[70%] w-full mx-auto mb-[4rem]">

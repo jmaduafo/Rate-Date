@@ -45,7 +45,7 @@ function MainRightBar() {
   }, []);
 
   return (
-    <section>
+    <section className="md:sticky top-[20px]">
       <section>
         <Card>
           <div className="">
