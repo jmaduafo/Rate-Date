@@ -229,6 +229,10 @@ function TheCornerDetailPage() {
         }
       )
       .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
   }
 
   useEffect(() => {
@@ -237,10 +241,6 @@ function TheCornerDetailPage() {
     getViews()
     listen()
   }, []);
-
-//   useEffect(() => {
-//     getViews()
-//   }, [viewCount]);
 
   return (
     <div className="md:w-[70%] w-full mx-auto mb-[4rem]">

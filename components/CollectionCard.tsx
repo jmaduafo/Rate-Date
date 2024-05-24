@@ -7,8 +7,11 @@ import {
   BookmarkIcon as BookmarkOutline,
   HeartIcon as HeartOutline,
 } from "@heroicons/react/24/outline";
-import { StarIcon, BookmarkIcon as BookmarkSolid,
-  HeartIcon as HeartSolid } from "@heroicons/react/24/solid";
+import {
+  StarIcon,
+  BookmarkIcon as BookmarkSolid,
+  HeartIcon as HeartSolid,
+} from "@heroicons/react/24/solid";
 import Header5 from "./Header5";
 import { PostProps } from "@/types/type";
 import { getInitials } from "@/utils/general/initials";
@@ -19,6 +22,8 @@ import {
 import parse from "html-react-parser";
 import { checkForS } from "@/utils/general/isS";
 import Link from "next/link";
+import Header4 from "./Header4";
+import Header3 from "./Header3";
 
 type PostTypeProps = {
   info: PostProps | undefined;
@@ -26,9 +31,17 @@ type PostTypeProps = {
   handleSave?: () => void;
   isLiked?: boolean;
   isSaved?: boolean;
+  userID?: string;
 };
 
-function CollectionCard({ info, handleLike, handleSave, isLiked, isSaved }: PostTypeProps) {
+function CollectionCard({
+  info,
+  handleLike,
+  handleSave,
+  isLiked,
+  isSaved,
+  userID,
+}: PostTypeProps) {
   const checkTags = [
     {
       category: "NSFW",
@@ -50,20 +63,38 @@ function CollectionCard({ info, handleLike, handleSave, isLiked, isSaved }: Post
     >
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-2">
-          {info?.user?.image ? (
-            <div className="cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
-              <Image
-                src={info?.user?.image}
-                alt={`${info?.user?.name}'s profile`}
-                width={500}
-                height={500}
-                className="w-full h-full rounded-full"
-              />
-            </div>
+          {info?.user?.image && info?.user?.username ? (
+            <Link
+              href={
+                info?.user_id === userID
+                  ? "/profile"
+                  : `/profile/${info?.user?.username}`
+              }
+            >
+              <div className="cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
+                <Image
+                  src={info?.user?.image}
+                  alt={`${info?.user?.name}'s profile`}
+                  width={500}
+                  height={500}
+                  className="w-full h-full rounded-full"
+                />
+              </div>
+            </Link>
           ) : (
-            <div className="flex justify-center items-center cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
-              {info?.user?.name ? <p>{getInitials(info?.user?.name)}</p> : null}
-            </div>
+            <Link
+              href={
+                info?.user_id === userID
+                  ? "/profile"
+                  : `/profile/${info?.user?.username}`
+              }
+            >
+              <div className="flex justify-center items-center cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
+                {info?.user?.name ? (
+                  <p>{getInitials(info?.user?.name)}</p>
+                ) : null}
+              </div>
+            </Link>
           )}
           <div className="">
             {info?.user ? (
@@ -119,7 +150,7 @@ function CollectionCard({ info, handleLike, handleSave, isLiked, isSaved }: Post
         <div className="cursor-pointer">
           {info?.title ? (
             <Link href={`/the-corner/${info?.id}`}>
-              <Header5 title={info?.title} />
+              <Header4 title={info?.title} />
             </Link>
           ) : null}
         </div>
@@ -153,12 +184,16 @@ function CollectionCard({ info, handleLike, handleSave, isLiked, isSaved }: Post
           </p>
         ) : null}
       </div>
-      <div className="text-darkText60 mt-1 flex items-center gap-1">
-        <StarIcon className="w-3" />
-        <p className="text-[12px]">4.6</p>
-      </div>
       <div className="mt-3 text-[14px]">
-        {info?.content ? parse(info?.content) : null}
+        {
+          // IF CONTENT HAS MORE THAN 200 CHARACTERS, RENDER ONLY 200 CHARACTERS WITH ELLIPSES
+          info?.content && info?.content?.length > 200
+            ? parse(info?.content?.substring(0, 200) + "...")
+            : // IF CONTENT HAS 200 CHARACTERS OR LESS, RENDER ALL TEXT
+            info?.content && info?.content?.length <= 200
+            ? parse(info?.content)
+            : null
+        }
       </div>
       <div className="flex justify-between items-center mt-2">
         <div className="flex items-center gap-4">
@@ -176,7 +211,11 @@ function CollectionCard({ info, handleLike, handleSave, isLiked, isSaved }: Post
           {info?.likes ? (
             <div className="flex items-center gap-1">
               <div onClick={handleLike} className="">
-                {isLiked ? <HeartSolid className="w-5" strokeWidth={1.2} /> : <HeartOutline className="w-5" strokeWidth={1.2} />}
+                {isLiked ? (
+                  <HeartSolid className="w-5" strokeWidth={1.2} />
+                ) : (
+                  <HeartOutline className="w-5" strokeWidth={1.2} />
+                )}
               </div>
               <p className="text-[13px] font-medium whitespace-nowrap">
                 {info?.likes?.length} like
@@ -187,7 +226,11 @@ function CollectionCard({ info, handleLike, handleSave, isLiked, isSaved }: Post
           {info?.saves ? (
             <div className="flex items-center gap-1">
               <div onClick={handleSave} className="">
-                {isSaved ? <BookmarkSolid className="w-5" strokeWidth={1.2} /> : <BookmarkOutline className="w-5" strokeWidth={1.2} />}
+                {isSaved ? (
+                  <BookmarkSolid className="w-5" strokeWidth={1.2} />
+                ) : (
+                  <BookmarkOutline className="w-5" strokeWidth={1.2} />
+                )}
               </div>
               <p className="text-[13px] font-medium whitespace-nowrap">
                 {info?.saves?.length} save

@@ -56,11 +56,6 @@ function TopBar() {
     } else {
       setUserID(userData?.user?.id);
 
-      // const { data: zodiac, error: zodiacError } = await supabase
-      //   .from("users")
-      //   .select("id, birthday")
-      //   .eq("id", userData?.user?.id);
-
       const { data: topData, error: topError } = await supabase
         .from("dates")
         .select("date_name, rating, user_id, id, relationship_status")
@@ -86,13 +81,6 @@ function TopBar() {
         .neq("ethnicity", "Don't know")
         .eq("user_id", userData?.user?.id);
 
-      // if (zodiacError) {
-      //   console.log(zodiacError.message);
-      // } else {
-      //   setZodiacData(zodiac);
-      //   // CALL HOROSCOPE FUNCTION TO GET THE DAILY HOROSCOPE
-      //   // fetchHoroscope(zodiac[0].birthday)
-      // }
 
       if (topError) {
         console.log(topError.message);
@@ -162,64 +150,31 @@ function TopBar() {
 
   useEffect(() => {
     getUserData();
+    listen()
   }, []);
 
-  // useEffect(() => {
-  //   dateListen();
-  //   reactionListen();
-  // }, [supabase, topData, setTopData, emojiData, setEmojiData]);
+  async function listen() {
+    const channel = supabase
+      .channel("reaction changes")
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "reactions",
+          // Only care about dates where the user_id matches the user's id
+          filter: `user_id=eq.${userID}`,
+        },
+        (payload) => {
+          getUserData()
+        }
+      )
+      .subscribe();
 
-  // console.log(horoscope)
-
-  // async function reactionListen() {
-  //   const channel = supabase
-  //     .channel("reaction changes")
-  //     .on(
-  //       "postgres_changes",
-  //       {
-  //         event: "*",
-  //         schema: "public",
-  //         table: "reactions",
-  //         // Only care about dates where the user_id matches the user's id
-  //         filter: `user_id=eq.${userID}`,
-  //       },
-  //       (payload) => {
-  //         if (emojiData) {
-  //           setEmojiData(payload.new as ReactionDataProps);
-  //         }
-  //       }
-  //     )
-  //     .subscribe();
-
-  //   return () => {
-  //     supabase.removeChannel(channel);
-  //   };
-  // }
-
-  // async function dateListen() {
-  //   const channel = supabase
-  //     .channel("date changes")
-  //     .on(
-  //       "postgres_changes",
-  //       {
-  //         event: "*",
-  //         schema: "public",
-  //         table: "dates",
-  //         // Only care about dates where the user_id matches the user's id
-  //         filter: `user_id=eq.${userID}`,
-  //       },
-  //       (payload) => {
-  //         if (topData) {
-  //           setTopData(payload.new as DateDataProps[]);
-  //         }
-  //       }
-  //     )
-  //     .subscribe();
-
-  //   return () => {
-  //     supabase.removeChannel(channel);
-  //   };
-  // }
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }
 
   async function handleAddReaction(e: React.FormEvent) {
     e.preventDefault();
@@ -266,45 +221,6 @@ function TopBar() {
       </Card>
       {/* HOROSCOPE CARD */}
       <Card className="flex-[1.5] flex flex-col">
-        {/* <div className="flex justify-between items-center">
-          <Header3 title="Daily Horoscope" />
-          {zodiacData && zodiacData?.length ? (
-            <div className="w-[30px] object-cover">
-              {zodiacData[0].birthday && (
-                <Image
-                  src={getZodiacImage(getZodiac(zodiacData[0].birthday))}
-                  alt={getZodiac(zodiacData[0].birthday)}
-                  className="w-full h-full"
-                />
-              )}
-            </div>
-          ) : (
-            <div className="">
-              <Loading classNameColor="border-t-darkText" classNameSize="w-5" />
-            </div>
-          )}
-        </div>
-        {zodiacData && zodiacData[0].birthday && horoscope ? (
-          // HOROSCOPE
-          <div className="mt-auto pb-3 pl-16">
-            <Horoscope setHoroscope={setHoroscope} horoscope={horoscope} />
-          </div>
-        ) : zodiacData && !zodiacData[0].birthday ? (
-          <div className="mt-9">
-            <p className="text-center px-6 text-[15px]">
-              Add your birthday when editing your profile to get your daily
-              horoscope
-            </p>
-            <div className="flex justify-center items-center mt-4">
-              <PrimaryButton className="">Go To Profile</PrimaryButton>
-            </div>
-          </div>
-        ) : (
-          <div className="mt-auto pb-3">
-            <Skeleton className="animate-skeleton h-5 w-full rounded" />
-            <Skeleton className="animate-skeleton h-5 w-full rounded mt-2" />
-          </div>
-        )} */}
         <DemographicChart ethnicData={ethnicData}/>
       </Card>
       {/* TOP DATE CARD */}

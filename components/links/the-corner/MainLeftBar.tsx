@@ -13,12 +13,14 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { PostProps } from "@/types/type";
 import { Skeleton } from "@/components/ui/skeleton";
+import CollectionCardSkeleton from "@/components/CollectionCardSkeleton";
 
 function MainLeftBar() {
   const supabase = createClient();
   const router = useRouter();
 
   const [infoData, setInfoData] = useState<PostProps[] | undefined>();
+  const [userID, setUserID] = useState<string | undefined>();
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
@@ -51,7 +53,9 @@ function MainLeftBar() {
     if (userError) {
       console.log(userError.message);
     }
-    
+
+    setUserID(userData?.user?.id);
+
     const { data: cornerData, error: cornerError } = await supabase
       .from("corner")
       .select(
@@ -131,14 +135,19 @@ function MainLeftBar() {
             ? infoData.map((info) => {
                 return (
                   <Fragment key={info?.id}>
-                    <CollectionCard info={info} isLiked={isLiked} isSaved={isSaved}/>
+                    <CollectionCard
+                      info={info}
+                      isLiked={isLiked}
+                      isSaved={isSaved}
+                      userID={userID}
+                    />
                   </Fragment>
                 );
               })
             : [0, 1, 2, 3, 4, 5, 6, 7].map((col) => {
                 return (
                   <Fragment key={col}>
-                    <Skeleton className=""/>
+                    <CollectionCardSkeleton/>
                   </Fragment>
                 );
               })}

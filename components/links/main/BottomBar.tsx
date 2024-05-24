@@ -93,7 +93,7 @@ function BottomBar() {
     },
     {
       header: "Duration",
-      className: "flex-[2]",
+      className: "flex-[2] md:block hidden",
     },
     {
       header: "Rating",
@@ -171,51 +171,29 @@ function BottomBar() {
     }
   }
 
-  // function scheduleChannel() {
-  //   const channel = supabase
-  //     .channel("schedule changes")
-  //     .on(
-  //       "postgres_changes",
-  //       {
-  //         event: "*",
-  //         schema: "public",
-  //         table: "schedules",
-  //         // Only care about dates where the user_id matches the user's id
-  //         // filter: `user_id=eq.${userID}`,
-  //       },
-  //       (payload) => {
-  //         // if (schedulesList) {
-  //         //   setSchedulesList([...schedulesList, payload.new as DateDataProps]);
-  //         // }
-  //         // console.log(payload);
-  //         router.refresh()
-  //       }
-  //     )
-  //     .subscribe();
-
-  //     return () => {
-  //       supabase.removeChannel(channel);
-  //     }
-
-  // }
-
-  function dateChannel() {
+  function listen() {
     const channel = supabase
       .channel("date changes")
       .on(
         "postgres_changes",
         {
-          event: "*",
+          event: "DELETE",
           schema: "public",
           table: "dates",
-          // Only care about dates where the user_id matches the user's id
-          // filter: `user_id=eq.${userID}`,
         },
         () => {
-          // if (datesList) {
-          //   setDatesList([...datesList, payload.new as DateDataProps]);
-          // }
-          router.refresh();
+          getDates();
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "schedules",
+        },
+        (payload) => {
+          getScheduleDates();
         }
       )
       .subscribe();
@@ -228,19 +206,8 @@ function BottomBar() {
   useEffect(() => {
     getDates();
     getScheduleDates();
+    listen()
   }, []);
-
-  useEffect(() => {
-    // scheduleChannel();
-    dateChannel();
-  }, [
-    supabase,
-    router,
-    // datesList,
-    // schedulesList,
-    // setDatesList,
-    // setSchedulesList,
-  ]);
 
   function checkOpen() {
     if (!open) {
@@ -471,13 +438,17 @@ function BottomBar() {
                       >
                         <div className="flex gap-3 duration-500 hover:bg-myBackgroundMuted cursor-pointer mt-1 py-3 px-3 rounded-xl w-full">
                           <div className="flex-[3] text-darkText">
-                            <p className="text-[13.5px]">{date.date_name}</p>
+                            <p className="text-[12px] md:text-[13.5px]">
+                              {date.date_name}
+                            </p>
                           </div>
                           <div className="flex-[3] text-darkText">
-                            <p className="text-[13.5px]">{date.short_desc}</p>
+                            <p className="text-[12px] md:text-[13.5px]">
+                              {date.short_desc}
+                            </p>
                           </div>
-                          <div className="flex-[2] text-darkText">
-                            <p className="text-[13.5px]">
+                          <div className="flex-[2] text-darkText md:block hidden">
+                            <p className="text-[12px] md:text-[13.5px]">
                               {date.duration_of_dating} {date.duration_metric}
                             </p>
                           </div>
@@ -485,12 +456,12 @@ function BottomBar() {
                             {date.rating && date.rating >= 8 ? (
                               <FireIcon className="w-4 text-orange-500" />
                             ) : null}
-                            <p className="text-[13.5px]">
+                            <p className="text-[12px] md:text-[13.5px]">
                               {date.rating?.toFixed(1)}
                             </p>
                           </div>
                           <div className="flex-[2] text-darkText">
-                            <p className="text-[13.5px]">
+                            <p className="text-[12px] md:text-[13.5px]">
                               {date.relationship_status}
                             </p>
                           </div>

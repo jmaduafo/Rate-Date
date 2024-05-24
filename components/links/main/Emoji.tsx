@@ -46,7 +46,7 @@ function Emoji({
           {/* THE EMOJI TEXT RENDERING IN DASHBOARD */}
           <div className="flex justify-center items-center w-[40px] h-[40px] rounded-full shadow-md hover:bg-myBackgroundMuted duration-500 cursor-pointer">
             {emojiData && emojiData?.reaction ? (
-              <p className="text-[1.5vw]">{emojiData?.reaction}</p>
+              <p className="text-[24px]">{emojiData?.reaction}</p>
             ) : (
               <PlusIcon className="w-5 text-darkText" />
             )}

@@ -39,7 +39,7 @@ export default async function RootLayout({
             <div className="md:flex">
 
               <aside
-                className="z-[100] md:bg-transparent md:text-darkText bg-darkText md:rounded-none rounded-3xl text-myForeground md:p-6 md:h-screen md:w-[23vw] md:m-0 md:left-0 md:top-0 md:translate-x-0 md:sticky md:block md:flex-[1]
+                className="md:z-[0] z-[50] md:bg-transparent md:text-darkText bg-darkText md:rounded-none rounded-3xl text-myForeground md:p-6 md:h-screen md:w-[23vw] md:m-0 md:left-0 md:top-0 md:translate-x-0 md:sticky md:block md:flex-[1]
                 w-[90%] h-[80px] fixed bottom-0 left-1/2 transform translate-x-[-50%] mb-5 flex flex-row justify-center items-center"
               >
                 <SideBar/>

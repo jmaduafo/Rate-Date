@@ -20,16 +20,18 @@ import CollectionCard from "../../CollectionCard";
 import SelectedBanner from "@/components/SelectedBanner";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import CollectionCardSkeleton from "@/components/CollectionCardSkeleton";
 
 function LeftBar() {
   const supabase = createClient();
 
   const { toast } = useToast();
-  const [userSelect, setUserSelect] = useState<string | undefined>(
-    "Date Idea"
-  );
+  const [userSelect, setUserSelect] = useState<string | undefined>("Date Idea");
+  const [userID, setUserID] = useState<string | undefined>("");
   const [infoData, setInfoData] = useState<PostProps[] | undefined>();
   const [filterData, setFilterData] = useState<PostProps[] | undefined>();
+  const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const router = useRouter();
 
@@ -54,9 +56,12 @@ function LeftBar() {
     if (authError) {
       console.log(authError?.message);
     } else {
+      setUserID(authData?.user?.id);
+
       const { data: cornerData, error: cornerError } = await supabase
         .from("corner")
-        .select(`
+        .select(
+          `
           *,
           saves (
             *
@@ -67,7 +72,8 @@ function LeftBar() {
           likes (
             *
           )
-        `)
+        `
+        )
         .eq("user_id", authData?.user?.id);
 
       if (cornerError) {
@@ -75,8 +81,27 @@ function LeftBar() {
       } else {
         setInfoData(cornerData);
 
-        const filter = cornerData?.filter(data => data.category === userSelect)
-        setFilterData(filter)
+        const filter = cornerData?.filter(
+          (data) => data.category === userSelect
+        );
+        setFilterData(filter);
+
+        const isLiked = cornerData[0]?.likes?.some(
+          (like: { user_id: string | string[] }) =>
+            like.user_id === authData?.user?.id
+        );
+
+        if (isLiked) {
+          setIsLiked(true);
+        }
+
+        const isSaved = cornerData[0]?.saves?.some(
+          (save: { user_id: string | string[] }) =>
+            save.user_id === authData?.user?.id
+        );
+        if (isSaved) {
+          setIsSaved(true);
+        }
       }
     }
   };
@@ -87,7 +112,7 @@ function LeftBar() {
 
   useEffect(() => {
     if (userSelect !== "My Saves") {
-      setFilterData(infoData)
+      setFilterData(infoData);
       const filter = infoData?.filter((data) => data.date_type === userSelect);
 
       setFilterData(filter);
@@ -98,7 +123,7 @@ function LeftBar() {
     <section>
       {/* USER'S STORIES AND DATE IDEAS SECTION */}
       <section className="">
-        <div className="">
+        <div className="flex md:justify-start md:mb-2 justify-center mb-4">
           {userSelect === "Date Idea" ? (
             <Link href="/the-corner/ideas/create">
               <div className="flex items-center gap-2 text-darkText mb-3">
@@ -124,31 +149,46 @@ function LeftBar() {
         <div className="flex justify-center items-center gap-3 mb-10">
           {profileList.map((list) => {
             return (
-              <SelectedBanner
-                title={list.title}
-                name={list.select}
-                setSelect={setUserSelect}
-                select={userSelect}
-              />
+              <div className="" key={list.title}>
+                <SelectedBanner
+                  title={list.title}
+                  name={list.select}
+                  setSelect={setUserSelect}
+                  select={userSelect}
+                />
+              </div>
             );
           })}
         </div>
         <div>
-          {filterData
-            ? filterData.map((info) => {
-                return (
-                  <Fragment key={info?.id}>
-                    <CollectionCard info={info} />
-                  </Fragment>
-                );
-              })
-            : [0, 1, 2, 3, 4, 5, 6, 7].map((col) => {
-                return (
-                  <Fragment key={col}>
-                    <p>hi</p>
-                  </Fragment>
-                );
-              })}
+          {filterData && filterData?.length ? (
+            filterData.map((info) => {
+              return (
+                <Fragment key={info?.id}>
+                  <CollectionCard
+                    info={info}
+                    userID={userID}
+                    isLiked={isLiked}
+                    isSaved={isSaved}
+                  />
+                </Fragment>
+              );
+            })
+          ) : filterData && !filterData.length ? (
+            <div className="text-darkText mt-[3rem]">
+              <p className="text-center">
+                No {userSelect?.toLowerCase()} created yet
+              </p>
+            </div>
+          ) : (
+            [0, 1, 2, 3, 4, 5].map((col) => {
+              return (
+                <Fragment key={col}>
+                  <CollectionCardSkeleton />
+                </Fragment>
+              );
+            })
+          )}
         </div>
       </section>
     </section>
