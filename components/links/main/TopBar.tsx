@@ -150,8 +150,11 @@ function TopBar() {
 
   useEffect(() => {
     getUserData();
-    listen()
   }, []);
+
+  useEffect(() => {
+    listen()
+  }, [supabase, emojiData, ethnicData, chartData]);
 
   async function listen() {
     const channel = supabase

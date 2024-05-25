@@ -208,6 +208,10 @@ function BottomBar() {
     getScheduleDates();
     listen()
   }, []);
+  
+  useEffect(() => {
+    listen()
+  }, [supabase, datesList, schedulesList]);
 
   function checkOpen() {
     if (!open) {
