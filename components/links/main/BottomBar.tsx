@@ -183,6 +183,7 @@ function BottomBar() {
         },
         () => {
           getDates();
+          setDateLoading(false)
         }
       )
       .on(
@@ -194,6 +195,7 @@ function BottomBar() {
         },
         (payload) => {
           getScheduleDates();
+          setScheduleLoading(false)
         }
       )
       .subscribe();
@@ -206,7 +208,6 @@ function BottomBar() {
   useEffect(() => {
     getDates();
     getScheduleDates();
-    listen()
   }, []);
   
   useEffect(() => {

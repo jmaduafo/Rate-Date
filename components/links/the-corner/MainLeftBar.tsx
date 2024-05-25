@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { PostProps } from "@/types/type";
 import { Skeleton } from "@/components/ui/skeleton";
 import CollectionCardSkeleton from "@/components/CollectionCardSkeleton";
+import Link from "next/link";
 
 function MainLeftBar() {
   const supabase = createClient();
@@ -26,25 +27,27 @@ function MainLeftBar() {
 
   const categories = [
     {
-      title: "Date Ideas",
-      icon: <LightBulbIcon className="text-darkText w-9" />,
-      bgColor: "bg-[#E0A85440]",
+      title: "Date Idea",
+      icon: <LightBulbIcon className="text-darkText w-6" />,
+      bgColor: "hover:bg-[#E0A85440]",
+      href: "/the-corner/ideas/create",
     },
     {
-      title: "Date Stories",
-      icon: <BookOpenIcon className="text-darkText w-9" />,
-      bgColor: "bg-[#96D6BB40]",
+      title: "Date Story",
+      icon: <BookOpenIcon className="text-darkText w-6" />,
+      bgColor: "hover:bg-[#96D6BB40]",
+      href: "/the-corner/stories/create",
     },
-    {
-      title: "NSFW",
-      icon: <ExclamationTriangleIcon className="text-darkText w-9" />,
-      bgColor: "bg-[#C82B3D40]",
-    },
-    {
-      title: "Advice",
-      icon: <Speech size={36} className="text-darkText" />,
-      bgColor: "bg-[#5C7ED640]",
-    },
+    // {
+    //   title: "NSFW",
+    //   icon: <ExclamationTriangleIcon className="text-darkText w-9" />,
+    //   bgColor: "bg-[#C82B3D40]",
+    // },
+    // {
+    //   title: "Advice",
+    //   icon: <Speech size={36} className="text-darkText" />,
+    //   bgColor: "bg-[#5C7ED640]",
+    // },
   ];
 
   const getInfo = async () => {
@@ -104,6 +107,7 @@ function MainLeftBar() {
 
   return (
     <section>
+      {/* SEARCH ENGINE */}
       <div className="flex items-center gap-2 text-darkText bg-myForeground rounded-full py-2 px-3 md:w-[45%] w-full">
         <MagnifyingGlassIcon className="w-6 text-darkText" strokeWidth={1} />
         <input
@@ -112,22 +116,24 @@ function MainLeftBar() {
         />
       </div>
       <section className="w-full mt-4">
-        <div className="horizontal md:max-w-[56vw] w-full overflow-x-auto">
-          <div className="w-fit flex gap-3 flex-nowrap px-1">
-            {categories.map((cat) => {
-              return (
-                <Fragment key={cat.title}>
+        {/* <div className="horizontal md:max-w-[56vw] w-full overflow-x-auto"> */}
+        <div className="flex gap-3 px-1">
+          {categories.map((cat) => {
+            return (
+              <Fragment key={cat.title}>
+                <Link href={cat.href} className="w-full">
                   <CategoriesSelect
-                    title={cat.title}
-                    bgColor={`${cat.bgColor}`}
+                    title={`Create a ${cat.title}`}
+                    bgColor={`${cat.bgColor} flex-[1]`}
                   >
                     {cat.icon}
                   </CategoriesSelect>
-                </Fragment>
-              );
-            })}
-          </div>
+                </Link>
+              </Fragment>
+            );
+          })}
         </div>
+        {/* </div> */}
       </section>
       <section className="mt-4">
         <div>
@@ -147,7 +153,7 @@ function MainLeftBar() {
             : [0, 1, 2, 3, 4, 5, 6, 7].map((col) => {
                 return (
                   <Fragment key={col}>
-                    <CollectionCardSkeleton/>
+                    <CollectionCardSkeleton />
                   </Fragment>
                 );
               })}

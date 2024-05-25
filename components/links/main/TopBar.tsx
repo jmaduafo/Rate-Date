@@ -209,7 +209,6 @@ function TopBar() {
         });
 
         setEmojiData(data[0]);
-        clearCachesByServerAction("/dashboard");
       }
     }
 
