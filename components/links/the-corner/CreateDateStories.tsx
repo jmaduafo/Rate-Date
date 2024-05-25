@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
-import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
+import { ChevronRightIcon, ChevronLeftIcon, PlusIcon } from "@heroicons/react/24/outline";
 import CreateEditCard from "@/components/CreateEditCard";
 import Header2 from "@/components/Header2";
 import { ImageProps } from "@/types/type";
@@ -16,6 +16,7 @@ import Image from "next/image";
 import TagsList from "./TagsList";
 import { v4 as uuidv4 } from "uuid";
 import Loading from "@/components/Loading";
+import Link from "next/link";
 
 function CreateDateStories() {
   const [title, setTitle] = useState<string>("");
@@ -70,7 +71,7 @@ function CreateDateStories() {
             await supabase.storage
               .from("corner")
               .upload(
-                authData?.user?.id + '/' + uuidv4(),
+                authData?.user?.id + "/" + uuidv4(),
                 imageIdea?.file as File
               );
 
@@ -98,7 +99,7 @@ function CreateDateStories() {
                 image: imageIdea
                   ? `https://oevsvjkpdlznvfenlttz.supabase.co/storage/v1/object/public/corner/${storageData?.path}`
                   : null,
-              })
+              });
 
               if (error) {
                 toast({
@@ -114,8 +115,8 @@ function CreateDateStories() {
                 setTitle("");
                 setContent("");
                 setIsNSFW(false);
-                setTagArray([])
-                setImageIdea(undefined)
+                setTagArray([]);
+                setImageIdea(undefined);
 
                 goBack();
               }
@@ -123,47 +124,46 @@ function CreateDateStories() {
           }
         } else {
           const { data: userData, error: userError } = await supabase
-              .from("users")
-              .select("id, username, name, image")
-              .eq("id", authData?.user?.id);
+            .from("users")
+            .select("id, username, name, image")
+            .eq("id", authData?.user?.id);
 
-            if (userError) {
+          if (userError) {
+            toast({
+              title: "Whoops, something went wrong!",
+              description: userError.message,
+            });
+          } else {
+            const { error } = await supabase.from("corner").insert({
+              title,
+              content,
+              date_type: "Date Story",
+              is_nsfw: isNSFW ?? false,
+              user: userData[0],
+              tags: tagArray,
+              image: null,
+            });
+
+            if (error) {
               toast({
-                title: "Whoops, something went wrong!",
-                description: userError.message,
+                title: "Oh no! Something went wrong",
+                description: error.message,
               });
             } else {
-              const { error } = await supabase.from("corner").insert({
-                title,
-                content,
-                date_type: "Date Story",
-                is_nsfw: isNSFW ?? false,
-                user: userData[0],
-                tags: tagArray,
-                image: null,
-              })
+              toast({
+                title: "Success!",
+                description: "Your story was posted successfully!",
+              });
 
-              if (error) {
-                toast({
-                  title: "Oh no! Something went wrong",
-                  description: error.message,
-                });
-              } else {
-                toast({
-                  title: "Success!",
-                  description: "Your story was posted successfully!",
-                });
+              setTitle("");
+              setContent("");
+              setIsNSFW(false);
+              setTagArray([]);
+              setImageIdea(undefined);
 
-                setTitle("");
-                setContent("");
-                setIsNSFW(false);
-                setTagArray([])
-                setImageIdea(undefined)
-
-                goBack();
-              }
+              goBack();
             }
-          
+          }
         }
       }
 
@@ -177,6 +177,14 @@ function CreateDateStories() {
 
   return (
     <div className="mb-6">
+        <div className="flex justify-end">
+          <Link href="/the-corner/ideas/create">
+            <PrimaryButton type="button" className="flex items-center gap-2">
+              <PlusIcon className="text-myForeground w-4"/>
+              Create Date Idea
+            </PrimaryButton>
+          </Link>
+        </div>
       <div className="text-darkText mb-8">
         <Header2 title="Add Your Date Story" />
       </div>

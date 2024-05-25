@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Tiptap from "@/components/TipTap";
 import CreateEditCard from "@/components/CreateEditCard";
 import { ideasCategory, costList } from "@/utils/general/createEditData";
-import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
+import { ChevronRightIcon, ChevronLeftIcon, PlusIcon } from "@heroicons/react/24/outline";
 import Header2 from "@/components/Header2";
 import PrimaryButton from "@/components/PrimaryButton";
 import SecondaryButton from "@/components/SecondaryButton";
@@ -17,6 +17,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import Loading from "@/components/Loading";
 import { v4 as uuidv4 } from "uuid";
+import Link from "next/link";
 
 function CreateDateIdeas() {
   const [title, setTitle] = useState("");
@@ -184,6 +185,14 @@ function CreateDateIdeas() {
 
   return (
     <div className="mb-6">
+      <div className="flex justify-end">
+        <Link href="/the-corner/stories/create">
+          <PrimaryButton type="button" className="flex items-center gap-2">
+        <PlusIcon className="text-myForeground w-4"/>
+            
+            Create Date Story</PrimaryButton>
+        </Link>
+      </div>
       <div className="text-darkText mb-8">
         <Header2 title="Create Your Idea" />
       </div>

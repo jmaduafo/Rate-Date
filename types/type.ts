@@ -98,7 +98,7 @@ export type PostProps = {
   id: string;
   title?: string;
   content?: string;
-  date_type?: string;
+  date_type?: 'Date Idea' | 'Date Story';
   category?: string;
   image?: string | null;
   location?: string | null;
@@ -113,4 +113,26 @@ export type PostProps = {
   comments?: CommentProps[];
   views?: number;
   created_at?: string;
+};
+
+export type RecommendedProps = {
+  id: string;
+  title?: string;
+  content?: string;
+  date_type?: 'Date Idea' | 'Date Story';
+  category?: string;
+  image?: string | null;
+  location?: string | null;
+  tags?: string[] | null;
+  cost?: string | null;
+  is_nsfw?: boolean;
+  is_mature?: boolean;
+  user_id?: string;
+  user?: UserDataProps;
+  likes?: OtherProps[];
+  saves?: OtherProps[];
+  comments?: CommentProps[];
+  views?: number;
+  created_at?: string;
+  points?: number;
 };
