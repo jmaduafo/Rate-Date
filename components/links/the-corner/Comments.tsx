@@ -1,26 +1,39 @@
-import { PostProps, CommentProps } from '@/types/type'
-import { ThumbsUp, ThumbsDown } from 'lucide-react'
+import { PostProps, CommentProps } from "@/types/type";
+import { ThumbsUp, ThumbsDown } from "lucide-react";
 import {
-    EllipsisVerticalIcon,
-    EyeIcon,
-    ChatBubbleOvalLeftEllipsisIcon as CommentIcon,
-    BookmarkIcon,
-    HeartIcon as HeartOutline,
-  } from "@heroicons/react/24/outline";
-import Image from 'next/image'
-import React from 'react'
-import { futureHoursFromNow, futureTimeFromNow } from '@/utils/general/dateTimeFile'
-import { getInitials } from '@/utils/general/initials'
-import { checkForS } from '@/utils/general/isS'
+  EllipsisVerticalIcon,
+  EyeIcon,
+  ChatBubbleOvalLeftEllipsisIcon as CommentIcon,
+  BookmarkIcon,
+  HeartIcon as HeartOutline,
+} from "@heroicons/react/24/outline";
+import Image from "next/image";
+import React from "react";
+import {
+  ThumbsDown as ThumbsDownOutline,
+  ThumbsUp as ThumbsUpOutline,
+} from "lucide-react";
+import {
+  ThumbsDown as ThumbsDownSolid,
+  ThumbsUp as ThumbsUpSolid,
+  Icon,
+} from "lucide-solid";
+import { burger, sausage } from '@lucide/lab';
+import {
+  futureHoursFromNow,
+  futureTimeFromNow,
+} from "@/utils/general/dateTimeFile";
+import { getInitials } from "@/utils/general/initials";
+import { checkForS } from "@/utils/general/isS";
 
 type Comment = {
-    comment: CommentProps
-}
+  comment: CommentProps;
+};
 
 function Comments({ comment }: Comment) {
   return (
-    <div className='text-darkText py-2'>
-        <div className="flex justify-between items-start mt-5">
+    <div className="text-darkText py-2">
+      <div className="flex justify-between items-start mt-5">
         <div className="flex items-center gap-2">
           {comment?.users?.image ? (
             <div className="cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
@@ -34,7 +47,9 @@ function Comments({ comment }: Comment) {
             </div>
           ) : (
             <div className="flex justify-center items-center cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
-              {comment?.users?.name ? <p>{getInitials(comment?.users?.name)}</p> : null}
+              {comment?.users?.name ? (
+                <p>{getInitials(comment?.users?.name)}</p>
+              ) : null}
             </div>
           )}
           <div className="">
@@ -51,13 +66,23 @@ function Comments({ comment }: Comment) {
               {comment?.created_at ? (
                 <p className="italic text-[13px] text-darkText60">
                   {futureHoursFromNow(new Date(comment?.created_at)) >= 24
-                    ? Math.round(futureTimeFromNow(new Date(comment?.created_at)))
+                    ? Math.round(
+                        futureTimeFromNow(new Date(comment?.created_at))
+                      )
                     : Math.round(
                         futureHoursFromNow(new Date(comment?.created_at))
                       )}{" "}
                   {futureHoursFromNow(new Date(comment?.created_at)) >= 24
-                    ? `day${checkForS(Math.round(futureTimeFromNow(new Date(comment?.created_at))))}`
-                    : `hour${checkForS(Math.round(futureHoursFromNow(new Date(comment?.created_at))))}`}{" "}
+                    ? `day${checkForS(
+                        Math.round(
+                          futureTimeFromNow(new Date(comment?.created_at))
+                        )
+                      )}`
+                    : `hour${checkForS(
+                        Math.round(
+                          futureHoursFromNow(new Date(comment?.created_at))
+                        )
+                      )}`}{" "}
                   ago
                 </p>
               ) : null}
@@ -68,14 +93,27 @@ function Comments({ comment }: Comment) {
           <EllipsisVerticalIcon className="text-darkText w-6" strokeWidth={1} />
         </div>
       </div>
-        <div className='mt-2'>
-            {comment?.content ? <p className='text-[14px]'>{comment?.content}</p>: null}
+      <div className="mt-2">
+        {comment?.content ? (
+          <p className="text-[14px]">{comment?.content}</p>
+        ) : null}
+      </div>
+      <div className="flex items-center gap-3 mt-2">
+        <div className="flex items-center gap-1">
+          <div className="">
+            <ThumbsUpOutline strokeWidth={1} size={16} />
+            {/* <ThumbsDownSolid/> */}
+            {/* <Icon iconNode={sausage} /> */}
+          </div>
+          <p className="text-[13px]">0</p>
         </div>
-        <div>
-
+        <div className="flex items-center gap-1">
+          <ThumbsDownOutline strokeWidth={1} size={16} />
+          <p className="text-[13px]">0</p>
         </div>
+      </div>
     </div>
-  )
+  );
 }
 
-export default Comments
+export default Comments;

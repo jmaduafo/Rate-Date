@@ -1,4 +1,6 @@
-import React from "react";
+'use client'
+
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import {
   EllipsisVerticalIcon,
@@ -38,8 +40,6 @@ function CollectionCard({
   info,
   handleLike,
   handleSave,
-  isLiked,
-  isSaved,
   userID,
 }: PostTypeProps) {
   const checkTags = [
@@ -56,6 +56,33 @@ function CollectionCard({
       name: info?.category ?? null,
     },
   ];
+
+  const [ isLiked, setIsLiked ] = useState(false)
+  const [ isSaved, setIsSaved ] = useState(false)
+
+  function checkLikesSaves() {
+    const isLiked = info?.likes?.some(
+        (like) =>
+          like.user_id === info?.user?.id
+      );
+
+      if (isLiked) {
+        setIsLiked(true);
+      }
+
+      const isSaved = info?.saves?.some(
+        (save) =>
+          save.user_id === info?.user?.id
+      );
+
+      if (isSaved) {
+        setIsSaved(true);
+      }
+  }
+
+  useEffect(() => {
+    checkLikesSaves()
+  }, [info])
 
   return (
     <div

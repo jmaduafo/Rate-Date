@@ -6,8 +6,6 @@ import {
   BookOpenIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/solid";
-import { ThumbsDown as ThumbsDownOutline, ThumbsUp as ThumbsUpOutline } from "lucide-react";
-import { ThumbsDown as ThumbsDownSolid, ThumbsUp as ThumbsUpSolid } from "lucide-react";
 import CategoriesSelect from "./CategoriesSelect";
 import CollectionCard from "@/components/CollectionCard";
 import { createClient } from "@/utils/supabase/client";
@@ -39,16 +37,6 @@ function MainLeftBar() {
       bgColor: "hover:bg-[#96D6BB40]",
       href: "/the-corner/stories/create",
     },
-    // {
-    //   title: "NSFW",
-    //   icon: <ExclamationTriangleIcon className="text-darkText w-9" />,
-    //   bgColor: "bg-[#C82B3D40]",
-    // },
-    // {
-    //   title: "Advice",
-    //   icon: <Speech size={36} className="text-darkText" />,
-    //   bgColor: "bg-[#5C7ED640]",
-    // },
   ];
 
   const getInfo = async () => {
@@ -82,23 +70,6 @@ function MainLeftBar() {
       console.log(cornerError.message);
     } else {
       setInfoData(cornerData);
-
-      const isLiked = cornerData[0]?.likes?.some(
-        (like: { user_id: string | string[] }) =>
-          like.user_id === userData?.user?.id
-      );
-
-      if (isLiked) {
-        setIsLiked(true);
-      }
-
-      const isSaved = cornerData[0]?.saves?.some(
-        (save: { user_id: string | string[] }) =>
-          save.user_id === userData?.user?.id
-      );
-      if (isSaved) {
-        setIsSaved(true);
-      }
     }
   };
 
@@ -107,17 +78,19 @@ function MainLeftBar() {
   }, []);
 
   return (
-    <section>
+    <section className="relative">
       {/* SEARCH ENGINE */}
-      <div className="flex items-center gap-2 text-darkText bg-myForeground rounded-full py-2 px-3 md:w-[45%] w-full">
+      <div className="relative mb-2 flex items-center gap-2 text-darkText bg-myForeground rounded-full py-2 px-3 md:w-[45%] w-full">
         <MagnifyingGlassIcon className="w-6 text-darkText" strokeWidth={1} />
         <input
           placeholder="Search"
           className="outline-none border-none bg-transparent w-full text-[14px]"
         />
       </div>
+      {/* SEARCH DROP DOWN */}
+      <div className="absolute md:w-[45%] w-full z-[10] rounded-xl h-[20vh] bg-myForeground"></div>
+      {/* CREATE DATE STORY OR IDEA */}
       <section className="w-full mt-4">
-        {/* <div className="horizontal md:max-w-[56vw] w-full overflow-x-auto"> */}
         <div className="flex gap-3 px-1">
           {categories.map((cat) => {
             return (
@@ -134,15 +107,15 @@ function MainLeftBar() {
             );
           })}
         </div>
-        {/* </div> */}
       </section>
+      {/* RENDER OF ALL IDEAS AND STORIES FROM NEWEST TO LATEST */}
       <section className="mt-4">
         <div>
           {infoData
             ? infoData.map((info) => {
                 return (
                   <Fragment key={info?.id}>
-                    <div className="py-5 px-4">
+                    <div className="md:py-5 md:px-4">
                       <CollectionCard
                         info={info}
                         isLiked={isLiked}

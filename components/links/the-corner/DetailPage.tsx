@@ -15,7 +15,10 @@ import {
   BookmarkIcon as BookmarkOutline,
   HeartIcon as HeartOutline,
 } from "@heroicons/react/24/outline";
-import { HeartIcon as HeartSolid, BookmarkIcon as BookmarkSolid } from "@heroicons/react/24/solid";
+import {
+  HeartIcon as HeartSolid,
+  BookmarkIcon as BookmarkSolid,
+} from "@heroicons/react/24/solid";
 import Header5 from "@/components/Header5";
 import Header1 from "@/components/Header1";
 import LineBreak from "@/components/LineBreak";
@@ -107,9 +110,6 @@ function DetailPage({ info, handleLike, handleSave, isLiked, isSaved }: Post) {
       <div className="mt-3">
         <LineBreak />
       </div>
-      {/* <div className="mt-3">
-        <HeartOutline className="w-7 text-darkText" strokeWidth={1} />
-      </div> */}
       {info?.image ? (
         <div className="w-full rounded object-cover mt-4">
           <Image
@@ -128,11 +128,6 @@ function DetailPage({ info, handleLike, handleSave, isLiked, isSaved }: Post) {
           </p>
         ) : null}
       </div>
-
-      {/* <div className="text-darkText60 mt-1 flex items-center gap-1">
-        <StarIcon className="w-3" />
-        <p className="text-[12px]">4.6</p>
-      </div> */}
       <div className="mt-5">{info?.content ? parse(info?.content) : null}</div>
       <div className="flex items-center gap-3 mt-5">
         <div className="flex items-center gap-2">
@@ -171,23 +166,29 @@ function DetailPage({ info, handleLike, handleSave, isLiked, isSaved }: Post) {
           {info?.likes ? (
             <div className="flex items-center gap-1">
               <div onClick={handleLike} className="cursor-pointer">
-                {isLiked ? <HeartSolid className="w-7" strokeWidth={1.2} /> : <HeartOutline className="w-7" strokeWidth={1.2} />}
+                {isLiked ? (
+                  <HeartSolid className="w-7" strokeWidth={1.2} />
+                ) : (
+                  <HeartOutline className="w-7" strokeWidth={1.2} />
+                )}
               </div>
 
               <p className="text-[13px] font-medium whitespace-nowrap">
                 {info?.likes?.length}
-                {/* like{checkForS(info?.likes?.length)} */}
               </p>
             </div>
           ) : null}
           {info?.saves ? (
             <div className="flex items-center gap-1">
               <div onClick={handleSave} className="cursor-pointer">
-                {isSaved ? <BookmarkSolid className="w-6" strokeWidth={1.2} /> : <BookmarkOutline className="w-6" strokeWidth={1.2} />}
+                {isSaved ? (
+                  <BookmarkSolid className="w-6" strokeWidth={1.2} />
+                ) : (
+                  <BookmarkOutline className="w-6" strokeWidth={1.2} />
+                )}
               </div>
               <p className="text-[13px] font-medium whitespace-nowrap">
                 {info?.saves?.length}
-                {/* save{checkForS(info?.saves?.length)} */}
               </p>
             </div>
           ) : null}

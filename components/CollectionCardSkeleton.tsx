@@ -3,7 +3,7 @@ import { Skeleton } from "./ui/skeleton";
 
 function CollectionCardSkeleton() {
   return (
-    <div className={``}>
+    <div className={`py-5`}>
       <div className="">
         <div className="flex items-center gap-2">
           <Skeleton className="w-[40px] h-[40px] rounded-full animate-skeleton" />
@@ -16,10 +16,6 @@ function CollectionCardSkeleton() {
       <div className="">
         <Skeleton className="w-full h-[45vh] rounded-md animate-skeleton mt-4" />
       </div>
-      {/* <div className="mt-2">
-        <Skeleton className="h-6 w-[90px] rounded-md animate-skeleton mt-2" />
-        <Skeleton className="h-5 w-[70px] rounded-md animate-skeleton mt-2" />
-      </div> */}
       <div className="mt-3">
         <Skeleton className="h-5 w-[45%] rounded-md animate-skeleton" />
       </div>
