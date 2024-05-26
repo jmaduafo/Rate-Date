@@ -14,6 +14,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import { useToast } from "@/components/ui/use-toast";
 import Loading from "@/components/Loading";
 import { clearCachesByServerAction } from "@/utils/general/revalidatePath";
+import CollectionCardSkeleton from "@/components/CollectionCardSkeleton";
 
 function TheCornerDetailPage() {
   const [cornerDetail, setCornerDetail] = useState<PostProps | undefined>();
@@ -253,7 +254,7 @@ function TheCornerDetailPage() {
           isSaved={isSaved}
         />
       ) : (
-        <div></div>
+        <CollectionCardSkeleton />
       )}
       {/* COMMENT SECTION */}
       {commentsData ? (
@@ -267,7 +268,7 @@ function TheCornerDetailPage() {
         </div>
       ) : (
         <div className="mt-8">
-          <Skeleton className="w-[30%] h-10 rounded-xl animate-skeleton" />
+          <Skeleton className="w-[30%] h-7 rounded-xl animate-skeleton" />
         </div>
       )}
       {/* COMMENT TEXT AREA */}
@@ -289,7 +290,7 @@ function TheCornerDetailPage() {
             ) : (
               <>
                 <PaperAirplaneIcon className="w-3 text-myForeground" />
-                Publish
+                Comment
               </>
             )}
           </PrimaryButton>

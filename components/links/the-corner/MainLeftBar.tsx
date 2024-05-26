@@ -6,7 +6,8 @@ import {
   BookOpenIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/solid";
-import { Speech } from "lucide-react";
+import { ThumbsDown as ThumbsDownOutline, ThumbsUp as ThumbsUpOutline } from "lucide-react";
+import { ThumbsDown as ThumbsDownSolid, ThumbsUp as ThumbsUpSolid } from "lucide-react";
 import CategoriesSelect from "./CategoriesSelect";
 import CollectionCard from "@/components/CollectionCard";
 import { createClient } from "@/utils/supabase/client";
@@ -28,13 +29,13 @@ function MainLeftBar() {
   const categories = [
     {
       title: "Date Idea",
-      icon: <LightBulbIcon className="text-darkText w-6" />,
+      icon: <LightBulbIcon className="text-darkText md:w-6 w-4" />,
       bgColor: "hover:bg-[#E0A85440]",
       href: "/the-corner/ideas/create",
     },
     {
       title: "Date Story",
-      icon: <BookOpenIcon className="text-darkText w-6" />,
+      icon: <BookOpenIcon className="text-darkText md:w-6 w-4" />,
       bgColor: "hover:bg-[#96D6BB40]",
       href: "/the-corner/stories/create",
     },
@@ -141,12 +142,14 @@ function MainLeftBar() {
             ? infoData.map((info) => {
                 return (
                   <Fragment key={info?.id}>
-                    <CollectionCard
-                      info={info}
-                      isLiked={isLiked}
-                      isSaved={isSaved}
-                      userID={userID}
-                    />
+                    <div className="py-5 px-4">
+                      <CollectionCard
+                        info={info}
+                        isLiked={isLiked}
+                        isSaved={isSaved}
+                        userID={userID}
+                      />
+                    </div>
                   </Fragment>
                 );
               })

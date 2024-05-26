@@ -4,7 +4,11 @@ import React, { useState } from "react";
 import Tiptap from "@/components/TipTap";
 import CreateEditCard from "@/components/CreateEditCard";
 import { ideasCategory, costList } from "@/utils/general/createEditData";
-import { ChevronRightIcon, ChevronLeftIcon, PlusIcon } from "@heroicons/react/24/outline";
+import {
+  ChevronRightIcon,
+  ChevronLeftIcon,
+  PlusIcon,
+} from "@heroicons/react/24/outline";
 import Header2 from "@/components/Header2";
 import PrimaryButton from "@/components/PrimaryButton";
 import SecondaryButton from "@/components/SecondaryButton";
@@ -188,15 +192,15 @@ function CreateDateIdeas() {
       <div className="flex justify-end">
         <Link href="/the-corner/stories/create">
           <PrimaryButton type="button" className="flex items-center gap-2">
-        <PlusIcon className="text-myForeground w-4"/>
-            
-            Create Date Story</PrimaryButton>
+            <PlusIcon className="text-myForeground w-4" />
+            Create Date Story
+          </PrimaryButton>
         </Link>
       </div>
-      <div className="text-darkText mb-8">
-        <Header2 title="Create Your Idea" />
+      <div className="text-darkText mt-6">
+        <Header2 title="Add Your Date Idea" />
       </div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="mt-8">
         {isNext ? (
           <>
             <div className="">

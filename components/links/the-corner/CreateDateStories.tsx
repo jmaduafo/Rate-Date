@@ -185,10 +185,10 @@ function CreateDateStories() {
             </PrimaryButton>
           </Link>
         </div>
-      <div className="text-darkText mb-8">
+      <div className="text-darkText mt-6">
         <Header2 title="Add Your Date Story" />
       </div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="mt-8">
         {isNext ? (
           <>
             <div className="">

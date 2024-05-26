@@ -3,7 +3,7 @@ import { Skeleton } from "./ui/skeleton";
 
 function CollectionCardSkeleton() {
   return (
-    <div className={`py-5 px-4`}>
+    <div className={``}>
       <div className="">
         <div className="flex items-center gap-2">
           <Skeleton className="w-[40px] h-[40px] rounded-full animate-skeleton" />
