@@ -240,6 +240,8 @@ function BottomBar() {
         title: "Success!",
         description: "Date was deleted successfully!",
       });
+
+      setOpen(false)
     }
   }
 
@@ -284,6 +286,7 @@ function BottomBar() {
       }
 
       setScheduleLoading(false);
+      setOpen(false)
     }
   }
 
@@ -319,6 +322,8 @@ function BottomBar() {
         title: "Success!",
         description: `Your date was deleted successfully!`,
       });
+
+      setOpen(false)
     }
   }
 
@@ -353,6 +358,7 @@ function BottomBar() {
       }
 
       setScheduleLoading(false);
+      setOpen(false)
     }
   }
 

@@ -27,7 +27,7 @@ function TheCornerDetailPage() {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [userID, setUserID] = useState<string | null>();
-  const [ viewCount, setViewCount ] = useState<number | null>(null)
+  const [viewCount, setViewCount] = useState<number | null>(null);
 
   const supabase = createClient();
   const { toast } = useToast();
@@ -62,7 +62,7 @@ function TheCornerDetailPage() {
       console.log(error.message);
     } else {
       setCornerDetail(data[0]);
-      setViewCount(data[0]?.views)
+      //   setViewCount(data[0]?.views);
       const isLiked = data[0]?.likes?.some(
         (like: { user_id: string | string[] }) =>
           like.user_id === userData?.user?.id
@@ -84,16 +84,28 @@ function TheCornerDetailPage() {
   }
 
   async function getViews() {
-    if (viewCount) {
-      const { error: viewError } = await supabase
-        .from("corner")
-        .update({
-          views: viewCount + 1,
-        })
-        .eq("id", id);
+    const { data, error } = await supabase
+      .from("corner")
+      .select(
+        "views"
+      )
+      .eq("id", id);
 
-      if (viewError) {
-        console.log(viewError.message);
+      if (error) {
+        console.log(error.message)
+      } else {
+          const { error: viewError } = await supabase
+            .from("corner")
+            .update({
+              views: data[0]?.views + 1,
+            })
+            .eq("id", id);
+      
+          if (viewError) {
+            console.log(viewError.message);
+          } else {
+            setViewCount(data[0]?.views);
+
       }
     }
   }
@@ -111,7 +123,7 @@ function TheCornerDetailPage() {
         ) `
       )
       .eq("corner_id", id)
-      .order('created_at', { ascending: false})
+      .order("created_at", { ascending: false });
 
     if (error) {
       console.log(error.message);
@@ -146,7 +158,7 @@ function TheCornerDetailPage() {
           description: "Your comment was published successfully!",
         });
 
-        setCommentText('');
+        setCommentText("");
       }
 
       setLoading(false);
@@ -189,7 +201,7 @@ function TheCornerDetailPage() {
         console.log("Something wrong with like insert:", error.message);
       }
 
-    //   setIsSaved(true);
+      //   setIsSaved(true);
     } else if (userID && isSaved) {
       const { error } = await supabase
         .from("saves")
@@ -212,36 +224,41 @@ function TheCornerDetailPage() {
         "postgres_changes",
         { event: "*", schema: "public", table: "likes" },
         (payload) => {
-            getDetail()
+          getDetail();
         }
       )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "saves" },
         (payload) => {
-          getDetail()
+          getDetail();
         }
       )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "comments" },
         (payload) => {
-          getComments()
+          getComments();
         }
       )
       .subscribe();
 
-      return () => {
-        supabase.removeChannel(channel);
-      };
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }
 
   useEffect(() => {
     getDetail();
     getComments();
-    getViews()
-    listen()
+    getViews();
   }, []);
+
+  useEffect(() => {
+    listen();
+  }, [supabase, cornerDetail, commentsData]);
+
+  useEffect(() => {}, [viewCount]);
 
   return (
     <div className="md:w-[70%] w-full mx-auto mb-[4rem]">

@@ -21,8 +21,6 @@ function MainLeftBar() {
 
   const [infoData, setInfoData] = useState<PostProps[] | undefined>();
   const [userID, setUserID] = useState<string | undefined>();
-  const [isLiked, setIsLiked] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
 
   const categories = [
     {
@@ -118,8 +116,6 @@ function MainLeftBar() {
                     <div className="md:py-5 md:px-4">
                       <CollectionCard
                         info={info}
-                        isLiked={isLiked}
-                        isSaved={isSaved}
                         userID={userID}
                       />
                     </div>
