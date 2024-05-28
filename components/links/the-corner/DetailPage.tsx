@@ -33,7 +33,14 @@ type Post = {
   userID?: string | undefined;
 };
 
-function DetailPage({ info, handleLike, handleSave, isLiked, isSaved, userID }: Post) {
+function DetailPage({
+  info,
+  handleLike,
+  handleSave,
+  isLiked,
+  isSaved,
+  userID,
+}: Post) {
   const checkTags = [
     {
       category: "NSFW",
@@ -105,7 +112,13 @@ function DetailPage({ info, handleLike, handleSave, isLiked, isSaved, userID }: 
             </div>
           </div>
         </div>
-        <DropDownMenu id={info.id} date_type={info.date_type} userID={userID} type='post' postUser={info?.user_id}/>
+        <DropDownMenu
+          id={info.id}
+          date_type={info.date_type}
+          userID={userID}
+          type="post"
+          postUser={info?.user_id}
+        />
         {/* <div className="cursor-pointer z-[5]">
           <EllipsisVerticalIcon className="text-darkText w-6" strokeWidth={1} />
         </div> */}

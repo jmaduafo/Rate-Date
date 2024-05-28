@@ -87,6 +87,16 @@ export type CommentProps = {
     created_at?: string;
 }
 
+export type ReplyProps = {
+    id?: string;
+    content?: string;
+    user_id?: string;
+    comment_id?: string;
+    users?: UserDataProps;
+    reply_username?: string | undefined;
+    created_at?: string;
+}
+
 export type OtherProps = {
     id?: string;
     user_id?: string;
