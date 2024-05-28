@@ -13,7 +13,6 @@ import { PaperAirplaneIcon } from "@heroicons/react/24/solid";
 import TextareaAutosize from "react-textarea-autosize";
 import { useToast } from "@/components/ui/use-toast";
 import Loading from "@/components/Loading";
-import { clearCachesByServerAction } from "@/utils/general/revalidatePath";
 import CollectionCardSkeleton from "@/components/CollectionCardSkeleton";
 
 function TheCornerDetailPage() {
@@ -26,7 +25,7 @@ function TheCornerDetailPage() {
 
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [userID, setUserID] = useState<string | null>();
+  const [userID, setUserID] = useState<string | undefined>();
   const [viewCount, setViewCount] = useState<number | null>(null);
 
   const supabase = createClient();
@@ -269,6 +268,7 @@ function TheCornerDetailPage() {
           handleSave={handleSave}
           isLiked={isLiked}
           isSaved={isSaved}
+          userID={userID}
         />
       ) : (
         <CollectionCardSkeleton />
@@ -318,7 +318,7 @@ function TheCornerDetailPage() {
         ? commentsData?.map((com) => {
             return (
               <Fragment key={com?.id}>
-                <Comments comment={com} />
+                <Comments comment={com} userID={userID}/>
               </Fragment>
             );
           })

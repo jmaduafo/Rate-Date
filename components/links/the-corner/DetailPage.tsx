@@ -22,6 +22,7 @@ import {
 import Header5 from "@/components/Header5";
 import Header1 from "@/components/Header1";
 import LineBreak from "@/components/LineBreak";
+import DropDownMenu from "../DropDownMenu";
 
 type Post = {
   info: PostProps;
@@ -29,9 +30,10 @@ type Post = {
   handleSave?: () => void;
   isLiked?: boolean;
   isSaved?: boolean;
+  userID?: string | undefined;
 };
 
-function DetailPage({ info, handleLike, handleSave, isLiked, isSaved }: Post) {
+function DetailPage({ info, handleLike, handleSave, isLiked, isSaved, userID }: Post) {
   const checkTags = [
     {
       category: "NSFW",
@@ -103,9 +105,10 @@ function DetailPage({ info, handleLike, handleSave, isLiked, isSaved }: Post) {
             </div>
           </div>
         </div>
-        <div className="cursor-pointer z-[5]">
+        <DropDownMenu id={info.id} date_type={info.date_type} userID={userID} type='post' postUser={info?.user_id}/>
+        {/* <div className="cursor-pointer z-[5]">
           <EllipsisVerticalIcon className="text-darkText w-6" strokeWidth={1} />
-        </div>
+        </div> */}
       </div>
       <div className="mt-3">
         <LineBreak />

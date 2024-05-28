@@ -1,36 +1,43 @@
-import { PostProps, CommentProps } from "@/types/type";
-import { ThumbsUp, ThumbsDown } from "lucide-react";
+"use client";
+import { CommentProps } from "@/types/type";
 import {
   EllipsisVerticalIcon,
   EyeIcon,
   ChatBubbleOvalLeftEllipsisIcon as CommentIcon,
   BookmarkIcon,
   HeartIcon as HeartOutline,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  HandThumbDownIcon as ThumbsDownOutline,
+  HandThumbUpIcon as ThumbsUpOutline,
 } from "@heroicons/react/24/outline";
+import {
+  HandThumbDownIcon as ThumbsDownSolid,
+  HandThumbUpIcon as ThumbsUpSolid,
+} from "@heroicons/react/24/solid";
 import Image from "next/image";
-import React from "react";
-import {
-  ThumbsDown as ThumbsDownOutline,
-  ThumbsUp as ThumbsUpOutline,
-} from "lucide-react";
-import {
-  ThumbsDown as ThumbsDownSolid,
-  ThumbsUp as ThumbsUpSolid,
-  Icon,
-} from "lucide-solid";
-import { burger, sausage } from '@lucide/lab';
+import React, { useState } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 import {
   futureHoursFromNow,
   futureTimeFromNow,
 } from "@/utils/general/dateTimeFile";
 import { getInitials } from "@/utils/general/initials";
 import { checkForS } from "@/utils/general/isS";
+import DropDownMenu from "../DropDownMenu";
 
 type Comment = {
   comment: CommentProps;
+  userID?: string;
 };
 
-function Comments({ comment }: Comment) {
+function Comments({ comment, userID }: Comment) {
+  const [replyShow, setReplyShow] = useState(false);
+  const [isDisliked, setIsDisliked] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [replyText, setReplyText] = useState("");
+  const [showReply, setShowReply] = useState(false);
+
   return (
     <div className="text-darkText py-2">
       <div className="flex justify-between items-start mt-5">
@@ -89,9 +96,7 @@ function Comments({ comment }: Comment) {
             </div>
           </div>
         </div>
-        <div className="cursor-pointer z-[5]">
-          <EllipsisVerticalIcon className="text-darkText w-6" strokeWidth={1} />
-        </div>
+        <DropDownMenu userID={userID} type='comment' id={comment?.id} postUser={comment?.user_id}/>
       </div>
       <div className="mt-2">
         {comment?.content ? (
@@ -100,18 +105,82 @@ function Comments({ comment }: Comment) {
       </div>
       <div className="flex items-center gap-3 mt-2">
         <div className="flex items-center gap-1">
-          <div className="">
-            <ThumbsUpOutline strokeWidth={1} size={16} />
+          <div className="" onClick={() => setIsLiked((prev) => !prev)}>
+            {isLiked ? (
+              <ThumbsUpSolid
+                strokeWidth={1}
+                className="text-darkText w-4 cursor-pointer duration-500"
+              />
+            ) : (
+              <ThumbsUpOutline
+                strokeWidth={1}
+                className="text-darkText w-4 cursor-pointer duration-500"
+              />
+            )}
             {/* <ThumbsDownSolid/> */}
-            {/* <Icon iconNode={sausage} /> */}
           </div>
           <p className="text-[13px]">0</p>
         </div>
         <div className="flex items-center gap-1">
-          <ThumbsDownOutline strokeWidth={1} size={16} />
+          <div onClick={() => setIsDisliked((prev) => !prev)}>
+            {isDisliked ? (
+              <ThumbsDownSolid
+                strokeWidth={1}
+                className="text-darkText w-4 cursor-pointer duration-500"
+              />
+            ) : (
+              <ThumbsDownOutline
+                strokeWidth={1}
+                className="text-darkText w-4 cursor-pointer duration-500"
+              />
+            )}
+          </div>
           <p className="text-[13px]">0</p>
         </div>
       </div>
+      <div className="mt-2 flex gap-2 items-center">
+        <div
+          className="bg-darkText p-1 rounded-full cursor-pointer"
+          onClick={() => setReplyShow((prev) => !prev)}
+        >
+          {replyShow ? (
+            <ChevronUpIcon className="text-myForeground w-3" />
+          ) : (
+            <ChevronDownIcon className="text-myForeground w-3" />
+          )}
+        </div>
+        <div onClick={() => setShowReply(true)}>
+          <p className="text-[13px] font-medium cursor-pointer">Reply</p>
+        </div>
+      </div>
+      {showReply ? (
+        <div className="mt-3">
+          <form>
+            <div>
+              <TextareaAutosize
+                onChange={(e) => setReplyText(e.target.value)}
+                placeholder="Write a reply"
+                className="outline-none p-2 text-[14px] text-darkText w-full rounded-lg border-dark10 border-[1px] bg-[#ffffff30] min-h-[80px]"
+              />
+            </div>
+            <div className="flex justify-end items-center gap-3">
+              <button
+                onClick={() => setShowReply(false)}
+                type="button"
+                className="text-[14px] px-4 py-[2px] rounded-full border-darkText border-[1px] text-darkText"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="text-[14px] px-4 py-[2px] rounded-full bg-darkText text-myForeground"
+              >
+                Reply
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : null}
     </div>
   );
 }

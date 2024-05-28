@@ -26,6 +26,7 @@ import { checkForS } from "@/utils/general/isS";
 import Link from "next/link";
 import Header4 from "./Header4";
 import Header3 from "./Header3";
+import DropDownMenu from "./links/DropDownMenu";
 
 type PostTypeProps = {
   info: PostProps | undefined;
@@ -33,7 +34,7 @@ type PostTypeProps = {
   handleSave?: () => void;
   isLiked?: boolean;
   isSaved?: boolean;
-  userID?: string;
+  userID?: string | undefined;
 };
 
 function CollectionCard({
@@ -158,9 +159,7 @@ function CollectionCard({
             </div>
           </div>
         </div>
-        <div className="cursor-pointer z-[5]">
-          <EllipsisVerticalIcon className="text-darkText w-6" strokeWidth={1} />
-        </div>
+        <DropDownMenu userID={userID} id={info?.id} date_type={info?.date_type} type='post' postUser={info?.user_id}/>
       </div>
       {info?.image ? (
         <div className="w-full rounded object-cover mt-4">
