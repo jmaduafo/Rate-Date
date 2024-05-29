@@ -3,19 +3,14 @@
 import React, { useState, useEffect, Fragment } from "react";
 import Card from "@/components/Card";
 import { useToast } from "@/components/ui/use-toast";
-import { getInitials } from "@/utils/general/initials";
-import { getZodiac } from "@/utils/general/zodiacSign";
 import { createClient } from "@/utils/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { useRouter } from "next/navigation";
 
-import Header4 from "@/components/Header4";
-import Loading from "@/components/Loading";
-
 import { PlusCircleIcon } from "@heroicons/react/24/solid";
 
-import { PostProps } from "@/types/type";
+import { PostProps, OtherProps } from "@/types/type";
 import CollectionCard from "../../CollectionCard";
 import SelectedBanner from "@/components/SelectedBanner";
 import { PlusIcon } from "@heroicons/react/24/outline";
@@ -30,6 +25,7 @@ function LeftBar() {
   const [userID, setUserID] = useState<string | undefined>("");
   const [infoData, setInfoData] = useState<PostProps[] | undefined>();
   const [filterData, setFilterData] = useState<PostProps[] | undefined>();
+  const [saveData, setSaveData] = useState<PostProps[] | undefined>();
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
@@ -80,34 +76,57 @@ function LeftBar() {
         console.log(cornerError.message);
       } else {
         setInfoData(cornerData);
+        
+        const filter = cornerData?.filter((data) => data.date_type === userSelect);
 
-        const filter = cornerData?.filter(
-          (data) => data.category === userSelect
-        );
         setFilterData(filter);
+      }
+    }
+  };
 
-        const isLiked = cornerData[0]?.likes?.some(
-          (like: { user_id: string | string[] }) =>
-            like.user_id === authData?.user?.id
+  const getSaves = async () => {
+    const { data: authData, error: authError } = await supabase.auth.getUser();
+
+    if (authError) {
+      console.log(authError?.message);
+    } else {
+      const { data: cornerData, error: cornerError } = await supabase
+        .from("corner")
+        .select(
+          `
+          *,
+          saves (
+            *
+          ),
+          comments (
+            *
+          ),
+          likes (
+            *
+          )
+        `
         );
 
-        if (isLiked) {
-          setIsLiked(true);
-        }
+      if (cornerError) {
+        console.log(cornerError.message);
+      } else {
+        // CHECK FOR SAVED DATA THROUGH ALL STORIES AND IDEAS
+        const savesArray: PostProps[] | undefined = [];
 
-        const isSaved = cornerData[0]?.saves?.some(
-          (save: { user_id: string | string[] }) =>
-            save.user_id === authData?.user?.id
-        );
-        if (isSaved) {
-          setIsSaved(true);
-        }
+        cornerData?.forEach((data) => {
+          data?.saves?.forEach((save: OtherProps) => {
+            save.user_id === authData?.user?.id && savesArray.push(data)
+          })
+        });
+
+        setSaveData(savesArray);
       }
     }
   };
 
   useEffect(() => {
     getInfo();
+    getSaves();
   }, []);
 
   useEffect(() => {
@@ -116,6 +135,10 @@ function LeftBar() {
       const filter = infoData?.filter((data) => data.date_type === userSelect);
 
       setFilterData(filter);
+    } else if (userSelect === 'My Saves' && saveData) {
+      setFilterData(saveData)
+    } else {
+      setFilterData([])
     }
   }, [userSelect]);
 
@@ -174,10 +197,10 @@ function LeftBar() {
                 </Fragment>
               );
             })
-          ) : filterData && !filterData.length ? (
+          ) : filterData && !filterData?.length ? (
             <div className="text-darkText mt-[3rem]">
               <p className="text-center">
-                No {userSelect?.toLowerCase()} created yet
+                No {userSelect === 'My Saves' ? 'saves' : userSelect?.toLowerCase()} created yet
               </p>
             </div>
           ) : (

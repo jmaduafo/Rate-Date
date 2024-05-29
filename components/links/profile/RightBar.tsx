@@ -88,6 +88,7 @@ function RightBar() {
           "Name and username cannot be left empty. Please fill in these fields.",
       });
     } else {
+      console.log('bark')
       setLoading(true);
       if (userData && userID) {
         // console.log(profileImage?.imagePreview + ';' + profileImage?.file)
