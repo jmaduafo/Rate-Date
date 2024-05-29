@@ -268,7 +268,7 @@ function Comments({ comment, userID }: Comment) {
       {allReplies && allReplies?.length
         ? allReplies?.map((data) => {
             return (
-              <div key={data.id} className="pl-10">
+              <div key={data.id} className={`${replyShow ? 'block' : 'hidden'} pl-10`}>
                 <Reply
                   reply_username={comment?.users?.username}
                   comment_id={comment.id}
@@ -300,7 +300,6 @@ type RepProp = {
 };
 
 function Reply({ reply_username, user_reply, userID, createReply, setReplyText }: RepProp) {
-  const [replyShow, setReplyShow] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [showReply, setShowReply] = useState(false);
@@ -422,17 +421,7 @@ function Reply({ reply_username, user_reply, userID, createReply, setReplyText }
             <p className="text-[13px]">0</p>
           </div>
         </div>
-        <div className="mt-2 flex gap-2 items-center">
-          <div
-            className="bg-darkText p-1 rounded-full cursor-pointer"
-            onClick={() => setReplyShow((prev) => !prev)}
-          >
-            {replyShow ? (
-              <ChevronUpIcon className="text-myForeground w-3" />
-            ) : (
-              <ChevronDownIcon className="text-myForeground w-3" />
-            )}
-          </div>
+        <div className="mt-2">
           <div onClick={() => setShowReply(true)}>
             <p className="text-[13px] font-medium cursor-pointer">Reply</p>
           </div>
