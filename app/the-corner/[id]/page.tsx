@@ -53,6 +53,9 @@ function TheCornerDetailPage() {
     ),
     comments(
         *
+    ),
+    replies (
+        *
     ) `
       )
       .eq("id", id);
@@ -119,7 +122,8 @@ function TheCornerDetailPage() {
         name,
         username,
         image
-        ) `
+        )
+        `
       )
       .eq("corner_id", id)
       .order("created_at", { ascending: false });
@@ -240,6 +244,13 @@ function TheCornerDetailPage() {
           getComments();
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "replies" },
+        (payload) => {
+          getDetail();
+        }
+      )
       .subscribe();
 
     return () => {
@@ -257,7 +268,7 @@ function TheCornerDetailPage() {
     listen();
   }, [supabase, cornerDetail, commentsData]);
 
-  useEffect(() => {}, [viewCount]);
+  console.log(cornerDetail?.replies?.length)
 
   return (
     <div className="md:w-[70%] w-full mx-auto mb-[4rem]">
@@ -274,12 +285,12 @@ function TheCornerDetailPage() {
         <CollectionCardSkeleton />
       )}
       {/* COMMENT SECTION */}
-      {commentsData ? (
+      {commentsData && cornerDetail && cornerDetail?.replies ? (
         // COMMENT HEADER
         <div className="text-darkText mt-8">
           <Header2
-            title={`${commentsData?.length} Comment${checkForS(
-              commentsData?.length
+            title={`${commentsData?.length + cornerDetail?.replies?.length} Comment${checkForS(
+              commentsData?.length + cornerDetail?.replies?.length
             )}`}
           />
         </div>

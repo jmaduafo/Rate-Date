@@ -121,6 +121,7 @@ export type PostProps = {
   likes?: OtherProps[];
   saves?: OtherProps[];
   comments?: CommentProps[];
+  replies?: ReplyProps[];
   views?: number;
   created_at?: string;
 };

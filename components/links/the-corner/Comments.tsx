@@ -16,7 +16,7 @@ import {
   HandThumbUpIcon as ThumbsUpSolid,
 } from "@heroicons/react/24/solid";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import {
   futureHoursFromNow,
@@ -27,6 +27,7 @@ import { checkForS } from "@/utils/general/isS";
 import DropDownMenu from "../DropDownMenu";
 import { createClient } from "@/utils/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
+import Link from "next/link";
 
 type Comment = {
   comment: CommentProps;
@@ -41,51 +42,80 @@ function Comments({ comment, userID }: Comment) {
   const [showReply, setShowReply] = useState(false);
   const [allReplies, setAllReplies] = useState<ReplyProps[] | undefined>();
 
-  const supabase = createClient()
-  const { toast } = useToast()
+  const supabase = createClient();
+  const { toast } = useToast();
 
   async function createReply(e: React.FormEvent) {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!replyText.length) {
-        return
+      return;
     } else {
-        const { error } = await supabase.from('replies').insert({
-            content: replyText,
-            comment_id: comment?.id
-        })
+      const { error } = await supabase.from("replies").insert({
+        content: replyText,
+        comment_id: comment?.id,
+        reply_username: comment?.users?.username ?? null,
+        corner_id: comment?.corner_id ?? null
+      })
 
-        if (error) {
-            toast({
-                title: 'Something went wrong',
-                description: error.message
-            })
-        } else {
-            toast({
-                title: 'Reply published successfully!'
-            })
-        }
+      if (error) {
+        toast({
+          title: "Something went wrong",
+          description: error.message,
+        });
+      } else {
+        toast({
+          title: "Reply published successfully!",
+        });
+
+        setReplyText("");
+        setShowReply(false);
+      }
     }
   }
 
   async function getReplies() {
-    const { data, error } = await supabase.from('replies').select(
+    const { data, error } = await supabase
+      .from("replies")
+      .select(
         `*,
-        user (
+        users (
             *
         )`
-    ).eq('comment_id', comment?.id)
+      )
+      .eq("comment_id", comment?.id);
 
     if (error) {
-        console.log(error.message)
+      console.log(error.message);
     } else {
-        setAllReplies(data)
+      setAllReplies(data);
     }
   }
 
+  function listen() {
+    const channel = supabase
+      .channel("reply listener")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "replies" },
+        (payload) => {
+          getReplies();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }
+
   useEffect(() => {
-    getReplies()
-  }, [])
+    getReplies();
+  }, []);
+
+  useEffect(() => {
+    listen();
+  }, [supabase, allReplies]);
 
   return (
     <div className="text-darkText py-2">
@@ -209,7 +239,7 @@ function Comments({ comment, userID }: Comment) {
       </div>
       {showReply ? (
         <div className="mt-3">
-          <form>
+          <form onSubmit={createReply}>
             <div>
               <TextareaAutosize
                 onChange={(e) => setReplyText(e.target.value)}
@@ -235,18 +265,23 @@ function Comments({ comment, userID }: Comment) {
           </form>
         </div>
       ) : null}
-      {
-        allReplies && allReplies?.length ?
-        allReplies?.map(data => {
+      {allReplies && allReplies?.length
+        ? allReplies?.map((data) => {
             return (
-                <div key={data.id}>
-                    <Reply reply_username={comment?.users?.username} comment_id={comment.id} user_reply={data} userID={userID}/>
-                </div>
-            )
-        })
-        :
-        null
-      }
+              <div key={data.id} className="pl-10">
+                <Reply
+                  reply_username={comment?.users?.username}
+                  comment_id={comment.id}
+                  user_reply={data}
+                  userID={userID}
+                  corner_id={comment?.corner_id}
+                  createReply={createReply}
+                  setReplyText={setReplyText}
+                />
+              </div>
+            );
+          })
+        : null}
       <div></div>
     </div>
   );
@@ -258,47 +293,21 @@ type RepProp = {
   reply_username?: string | undefined;
   user_reply?: ReplyProps;
   userID?: string | undefined;
-  comment_id?: string | undefined
+  comment_id?: string | undefined;
+  corner_id?: string | undefined;
+  createReply?: (e: React.FormEvent) => void;
+  setReplyText?: React.Dispatch<SetStateAction<string>>
 };
 
-function Reply({ reply_username, user_reply, userID, comment_id }: RepProp) {
+function Reply({ reply_username, user_reply, userID, createReply, setReplyText }: RepProp) {
   const [replyShow, setReplyShow] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const [replyText, setReplyText] = useState("");
   const [showReply, setShowReply] = useState(false);
-
-    const supabase = createClient()
-    const { toast } = useToast()
-
-  async function createReply(e: React.FormEvent) {
-    e.preventDefault()
-
-    if (!replyText.length) {
-        return
-    } else {
-        const { error } = await supabase.from('replies').insert({
-            content: replyText,
-            comment_id,
-            reply_username: reply_username ?? null
-        })
-
-        if (error) {
-            toast({
-                title: 'Something went wrong',
-                description: error.message
-            })
-        } else {
-            toast({
-                title: 'Reply published successfully!'
-            })
-        }
-    }
-  }
 
   return (
     <div>
-      <div className="text-darkText py-2">
+      <div className="text-darkText py-1">
         <div className="flex justify-between items-start mt-5">
           <div className="flex items-center gap-2">
             {user_reply?.users?.image ? (
@@ -364,7 +373,18 @@ function Reply({ reply_username, user_reply, userID, comment_id }: RepProp) {
         </div>
         <div className="mt-2">
           {user_reply?.content ? (
-            user_reply?.reply_username ? <p className="text-[14px]"><span className="font-medium text-accent">@{user_reply?.reply_username}</span> {user_reply?.content}</p> : <p className="text-[14px]">{user_reply?.content}</p>
+            user_reply?.reply_username ? (
+                <p className="text-[14px]">
+                <Link href={userID === user_reply?.user_id ? '/profile' : `/profile/${reply_username}`}>
+                <span className="font-medium text-orange-800">
+                  @{user_reply?.reply_username}
+                </span>{" "}
+                </Link>
+                {user_reply?.content}
+              </p>
+            ) : (
+              <p className="text-[14px]">{user_reply?.content}</p>
+            )
           ) : null}
         </div>
         <div className="flex items-center gap-3 mt-2">
@@ -422,7 +442,7 @@ function Reply({ reply_username, user_reply, userID, comment_id }: RepProp) {
             <form onSubmit={createReply}>
               <div>
                 <TextareaAutosize
-                  onChange={(e) => setReplyText(e.target.value)}
+                  onChange={(e) => setReplyText && setReplyText(e.target.value)}
                   placeholder="Write a reply"
                   className="outline-none p-2 text-[14px] text-darkText w-full rounded-lg border-dark10 border-[1px] bg-[#ffffff30] min-h-[80px]"
                 />
