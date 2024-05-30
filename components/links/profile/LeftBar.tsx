@@ -67,6 +67,9 @@ function LeftBar() {
           ),
           likes (
             *
+          ),
+          replies (
+            *
           )
         `
         )
@@ -76,7 +79,7 @@ function LeftBar() {
         console.log(cornerError.message);
       } else {
         setInfoData(cornerData);
-        
+
         const filter = cornerData?.filter((data) => data.date_type === userSelect);
 
         setFilterData(filter);
@@ -102,6 +105,9 @@ function LeftBar() {
             *
           ),
           likes (
+            *
+          ),
+          replies (
             *
           )
         `
@@ -200,7 +206,7 @@ function LeftBar() {
           ) : filterData && !filterData?.length ? (
             <div className="text-darkText mt-[3rem]">
               <p className="text-center">
-                No {userSelect === 'My Saves' ? 'saves' : userSelect?.toLowerCase()} created yet
+                {userSelect === 'My Saves' ? 'No saves yet' : `No ${userSelect?.toLowerCase()} created yet`}
               </p>
             </div>
           ) : (

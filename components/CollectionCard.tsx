@@ -224,12 +224,12 @@ function CollectionCard({
       <div className="flex justify-between items-center mt-2">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1">
-            {info?.comments ? (
+            {info?.comments && info?.replies ? (
               <>
                 <CommentIcon className="w-5" strokeWidth={1.5} />
                 <p className="text-[13px] font-medium whitespace-nowrap">
-                  {info?.comments?.length} comment
-                  {checkForS(info?.comments?.length)}
+                  {info?.comments?.length + info?.replies?.length} comment
+                  {checkForS(info?.comments?.length + info?.replies?.length)}
                 </p>
               </>
             ) : null}
