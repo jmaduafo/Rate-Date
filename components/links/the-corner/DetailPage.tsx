@@ -23,6 +23,7 @@ import Header5 from "@/components/Header5";
 import Header1 from "@/components/Header1";
 import LineBreak from "@/components/LineBreak";
 import DropDownMenu from "../DropDownMenu";
+import SearchBar from "./SearchBar";
 
 type Post = {
   info: PostProps;
@@ -56,8 +57,9 @@ function DetailPage({
     },
   ];
   return (
-    <div className={`text-darkText`}>
-      <div className="">
+    <div className={`text-darkText relative`}>
+      <SearchBar classNameSize="w-full"/>
+      <div className="mt-10">
         {info?.title ? <Header1 title={info?.title} /> : null}
       </div>
       <div className="flex justify-between items-start mt-5">
