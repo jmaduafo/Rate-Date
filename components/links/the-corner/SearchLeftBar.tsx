@@ -3,12 +3,14 @@ import React, { Fragment, useEffect, useState } from "react";
 import Card from "@/components/Card";
 import Header4 from "@/components/Header4";
 import Link from "next/link";
+import Gif from "@/app/nothing_displayed.gif";
 import CollectionCard from "@/components/CollectionCard";
 import { createClient } from "@/utils/supabase/client";
 import { PostProps } from "@/types/type";
 import SearchBar from "./SearchBar";
 import Header3 from "@/components/Header3";
 import CollectionCardSkeleton from "@/components/CollectionCardSkeleton";
+import Image from "next/image";
 
 function SearchLeftBar({ searchParams }: { searchParams: { search: string } }) {
   const [currentUser, setCurrentUser] = useState<string | undefined>();
@@ -75,6 +77,7 @@ function SearchLeftBar({ searchParams }: { searchParams: { search: string } }) {
       <div className="mt-8 mb-2">
         <Header3 title={`All under "${searchParams.search}"`} />
       </div>
+      {/* POPULAR TAGS */}
 
       <div className={``}>
         {filterData && filterData?.length ? (
@@ -87,8 +90,15 @@ function SearchLeftBar({ searchParams }: { searchParams: { search: string } }) {
           })
         ) : filterData && !filterData.length ? (
           <div className="mt-10">
-            <p className="text-center">
-              Nothing displayed under "{searchParams.search}"
+            <div className="w-[40%] object-cover mx-auto">
+              <Image
+                src={Gif}
+                alt="animated techy gif"
+                className="w-full h-full"
+              />
+            </div>
+            <p className="text-center text-[15px] font-medium mt-[-10px]">
+              Sorry, nothing displayed under "{searchParams.search}"
             </p>
           </div>
         ) : (

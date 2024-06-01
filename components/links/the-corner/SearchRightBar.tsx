@@ -41,7 +41,7 @@ function SearchRightBar({ searchParams }: { searchParams: { search: string}}) {
     }, [searchParams])
 
   return (
-    <div>
+    <div className='sticky top-[30px]'>
         <section>
         <Card className=''>
           <div className="">
