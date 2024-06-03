@@ -71,7 +71,7 @@ export type UserDataProps = {
   private?: boolean;
   pronouns?: string | null;
   image?: string | null;
-  followings?: FollowProps;
+  followers?: FollowProps;
 };
 
 export type ReactionDataProps = {

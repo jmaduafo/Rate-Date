@@ -53,11 +53,7 @@ function RightBar({ username }: { username?: string | string[] }) {
         // FINDS WHERE ID MATCHES
         const { data: dataInfo, error: errorMessage } = await supabase
           .from("users")
-          .select(
-            `*, followings (
-            *
-          )`
-          )
+          .select()
           .eq("id", userData?.user?.id);
 
         if (errorMessage) {
@@ -68,15 +64,7 @@ function RightBar({ username }: { username?: string | string[] }) {
         } else {
           setUserData(dataInfo);
 
-          const followers = dataInfo[0]?.followings?.filter(
-            (el: { follow_id: string }) => el.follow_id === userData?.user?.id
-          );
-          const followings = dataInfo[0]?.followings?.filter(
-            (el: { user_id: string }) => el.user_id === userData?.user?.id
-          );
-
-          setFollowerCount(followers?.length ?? 0);
-          setFollowingCount(followings?.length ?? 0);
+          getFollows(userData?.user?.id);
 
           if (dataInfo) {
             setName(dataInfo[0]?.name);
@@ -98,26 +86,17 @@ function RightBar({ username }: { username?: string | string[] }) {
     }
   }
 
-  async function getFollows() {
-    const { data: userData, error: userError } = await supabase.auth.getUser();
-    if (userError) {
-      console.log(userError.message);
+  async function getFollows(id: string) {
+    const { data, error } = await supabase.from("followers").select();
+
+    if (error) {
+      console.error(error.message);
     } else {
-      const { data, error } = await supabase.from("followings").select();
+      const followers = data?.filter((el) => el.follow_id === id);
+      const followings = data?.filter((el) => el.user_id === id);
 
-      if (error) {
-        console.error(error.message);
-      } else {
-        const followers = data?.filter(
-          (el) => el.follow_id === userData?.user?.id
-        );
-        const followings = data?.filter(
-          (el) => el.user_id === userData?.user?.id
-        );
-
-        setFollowerCount(followers?.length);
-        setFollowingCount(followings?.length);
-      }
+      setFollowerCount(followers?.length);
+      setFollowingCount(followings?.length);
     }
   }
 
@@ -135,7 +114,7 @@ function RightBar({ username }: { username?: string | string[] }) {
       } else {
         const { data: dataInfo, error: errorMessage } = await supabase
           .from("users")
-          .select(` *, followings ( * ) `)
+          .select(`*, followers ( * )`)
           .eq("username", username);
 
         if (errorMessage) {
@@ -147,13 +126,15 @@ function RightBar({ username }: { username?: string | string[] }) {
           setUserData(dataInfo);
           setNotUserID(dataInfo[0]?.id);
 
-          const isFollowed = dataInfo[0]?.followings?.some(
-            (el: { user_id?: string; follow_id: string }) =>
+          getFollows(dataInfo[0]?.id);
+
+          const isFollow = dataInfo[0]?.followers?.some(
+            (el: { user_id: string; follow_id: string }) =>
               el.user_id === userData?.user?.id &&
               el.follow_id === dataInfo[0]?.id
           );
 
-          setIsFollowed(isFollowed);
+          setIsFollowed(isFollow);
         }
       }
     }
@@ -169,7 +150,6 @@ function RightBar({ username }: { username?: string | string[] }) {
           "Name and username cannot be left empty. Please fill in these fields.",
       });
     } else {
-      console.log("bark");
       setLoading(true);
       if (userData && userID) {
         // console.log(profileImage?.imagePreview + ';' + profileImage?.file)
@@ -224,7 +204,7 @@ function RightBar({ username }: { username?: string | string[] }) {
   async function handleFollow() {
     if (notUserID && userID) {
       if (!isFollowed) {
-        const { error } = await supabase.from("followings").insert({
+        const { error } = await supabase.from("followers").insert({
           follow_id: notUserID,
         });
 
@@ -235,7 +215,7 @@ function RightBar({ username }: { username?: string | string[] }) {
         }
       } else {
         const { error } = await supabase
-          .from("followings")
+          .from("followers")
           .delete()
           .eq("user_id", userID)
           .eq("follow_id", notUserID);
@@ -254,9 +234,10 @@ function RightBar({ username }: { username?: string | string[] }) {
       .channel("follow changes")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "followings" },
+        { event: "*", schema: "public", table: "followers" },
         (payload) => {
-          getFollows();
+          getNotUserProfile();
+          getUserProfile();
         }
       )
       .subscribe();
@@ -269,7 +250,7 @@ function RightBar({ username }: { username?: string | string[] }) {
   useEffect(() => {
     getNotUserProfile();
     getUserProfile();
-    getFollows();
+    // getFollows();
   }, []);
 
   useEffect(() => {
