@@ -1,8 +1,14 @@
+'use client'
 import React from 'react'
+import NotUser from '@/components/links/profile/NotUserProfile'
+import { useParams } from 'next/navigation'
 
-function NotUserProfile() {
+function NotUserProfile({ }) {
+
+  const { username } = useParams()
+
   return (
-    <div>NotUserProfile</div>
+    <div><NotUser username={username}/></div>
   )
 }
 

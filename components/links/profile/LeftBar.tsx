@@ -17,7 +17,7 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import CollectionCardSkeleton from "@/components/CollectionCardSkeleton";
 
-function LeftBar() {
+function LeftBar({ username }: { username?: string | string[]}) {
   const supabase = createClient();
 
   const { toast } = useToast();

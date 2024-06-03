@@ -90,7 +90,7 @@ function SearchLeftBar({ searchParams }: { searchParams: { search: string } }) {
           })
         ) : filterData && !filterData.length ? (
           <div className="mt-10">
-            <div className="w-[40%] object-cover mx-auto">
+            <div className="w-[55%] object-cover mx-auto">
               <Image
                 src={Gif}
                 alt="animated techy gif"

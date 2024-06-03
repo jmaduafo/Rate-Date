@@ -36,8 +36,8 @@ function UserInfo({
             />
           </div>
         ) : user && !user?.image && user?.name && (
-          <div className="w-[9rem] h-[9rem] bg-background rounded-full flex justify-center items-center">
-            <h5 className="text-[3rem] text-foreground font-bold uppercase">
+          <div className="w-[9rem] h-[9rem] bg-gray-300 rounded-full flex justify-center items-center">
+            <h5 className="text-[3rem] text-darkText font-bold uppercase">
               {getInitials(user?.name)}
             </h5>
           </div>
@@ -85,7 +85,7 @@ function UserInfo({
       {/* EDIT PROFILE AND SHARE BUTTON */}
       {children}
       {/* LINE BREAK */}
-      <LineBreak />
+      {user && user?.bio && <LineBreak />}
       {/* BIO */}
       <div className="mt-2">
         {user && user?.bio && (
