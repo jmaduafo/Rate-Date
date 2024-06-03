@@ -17,7 +17,7 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import CollectionCardSkeleton from "@/components/CollectionCardSkeleton";
 
-function LeftBar({ username }: { username?: string | string[]}) {
+function LeftBar({ username }: { username?: string | string[] }) {
   const supabase = createClient();
 
   const { toast } = useToast();
@@ -42,96 +42,150 @@ function LeftBar({ username }: { username?: string | string[]}) {
     },
     {
       title: "My Saves",
-      select: "My Saves",
+      select: !username ? "My Saves" : null,
     },
   ];
 
-  const getInfo = async () => {
-    const { data: authData, error: authError } = await supabase.auth.getUser();
+  const getNonUserInfo = async () => {
+    if (username) {
+      const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("id")
+        .eq("username", username);
 
-    if (authError) {
-      console.log(authError?.message);
-    } else {
-      setUserID(authData?.user?.id);
-
-      const { data: cornerData, error: cornerError } = await supabase
-        .from("corner")
-        .select(
-          `
-          *,
-          saves (
-            *
-          ),
-          comments (
-            *
-          ),
-          likes (
-            *
-          ),
-          replies (
-            *
-          )
-        `
-        )
-        .eq("user_id", authData?.user?.id);
-
-      if (cornerError) {
-        console.log(cornerError.message);
+      if (userError) {
+        console.error(userError.message);
       } else {
-        setInfoData(cornerData);
+        const { data: cornerData, error: cornerError } = await supabase
+          .from("corner")
+          .select(
+            `
+                *,
+                saves (
+                  *
+                ),
+                comments (
+                  *
+                ),
+                likes (
+                  *
+                ),
+                replies (
+                  *
+                )
+              `
+          )
+          .eq("user_id", userData[0]?.id);
 
-        const filter = cornerData?.filter((data) => data.date_type === userSelect);
+        if (cornerError) {
+          console.log(cornerError.message);
+        } else {
+          setInfoData(cornerData);
 
-        setFilterData(filter);
+          const filter = cornerData?.filter(
+            (data) => data.date_type === userSelect
+          );
+
+          setFilterData(filter);
+        }
+      }
+    }
+  };
+  const getInfo = async () => {
+    if (!username) {
+      const { data: authData, error: authError } =
+        await supabase.auth.getUser();
+
+      if (authError) {
+        console.log(authError?.message);
+      } else {
+        setUserID(authData?.user?.id);
+
+        const { data: cornerData, error: cornerError } = await supabase
+          .from("corner")
+          .select(
+            `
+            *,
+            saves (
+              *
+            ),
+            comments (
+              *
+            ),
+            likes (
+              *
+            ),
+            replies (
+              *
+            )
+          `
+          )
+          .eq("user_id", authData?.user?.id);
+
+        if (cornerError) {
+          console.log(cornerError.message);
+        } else {
+          setInfoData(cornerData);
+
+          const filter = cornerData?.filter(
+            (data) => data.date_type === userSelect
+          );
+
+          setFilterData(filter);
+        }
       }
     }
   };
 
   const getSaves = async () => {
-    const { data: authData, error: authError } = await supabase.auth.getUser();
+    if (!username) {
+      const { data: authData, error: authError } =
+        await supabase.auth.getUser();
 
-    if (authError) {
-      console.log(authError?.message);
-    } else {
-      const { data: cornerData, error: cornerError } = await supabase
-        .from("corner")
-        .select(
-          `
-          *,
-          saves (
-            *
-          ),
-          comments (
-            *
-          ),
-          likes (
-            *
-          ),
-          replies (
-            *
-          )
-        `
-        );
-
-      if (cornerError) {
-        console.log(cornerError.message);
+      if (authError) {
+        console.log(authError?.message);
       } else {
-        // CHECK FOR SAVED DATA THROUGH ALL STORIES AND IDEAS
-        const savesArray: PostProps[] | undefined = [];
+        const { data: cornerData, error: cornerError } = await supabase
+          .from("corner")
+          .select(
+            `
+            *,
+            saves (
+              *
+            ),
+            comments (
+              *
+            ),
+            likes (
+              *
+            ),
+            replies (
+              *
+            )
+          `
+          );
 
-        cornerData?.forEach((data) => {
-          data?.saves?.forEach((save: OtherProps) => {
-            save.user_id === authData?.user?.id && savesArray.push(data)
-          })
-        });
+        if (cornerError) {
+          console.log(cornerError.message);
+        } else {
+          // CHECK FOR SAVED DATA THROUGH ALL STORIES AND IDEAS
+          const savesArray: PostProps[] | undefined = [];
 
-        setSaveData(savesArray);
+          cornerData?.forEach((data) => {
+            data?.saves?.forEach((save: OtherProps) => {
+              save.user_id === authData?.user?.id && savesArray.push(data);
+            });
+          });
+
+          setSaveData(savesArray);
+        }
       }
     }
   };
 
   useEffect(() => {
     getInfo();
+    getNonUserInfo()
     getSaves();
   }, []);
 
@@ -141,10 +195,10 @@ function LeftBar({ username }: { username?: string | string[]}) {
       const filter = infoData?.filter((data) => data.date_type === userSelect);
 
       setFilterData(filter);
-    } else if (userSelect === 'My Saves' && saveData) {
-      setFilterData(saveData)
+    } else if (userSelect === "My Saves" && saveData) {
+      setFilterData(saveData);
     } else {
-      setFilterData([])
+      setFilterData([]);
     }
   }, [userSelect]);
 
@@ -153,7 +207,7 @@ function LeftBar({ username }: { username?: string | string[]}) {
       {/* USER'S STORIES AND DATE IDEAS SECTION */}
       <section className="">
         <div className="flex md:justify-start md:mb-2 justify-center mb-4">
-          {userSelect === "Date Idea" ? (
+          {userSelect === "Date Idea" && !username ? (
             <Link href="/the-corner/ideas/create">
               <div className="flex items-center gap-2 text-darkText mb-3">
                 <PlusCircleIcon className="w-6" />
@@ -163,7 +217,8 @@ function LeftBar({ username }: { username?: string | string[]}) {
               </div>
             </Link>
           ) : (
-            userSelect === "Date Story" && (
+            userSelect === "Date Story" &&
+            !username && (
               <Link href="/the-corner/stories/create">
                 <div className="flex items-center gap-2 text-darkText mb-3">
                   <PlusCircleIcon className="w-6" />
@@ -175,17 +230,19 @@ function LeftBar({ username }: { username?: string | string[]}) {
             )
           )}
         </div>
-        <div className="flex justify-center items-center gap-3 mb-10">
+        <div className="flex justify-center items-center gap-6 mb-10">
           {profileList.map((list) => {
             return (
-              <div className="" key={list.title}>
-                <SelectedBanner
-                  title={list.title}
-                  name={list.select}
-                  setSelect={setUserSelect}
-                  select={userSelect}
-                />
-              </div>
+              list.select && (
+                <div className="" key={list.title}>
+                  <SelectedBanner
+                    title={list.title}
+                    name={list.select}
+                    setSelect={setUserSelect}
+                    select={userSelect}
+                  />
+                </div>
+              )
             );
           })}
         </div>
@@ -206,7 +263,9 @@ function LeftBar({ username }: { username?: string | string[]}) {
           ) : filterData && !filterData?.length ? (
             <div className="text-darkText mt-[3rem]">
               <p className="text-center">
-                {userSelect === 'My Saves' ? 'No saves yet' : `No ${userSelect?.toLowerCase()} created yet`}
+                {userSelect === "My Saves"
+                  ? "No saves yet"
+                  : `No ${userSelect?.toLowerCase()} created yet`}
               </p>
             </div>
           ) : (
