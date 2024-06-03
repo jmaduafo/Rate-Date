@@ -53,6 +53,12 @@ export type ScheduleChartDataProps = {
   date_schedule_count: number;
 };
 
+export type FollowProps = {
+  id: string;
+  user_id: string;
+  follow_id: string | undefined;
+}
+
 export type UserDataProps = {
   id: string;
   email?: string;
@@ -65,6 +71,7 @@ export type UserDataProps = {
   private?: boolean;
   pronouns?: string | null;
   image?: string | null;
+  followings?: FollowProps;
 };
 
 export type ReactionDataProps = {

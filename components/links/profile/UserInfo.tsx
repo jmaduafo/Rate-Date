@@ -7,6 +7,7 @@ import { getInitials } from "@/utils/general/initials";
 import Header5 from "@/components/Header5";
 import LineBreak from "@/components/LineBreak";
 import Header4 from "@/components/Header4";
+import { checkForS } from "@/utils/general/isS";
 
 type UserInfoProps = {
   user: UserDataProps;
@@ -21,6 +22,7 @@ function UserInfo({
   followingCount,
   children,
 }: UserInfoProps) {
+  
   return (
     <div>
       {/* PROFILE PICTURE */}
@@ -56,10 +58,10 @@ function UserInfo({
         )}
       </div>
       {/* FOLLOWING AND FOLLOWERS */}
-      <div className="my-2 flex justify-center">
+      <div className="my-1 flex justify-center">
         {user && (
           <div className="flex justify-center items-center gap-1">
-            <p className="text-[15px] tracking-tighter">{followerCount} Followers</p>
+            <p className="text-[15px] tracking-tighter">{followerCount} Follower{typeof followerCount === 'number' ? checkForS(followerCount) : null}</p>
             <p className="text-[15px] tracking-tighter">&#x2022;</p>
             <p className="text-[15px] tracking-tighter">{followingCount} Following</p>
           </div>
@@ -68,8 +70,8 @@ function UserInfo({
       {/* IF NOT PRIVATE, SHOW ADDITIONAL USER INFO LIKE SEXUALITY, STATUS, ETC. */}
       {user && (
         !user?.private ? (
-          <div className="mb-1">
-            <p className="text-[11px] text-darkText60">
+          <div className="mb-2 flex justify-center">
+            <p className="text-[12px] text-darkText60">
               {user?.sexual_orientation ||
               user?.sexual_orientation !== "Prefer not to say"
                 ? user?.sexual_orientation

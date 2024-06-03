@@ -11,11 +11,13 @@ import SecondaryButton from "@/components/SecondaryButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import { v4 as uuidv4 } from "uuid";
 import PrimaryButton from "@/components/PrimaryButton";
+import { checkForS } from "@/utils/general/isS";
 
 function RightBar({ username }: { username?: string | string[] }) {
   const [userData, setUserData] = useState<UserDataProps[] | undefined>();
   const [followingCount, setFollowingCount] = useState<number>(0);
   const [followerCount, setFollowerCount] = useState<number>(0);
+  const [isFollowed, setIsFollowed] = useState<boolean>(false);
 
   const [name, setName] = useState<string>("");
   const [profileImage, setProfileImage] = useState<string | undefined>();
@@ -31,6 +33,7 @@ function RightBar({ username }: { username?: string | string[] }) {
   const [isPrivate, setIsPrivate] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [userID, setUserID] = useState<string | undefined>();
+  const [notUserID, setNotUserID] = useState<string | undefined>();
 
   const supabase = createClient();
   const router = useRouter();
@@ -50,7 +53,11 @@ function RightBar({ username }: { username?: string | string[] }) {
         // FINDS WHERE ID MATCHES
         const { data: dataInfo, error: errorMessage } = await supabase
           .from("users")
-          .select()
+          .select(
+            `*, followings (
+            *
+          )`
+          )
           .eq("id", userData?.user?.id);
 
         if (errorMessage) {
@@ -60,6 +67,16 @@ function RightBar({ username }: { username?: string | string[] }) {
           });
         } else {
           setUserData(dataInfo);
+
+          const followers = dataInfo[0]?.followings?.filter(
+            (el: { follow_id: string }) => el.follow_id === userData?.user?.id
+          );
+          const followings = dataInfo[0]?.followings?.filter(
+            (el: { user_id: string }) => el.user_id === userData?.user?.id
+          );
+
+          setFollowerCount(followers?.length ?? 0);
+          setFollowingCount(followings?.length ?? 0);
 
           if (dataInfo) {
             setName(dataInfo[0]?.name);
@@ -81,21 +98,63 @@ function RightBar({ username }: { username?: string | string[] }) {
     }
   }
 
+  async function getFollows() {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError) {
+      console.log(userError.message);
+    } else {
+      const { data, error } = await supabase.from("followings").select();
+
+      if (error) {
+        console.error(error.message);
+      } else {
+        const followers = data?.filter(
+          (el) => el.follow_id === userData?.user?.id
+        );
+        const followings = data?.filter(
+          (el) => el.user_id === userData?.user?.id
+        );
+
+        setFollowerCount(followers?.length);
+        setFollowingCount(followings?.length);
+      }
+    }
+  }
+
   async function getNotUserProfile() {
     // FINDS WHERE ID MATCHES
     if (username) {
-      const { data: dataInfo, error: errorMessage } = await supabase
-        .from("users")
-        .select()
-        .eq("username", username);
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
 
-      if (errorMessage) {
-        toast({
-          title: "Uh oh! Something went wrong",
-          description: errorMessage.message,
-        });
+      setUserID(userData?.user?.id);
+
+      if (userError) {
+        router.push("/login");
+        router.refresh();
       } else {
-        setUserData(dataInfo);
+        const { data: dataInfo, error: errorMessage } = await supabase
+          .from("users")
+          .select(` *, followings ( * ) `)
+          .eq("username", username);
+
+        if (errorMessage) {
+          toast({
+            title: "Uh oh! Something went wrong",
+            description: errorMessage.message,
+          });
+        } else {
+          setUserData(dataInfo);
+          setNotUserID(dataInfo[0]?.id);
+
+          const isFollowed = dataInfo[0]?.followings?.some(
+            (el: { user_id?: string; follow_id: string }) =>
+              el.user_id === userData?.user?.id &&
+              el.follow_id === dataInfo[0]?.id
+          );
+
+          setIsFollowed(isFollowed);
+        }
       }
     }
   }
@@ -162,10 +221,60 @@ function RightBar({ username }: { username?: string | string[] }) {
     }
   }
 
+  async function handleFollow() {
+    if (notUserID && userID) {
+      if (!isFollowed) {
+        const { error } = await supabase.from("followings").insert({
+          follow_id: notUserID,
+        });
+
+        if (error) {
+          console.log(error.message);
+        } else {
+          setIsFollowed(true);
+        }
+      } else {
+        const { error } = await supabase
+          .from("followings")
+          .delete()
+          .eq("user_id", userID)
+          .eq("follow_id", notUserID);
+
+        if (error) {
+          console.log(error.message);
+        } else {
+          setIsFollowed(false);
+        }
+      }
+    }
+  }
+
+  function listen() {
+    const channel = supabase
+      .channel("follow changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "followings" },
+        (payload) => {
+          getFollows();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }
+
   useEffect(() => {
-    getNotUserProfile()
+    getNotUserProfile();
     getUserProfile();
+    getFollows();
   }, []);
+
+  useEffect(() => {
+    listen();
+  }, [supabase, followerCount, followingCount, isFollowed]);
 
   return (
     <section className="md:sticky top-[20px]">
@@ -180,7 +289,18 @@ function RightBar({ username }: { username?: string | string[] }) {
             <div className="flex justify-center items-center gap-3 flex-nowrap mb-3">
               {username ? (
                 <div>
-                  <PrimaryButton>Follow</PrimaryButton>
+                  {isFollowed ? (
+                    <PrimaryButton
+                      className="bg-myAccent border-none"
+                      actionFunction={handleFollow}
+                    >
+                      Following
+                    </PrimaryButton>
+                  ) : (
+                    <PrimaryButton actionFunction={handleFollow}>
+                      Follow
+                    </PrimaryButton>
+                  )}
                 </div>
               ) : (
                 <EditProfile
