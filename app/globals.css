@@ -204,3 +204,14 @@
   ul, ol {
     list-style: revert;
   }
+
+  /* ACHIEVES THE TEXT STROKE EFFECT WITHOUT MAKING IT LOOK WEIRD */
+  .textBlock {
+    text-shadow:
+       1px 1px 0 #fff,
+     -1px -1px 0 #fff,  
+      1px -1px 0 #fff,
+      -1px 1px 0 #fff,
+       1px 1px 0 #fff;
+      font-size: 10vw;
+  }

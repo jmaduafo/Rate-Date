@@ -1,3 +1,4 @@
+import About from "@/components/links/home/About";
 import Hero from "@/components/links/home/Hero";
 import Navbar from "@/components/links/home/Navbar";
 import { createClient } from "@/utils/supabase/client";
@@ -24,6 +25,7 @@ export default async function Index() {
    <div className="bg-homeBackground text-homeText">
     <Navbar/>
     <Hero/>
+    <About/>
    </div>
   );
 }

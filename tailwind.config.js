@@ -110,6 +110,18 @@ module.exports = {
         from: { transform: "translateY(-5px)"},
         to: { transform: "translateY(5px)"},
       }, 
+      "slide1": {
+        from: { transform: "translateX(-30%)"},
+        to: { transform: "translateX(0%)"},
+      }, 
+      "slide2": {
+        from: { transform: "translateX(0%)"},
+        to: { transform: "translateX(-30%)"},
+      }, 
+      "slide3": {
+        from: { transform: "translateX(-10%)"},
+        to: { transform: "translateX(40%)"},
+      }, 
     },
     animation: {
       "accordion-down": "accordion-down 0.2s ease-out",
@@ -117,6 +129,9 @@ module.exports = {
       "spinner": "spinning 2s linear infinite",
       "skeleton": "skeleton 2s ease-in-out infinite alternate",
       "bounce": "bounce 1s ease-in-out infinite alternate",
+      "slide1": "slide1 90s linear infinite",
+      "slide2": "slide2 80s linear infinite",
+      "slide3": "slide3 60s linear infinite",
     },
   },
   plugins: [require("tailwindcss-animate"), require('@tailwindcss/typography')],
