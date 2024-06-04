@@ -272,7 +272,7 @@ function RightBar({ username }: { username?: string | string[] }) {
                 <div>
                   {isFollowed ? (
                     <PrimaryButton
-                      className="bg-myAccent border-none"
+                      className="bg-myAccent border-none text-myForeground"
                       actionFunction={handleFollow}
                     >
                       Following

@@ -76,7 +76,7 @@ function UserInfo({
               user?.sexual_orientation !== "Prefer not to say"
                 ? user?.sexual_orientation
                 : null}{" "}
-              {user?.sexual_orientation && user?.pronouns ? "/" : null}{" "}
+              <span className="text-dark30 text-[14px]">{user?.sexual_orientation && user?.pronouns ? "|" : null}{" "}</span>
               {user?.pronouns || user?.pronouns !== "Prefer not to say"
                 ? user?.pronouns
                 : null}
