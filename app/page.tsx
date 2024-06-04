@@ -1,27 +1,29 @@
-'use client'
+import Hero from "@/components/links/home/Hero";
+import Navbar from "@/components/links/home/Navbar";
 import { createClient } from "@/utils/supabase/client";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 export default async function Index() {
   const supabase = createClient()
-  const router = useRouter()
+  // const router = useRouter()
 
-  useEffect(() => {
-    async function checkLoggedIn() {
-      const { error } = await supabase.auth.getUser()
+  // useEffect(() => {
+  //   async function checkLoggedIn() {
+  //     const { error } = await supabase.auth.getUser()
 
-      if (!error) {
-        router.push('/dashboard')
-      }
-    }
+  //     if (!error) {
+  //       router.push('/dashboard')
+  //     }
+  //   }
 
-    checkLoggedIn()
-  }, [])
+  //   checkLoggedIn()
+  // }, [])
 
   return (
-   <div>
-    Logged out user
+   <div className="bg-homeBackground text-homeText">
+    <Navbar/>
+    <Hero/>
    </div>
   );
 }
