@@ -23,7 +23,7 @@ function Navbar() {
           <p className={`text-[18px] ${boskaRegular.className}`}>Elysian</p>
         </div>
         <div className="flex items-center gap-10">
-          <ul className="flex items-center gap-3">
+          <ul className="flex items-center gap-5">
             <li className="text-[13px] list-none tracking-tight">
               <a href="#features">Features</a>
             </li>

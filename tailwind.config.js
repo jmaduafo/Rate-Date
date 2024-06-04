@@ -119,8 +119,8 @@ module.exports = {
         to: { transform: "translateX(-30%)"},
       }, 
       "slide3": {
-        from: { transform: "translateX(-10%)"},
-        to: { transform: "translateX(40%)"},
+        from: { transform: "translateX(-20%)"},
+        to: { transform: "translateX(0%)"},
       }, 
     },
     animation: {
