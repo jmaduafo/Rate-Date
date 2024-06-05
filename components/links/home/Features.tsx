@@ -58,7 +58,8 @@ function Features() {
   ];
 
   return (
-    <section className="overflow-x-hidden">
+    <section className="overflow-x-hidden" id='features'>
+      <div className="h-[10vh]"></div>
       <div className="mb-10">
         <Carousel
           className="w-full mx-auto max-w-[90vw] overflow-y-visible"

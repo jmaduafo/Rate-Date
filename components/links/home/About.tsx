@@ -51,7 +51,7 @@ function About() {
         {/* <div className="relative "> */}
         <GradientCircle classNamePosition="left-1/2 top-[30%]" />
         {/* </div> */}
-        <p className="w-[40%]">
+        <p className="w-[40%] font-light">
           Elysian is designed to enrich your dating life. Easily record,
           schedule future meetups, and explore new ideas for unforgettable
           experiences. With visual charts to track your activity and a vibrant
