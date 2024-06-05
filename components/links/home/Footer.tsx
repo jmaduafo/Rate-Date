@@ -19,8 +19,8 @@ function Footer() {
           <br /> EXPERIENCE TODAY
         </h2>
       </div>
-      <div className="relative flex justify-center items-center w-full rounded-tl-3xl rounded-tr-3xl bg-black h-[90vh] z-[10]">
-        <GradientCircle classNamePosition="z-[0] top-1/2 left-1/2" />
+      <div className="overflow-hidden relative flex justify-center items-center w-full rounded-tl-3xl rounded-tr-3xl bg-black h-[90vh] z-[10]">
+        <GradientCircle classNamePosition="z-[0] top-1/2 left-1/2" classNameAnimate="animate-bounceMove3"/>
         <div className="z-[2]">
           <div className="">
             <h5

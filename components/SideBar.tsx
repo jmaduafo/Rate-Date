@@ -67,7 +67,7 @@ function SideBar() {
             setLogOutLoading(false)
         } else {
             setLogOutLoading(false)
-            router.push('/login')
+            router.push('/')
             router.refresh()
         }
 

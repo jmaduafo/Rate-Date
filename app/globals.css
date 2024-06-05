@@ -39,6 +39,10 @@
       scroll-behavior: smooth;
     }
 
+    body {
+      overflow-x: hidden;
+    }
+
     .dark {
       --background: 240 10% 3.9%;
       --foreground: 0 0% 98%;
