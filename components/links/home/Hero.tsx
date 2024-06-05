@@ -8,7 +8,8 @@ import Link from "next/link";
 function Hero() {
   return (
     <section className="relative z-[2] h-screen pb-[5vh] flex justify-center items-end">
-      <GradientCircle classNameAnimate="animate-bounceMove1"/>
+      <GradientCircle classNameAnimate="animate-bounceMove3"/>
+      {/* <GradientCircle classNameAnimate="animate-bounceMove4"/> */}
       <div>
         <h1
           className={`${boskaMedium.className} uppercase text-center text-[10vw] leading-[1]`}

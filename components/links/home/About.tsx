@@ -2,6 +2,8 @@ import React from "react";
 import { boskaMedium } from "@/fonts/font";
 import { finalAboutArray } from "@/utils/general/homeAboutCarousel";
 import GradientCircle from "./GradientCircle";
+import Image from "next/image";
+import Gif from '@/app/home_gif.gif'
 
 function About() {
   return (
@@ -47,12 +49,13 @@ function About() {
           })}
         </div>
       </div>
-      <div className="relative h-[80vh] flex z-[1] px-10 mt-[14vh]">
-        <div className="relative flex-[1] z-[0]">
-          <GradientCircle
+      <div className="relative flex z-[1] px-10 my-[14vh]">
+        <div className="relative object-cover flex-[1] z-[0] flex justify-center">
+          {/* <GradientCircle
             classNamePosition="left-1/2 top-[30%]"
             classNameAnimate="animate-bounceMove2"
-          />
+          /> */}
+          <Image src={Gif} alt='couple on a date' className="w-[80%]"/>
         </div>
         <div className="flex-[1] flex justify-end">
           <p className="w-[90%] font-light">

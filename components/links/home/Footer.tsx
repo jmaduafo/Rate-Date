@@ -19,8 +19,9 @@ function Footer() {
           <br /> EXPERIENCE TODAY
         </h2>
       </div>
-      <div className="overflow-hidden relative flex justify-center items-center w-full rounded-tl-3xl rounded-tr-3xl bg-black h-[90vh] z-[10]">
+      <div className="overflow-hidden relative flex justify-center items-center w-full rounded-tl-3xl rounded-tr-3xl bg-homeAccent2 h-[90vh] z-[10]">
         <GradientCircle classNamePosition="z-[0] top-1/2 left-1/2" classNameAnimate="animate-bounceMove3"/>
+        <GradientCircle classNamePosition="z-[0] top-1/2 left-1/2" classNameAnimate="animate-bounceMove4"/>
         <div className="z-[2]">
           <div className="">
             <h5
@@ -37,7 +38,7 @@ function Footer() {
               </Link>
             </div>
           </div>
-          <div className="flex justify-center items-center gap-2 mt-2">
+          <div className="flex justify-center items-center gap-2 mt-10">
             <SocialIcon
               fgColor="#FFFFFF"
               bgColor="transparent"
@@ -55,7 +56,7 @@ function Footer() {
               style={{ width: "40px" }}
             />
           </div>
-          <div className="flex justify-center mt-3">
+          <div className="flex justify-center mt-1">
             <ul className="flex items-center gap-16">
               <li className="text-[13px] list-none tracking-tight">
                 <Link href="/#features">Features</Link>

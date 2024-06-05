@@ -32,7 +32,7 @@ function Navbar() {
               onMouseEnter={() => setPricingHover(true)}
               onMouseLeave={() => setPricingHover(false)}
             >
-              <a href="#pricing">{pricingHover ? "Coming Soon" : "Pricing"}</a>
+              <a>{pricingHover ? "Coming Soon" : "Pricing"}</a>
             </li>
           </ul>
           <Link href='/login'>
