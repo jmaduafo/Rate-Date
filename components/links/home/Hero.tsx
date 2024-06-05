@@ -3,11 +3,12 @@ import { boskaMedium } from "@/fonts/font";
 import PrimaryButton from "@/components/PrimaryButton";
 import { ArrowRightIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
 import GradientCircle from "./GradientCircle";
+import Link from "next/link";
 
 function Hero() {
   return (
     <section className="relative z-[2] h-screen pb-[5vh] flex justify-center items-end">
-        <GradientCircle/>
+      <GradientCircle />
       <div>
         <h1
           className={`${boskaMedium.className} uppercase text-center text-[10vw] leading-[1]`}
@@ -24,10 +25,12 @@ function Hero() {
           </p>
         </div>
         <div className="flex justify-center gap-6 items-center mt-8">
-          <PrimaryButton className="flex gap-5 items-center">
-            Sign Up Free
-            <ArrowRightIcon strokeWidth={1} className="w-5 text-homeText" />
-          </PrimaryButton>
+          <Link href="/login">
+            <PrimaryButton className="flex gap-5 items-center">
+              Sign Up Free
+              <ArrowRightIcon strokeWidth={1} className="w-5 text-homeText" />
+            </PrimaryButton>
+          </Link>
           <button className="bg-homeText50 duration-500 hover:opacity-80 border-none text-darkText rounded-xl py-2 px-5 outline-none">
             View Demo
           </button>

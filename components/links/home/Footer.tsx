@@ -4,13 +4,14 @@ import GradientCircle from "./GradientCircle";
 import { boskaMedium } from "@/fonts/font";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import { SocialIcon } from "react-social-icons";
 
 function Footer() {
   const [pricingHover, setPricingHover] = useState(false);
 
   return (
     <section className="pt-[30vh]">
-      <div className="z-[0] translate-y-[100px]">
+      <div className="z-[0] translate-y-[8vh]">
         <h2
           className={`${boskaMedium.className} text-[9vw] leading-[1] text-center`}
         >
@@ -28,13 +29,33 @@ function Footer() {
               Sign up to get started
             </h5>
             <div className="flex justify-center mt-4">
-              <button className="outline-none border-none tracking-tight bg-homeText text-homeAccent py-2 px-4 rounded-lg flex items-center gap-4">
-                Get Started
-                <ArrowRightIcon className="w-6 " strokeWidth={1} />
-              </button>
+              <Link href="/login">
+                <button className="outline-none border-none tracking-tight bg-homeText text-homeAccent py-2 px-4 rounded-lg flex items-center gap-4">
+                  Get Started
+                  <ArrowRightIcon className="w-6 " strokeWidth={1} />
+                </button>
+              </Link>
             </div>
           </div>
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center items-center gap-2 mt-2">
+            <SocialIcon
+              fgColor="#FFFFFF"
+              bgColor="transparent"
+              network="instagram"
+              target="_blank"
+              url="https://www.vimeo.com"
+              style={{ width: "40px" }}
+            />
+            <SocialIcon
+              fgColor="#FFFFFF"
+              bgColor="transparent"
+              network="linkedin"
+              target="_blank"
+              url="https://www.vimeo.com"
+              style={{ width: "40px" }}
+            />
+          </div>
+          <div className="flex justify-center mt-3">
             <ul className="flex items-center gap-16">
               <li className="text-[13px] list-none tracking-tight">
                 <Link href="/#features">Features</Link>
@@ -44,9 +65,7 @@ function Footer() {
                 onMouseEnter={() => setPricingHover(true)}
                 onMouseLeave={() => setPricingHover(false)}
               >
-                <a>
-                  {pricingHover ? "Coming Soon" : "Pricing"}
-                </a>
+                <a>{pricingHover ? "Coming Soon" : "Pricing"}</a>
               </li>
             </ul>
           </div>
