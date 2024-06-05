@@ -11,6 +11,7 @@ function About() {
           {finalAboutArray.map((el) => {
             return (
               <h2
+                key={el.id}
                 className={`${boskaMedium.className} text-homeText70 animate-slide1 uppercase whitespace-nowrap text-[9vw] leading-[1] 
                     `}
               >
@@ -23,6 +24,7 @@ function About() {
           {finalAboutArray.map((el) => {
             return (
               <h2
+                key={el.id}
                 className={`text-homeBackground textBlock font-bold animate-slide2 uppercase whitespace-nowrap text-[9vw] leading-[1]
                 `}
               >
@@ -35,6 +37,7 @@ function About() {
           {finalAboutArray.map((el) => {
             return (
               <h2
+                key={el.id}
                 className={`${boskaMedium.className} text-homeText70 animate-slide1 uppercase whitespace-nowrap text-[9vw] leading-[1] 
                     `}
               >
@@ -46,9 +49,18 @@ function About() {
       </div>
       <div className="relative h-[80vh] flex justify-end z-[1] px-10 mt-[14vh]">
         {/* <div className="relative "> */}
-            <GradientCircle classNamePosition="left-1/2 top-[30%]"/>
+        <GradientCircle classNamePosition="left-1/2 top-[30%]" />
         {/* </div> */}
-        <p className="w-[40%]">Elysian is designed to enrich your dating life. Easily record, schedule future meetups, and explore new ideas for unforgettable experiences. With visual charts to track your activity and a vibrant community to share your stories, Elysian greatly enhances your dating journey. Have any date horror stories to get off your chest? Share and advise others on what to look out for in the dating scene. Use Elysian as your venting space, your personal journal, or to advance your status as a dating coach.</p>
+        <p className="w-[40%]">
+          Elysian is designed to enrich your dating life. Easily record,
+          schedule future meetups, and explore new ideas for unforgettable
+          experiences. With visual charts to track your activity and a vibrant
+          community to share your stories, Elysian greatly enhances your dating
+          journey. Have any date horror stories to get off your chest? Share and
+          advise others on what to look out for in the dating scene. Use Elysian
+          as your venting space, your personal journal, or to advance your
+          status as a dating coach.
+        </p>
       </div>
     </section>
   );

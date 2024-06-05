@@ -1,4 +1,5 @@
 import About from "@/components/links/home/About";
+import Features from "@/components/links/home/Features";
 import Hero from "@/components/links/home/Hero";
 import Navbar from "@/components/links/home/Navbar";
 import { createClient } from "@/utils/supabase/client";
@@ -26,6 +27,7 @@ export default async function Index() {
     <Navbar/>
     <Hero/>
     <About/>
+    <Features/>
    </div>
   );
 }
