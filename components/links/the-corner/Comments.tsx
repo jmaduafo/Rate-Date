@@ -233,21 +233,37 @@ function Comments({ comment, userID }: Comment) {
       <div className="flex justify-between items-start mt-5">
         <div className="flex items-center gap-2">
           {comment?.users?.image ? (
-            <div className="cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
-              <Image
-                src={comment?.users?.image}
-                alt={`${comment?.users?.name}'s profile`}
-                width={500}
-                height={500}
-                className="w-full h-full rounded-full"
-              />
-            </div>
+            <Link
+              href={
+                userID === comment?.user_id
+                  ? "/profile"
+                  : `/profile/${comment?.users?.username}`
+              }
+            >
+              <div className="cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
+                <Image
+                  src={comment?.users?.image}
+                  alt={`${comment?.users?.name}'s profile`}
+                  width={500}
+                  height={500}
+                  className="w-full h-full rounded-full"
+                />
+              </div>
+            </Link>
           ) : (
-            <div className="flex justify-center items-center cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
-              {comment?.users?.name ? (
-                <p>{getInitials(comment?.users?.name)}</p>
-              ) : null}
-            </div>
+            <Link
+              href={
+                userID === comment?.user_id
+                  ? "/profile"
+                  : `/profile/${comment?.users?.username}`
+              }
+            >
+              <div className="flex justify-center items-center cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
+                {comment?.users?.name ? (
+                  <p>{getInitials(comment?.users?.name)}</p>
+                ) : null}
+              </div>
+            </Link>
           )}
           <div className="">
             {comment?.users ? (
@@ -551,21 +567,37 @@ function Reply({
         <div className="flex justify-between items-start mt-5">
           <div className="flex items-center gap-2">
             {user_reply?.users?.image ? (
-              <div className="cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
-                <Image
-                  src={user_reply?.users?.image}
-                  alt={`${user_reply?.users?.name}'s profile`}
-                  width={500}
-                  height={500}
-                  className="w-full h-full rounded-full"
-                />
-              </div>
+              <Link
+                href={
+                  userID === user_reply?.user_id
+                    ? "/profile"
+                    : `/profile/${user_reply?.users?.username}`
+                }
+              >
+                <div className="cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
+                  <Image
+                    src={user_reply?.users?.image}
+                    alt={`${user_reply?.users?.name}'s profile`}
+                    width={500}
+                    height={500}
+                    className="w-full h-full rounded-full"
+                  />
+                </div>
+              </Link>
             ) : (
-              <div className="flex justify-center items-center cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
-                {user_reply?.users?.name ? (
-                  <p>{getInitials(user_reply?.users?.name)}</p>
-                ) : null}
-              </div>
+              <Link
+                href={
+                  userID === user_reply?.user_id
+                    ? "/profile"
+                    : `/profile/${user_reply?.users?.username}`
+                }
+              >
+                <div className="flex justify-center items-center cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
+                  {user_reply?.users?.name ? (
+                    <p>{getInitials(user_reply?.users?.name)}</p>
+                  ) : null}
+                </div>
+              </Link>
             )}
             <div className="">
               {user_reply?.users ? (
