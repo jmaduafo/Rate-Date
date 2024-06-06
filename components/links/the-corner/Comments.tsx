@@ -142,7 +142,6 @@ function Comments({ comment, userID }: Comment) {
         "postgres_changes",
         { event: "*", schema: "public", table: "commentLikes" },
         (payload) => {
-          console.log('read')
           getLikesDislikes();
         }
       )
@@ -218,7 +217,16 @@ function Comments({ comment, userID }: Comment) {
 
   useEffect(() => {
     listen();
-  }, [supabase, allReplies, setIsDisliked, setIsLiked, isLiked, isDisliked, likesCount, dislikesCount]);
+  }, [
+    supabase,
+    allReplies,
+    setIsDisliked,
+    setIsLiked,
+    isLiked,
+    isDisliked,
+    likesCount,
+    dislikesCount,
+  ]);
 
   return (
     <div className="text-darkText py-2">
@@ -414,7 +422,128 @@ function Reply({
 }: RepProp) {
   const [isDisliked, setIsDisliked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
+  const [dislikesCount, setDislikesCount] = useState(0);
   const [showReply, setShowReply] = useState(false);
+
+  const supabase = createClient();
+
+  async function getLikesDislikes() {
+    const { data: likesData, error: likesError } = await supabase
+      .from("replyLikes")
+      .select()
+      .eq("reply_id", user_reply?.id);
+
+    const { data: dislikesData, error: dislikesError } = await supabase
+      .from("replyDislikes")
+      .select()
+      .eq("reply_id", user_reply?.id);
+
+    if (likesError) {
+      console.log(likesError.message);
+    } else {
+      const liked = likesData?.some(
+        (like) => like.user_id === userID && like.reply_id === user_reply?.id
+      );
+
+      setLikesCount(likesData?.length);
+      liked && setIsLiked(true);
+    }
+
+    if (dislikesError) {
+      console.log(dislikesError.message);
+    } else {
+      const disliked = dislikesData?.some(
+        (like) => like.user_id === userID && like.reply_id === user_reply?.id
+      );
+
+      setDislikesCount(dislikesData?.length);
+      disliked && setIsDisliked(true);
+    }
+  }
+
+  async function handleLike() {
+    if (!isLiked) {
+      const { error } = await supabase.from("replyLikes").insert({
+        reply_id: user_reply?.id,
+      });
+
+      if (error) {
+        console.log(error.message);
+      } else {
+        setIsLiked(true);
+      }
+    } else {
+      const { error } = await supabase
+        .from("replyLikes")
+        .delete()
+        .eq("reply_id", user_reply?.id)
+        .eq("user_id", userID);
+
+      if (error) {
+        console.log(error.message);
+      } else {
+        setIsLiked(false);
+      }
+    }
+  }
+  async function handleDislike() {
+    if (!isDisliked) {
+      const { error } = await supabase.from("replyDislikes").insert({
+        reply_id: user_reply?.id,
+      });
+
+      if (error) {
+        console.log(error.message);
+      } else {
+        setIsDisliked(true);
+      }
+    } else {
+      const { error } = await supabase
+        .from("replyDislikes")
+        .delete()
+        .eq("reply_id", user_reply?.id)
+        .eq("user_id", userID);
+
+      if (error) {
+        console.log(error.message);
+      } else {
+        setIsDisliked(false);
+      }
+    }
+  }
+
+  function listen() {
+    const channel = supabase
+      .channel("reply listener")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "replyLikes" },
+        (payload) => {
+          getLikesDislikes();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "replyDislikes" },
+        (payload) => {
+          getLikesDislikes();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }
+
+  useEffect(() => {
+    getLikesDislikes();
+  }, []);
+
+  useEffect(() => {
+    listen();
+  }, [supabase, isLiked, isDisliked, likesCount, dislikesCount]);
 
   return (
     <div>
@@ -506,7 +635,7 @@ function Reply({
         </div>
         <div className="flex items-center gap-3 mt-2">
           <div className="flex items-center gap-1">
-            <div className="" onClick={() => setIsLiked((prev) => !prev)}>
+            <div className="" onClick={handleLike}>
               {isLiked ? (
                 <ThumbsUpSolid
                   strokeWidth={1}
@@ -520,10 +649,10 @@ function Reply({
               )}
               {/* <ThumbsDownSolid/> */}
             </div>
-            <p className="text-[13px]">0</p>
+            <p className="text-[13px]">{likesCount}</p>
           </div>
           <div className="flex items-center gap-1">
-            <div onClick={() => setIsDisliked((prev) => !prev)}>
+            <div onClick={handleDislike}>
               {isDisliked ? (
                 <ThumbsDownSolid
                   strokeWidth={1}
@@ -536,7 +665,7 @@ function Reply({
                 />
               )}
             </div>
-            <p className="text-[13px]">0</p>
+            <p className="text-[13px]">{dislikesCount}</p>
           </div>
         </div>
         <div className="mt-2">
