@@ -38,6 +38,8 @@ function Comments({ comment, userID }: Comment) {
   const [replyShow, setReplyShow] = useState(false);
   const [isDisliked, setIsDisliked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
+  const [dislikesCount, setDislikesCount] = useState(0);
   const [replyText, setReplyText] = useState("");
   const [showReply, setShowReply] = useState(false);
   const [allReplies, setAllReplies] = useState<ReplyProps[] | undefined>();
@@ -55,8 +57,8 @@ function Comments({ comment, userID }: Comment) {
         content: replyText,
         comment_id: comment?.id,
         reply_username: comment?.users?.username ?? null,
-        corner_id: comment?.corner_id ?? null
-      })
+        corner_id: comment?.corner_id ?? null,
+      });
 
       if (error) {
         toast({
@@ -71,6 +73,40 @@ function Comments({ comment, userID }: Comment) {
         setReplyText("");
         setShowReply(false);
       }
+    }
+  }
+
+  async function getLikesDislikes() {
+    const { data: likesData, error: likesError } = await supabase
+      .from("commentLikes")
+      .select()
+      .eq("comment_id", comment?.id);
+
+    const { data: dislikesData, error: dislikesError } = await supabase
+      .from("commentDislikes")
+      .select()
+      .eq("comment_id", comment?.id);
+
+    if (likesError) {
+      console.log(likesError.message);
+    } else {
+      const liked = likesData?.some(
+        (like) => like.user_id === userID && like.comment_id === comment?.id
+      );
+
+      setLikesCount(likesData?.length);
+      liked && setIsLiked(true);
+    }
+
+    if (dislikesError) {
+      console.log(dislikesError.message);
+    } else {
+      const disliked = dislikesData?.some(
+        (like) => like.user_id === userID && like.comment_id === comment?.id
+      );
+
+      setDislikesCount(dislikesData?.length);
+      disliked && setIsDisliked(true);
     }
   }
 
@@ -102,6 +138,21 @@ function Comments({ comment, userID }: Comment) {
           getReplies();
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "commentLikes" },
+        (payload) => {
+          console.log('read')
+          getLikesDislikes();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "commentDislikes" },
+        (payload) => {
+          getLikesDislikes();
+        }
+      )
       .subscribe();
 
     return () => {
@@ -109,13 +160,65 @@ function Comments({ comment, userID }: Comment) {
     };
   }
 
+  async function handleLike() {
+    if (!isLiked) {
+      const { error } = await supabase.from("commentLikes").insert({
+        comment_id: comment?.id,
+      });
+
+      if (error) {
+        console.log(error.message);
+      } else {
+        setIsLiked(true);
+      }
+    } else {
+      const { error } = await supabase
+        .from("commentLikes")
+        .delete()
+        .eq("comment_id", comment?.id)
+        .eq("user_id", userID);
+
+      if (error) {
+        console.log(error.message);
+      } else {
+        setIsLiked(false);
+      }
+    }
+  }
+  async function handleDislike() {
+    if (!isDisliked) {
+      const { error } = await supabase.from("commentDislikes").insert({
+        comment_id: comment?.id,
+      });
+
+      if (error) {
+        console.log(error.message);
+      } else {
+        setIsDisliked(true);
+      }
+    } else {
+      const { error } = await supabase
+        .from("commentDislikes")
+        .delete()
+        .eq("comment_id", comment?.id)
+        .eq("user_id", userID);
+
+      if (error) {
+        console.log(error.message);
+      } else {
+        setIsDisliked(false);
+      }
+    }
+  }
+
   useEffect(() => {
     getReplies();
+    getLikesDislikes();
   }, []);
 
   useEffect(() => {
     listen();
-  }, [supabase, allReplies]);
+  }, [supabase, allReplies, setIsDisliked, setIsLiked, isLiked, isDisliked, likesCount, dislikesCount]);
 
   return (
     <div className="text-darkText py-2">
@@ -189,7 +292,7 @@ function Comments({ comment, userID }: Comment) {
       </div>
       <div className="flex items-center gap-3 mt-2">
         <div className="flex items-center gap-1">
-          <div className="" onClick={() => setIsLiked((prev) => !prev)}>
+          <div className="" onClick={handleLike}>
             {isLiked ? (
               <ThumbsUpSolid
                 strokeWidth={1}
@@ -203,10 +306,10 @@ function Comments({ comment, userID }: Comment) {
             )}
             {/* <ThumbsDownSolid/> */}
           </div>
-          <p className="text-[13px]">0</p>
+          <p className="text-[13px]">{likesCount}</p>
         </div>
         <div className="flex items-center gap-1">
-          <div onClick={() => setIsDisliked((prev) => !prev)}>
+          <div onClick={handleDislike}>
             {isDisliked ? (
               <ThumbsDownSolid
                 strokeWidth={1}
@@ -219,7 +322,7 @@ function Comments({ comment, userID }: Comment) {
               />
             )}
           </div>
-          <p className="text-[13px]">0</p>
+          <p className="text-[13px]">{dislikesCount}</p>
         </div>
       </div>
       <div className="mt-2 flex gap-2 items-center">
@@ -268,7 +371,10 @@ function Comments({ comment, userID }: Comment) {
       {allReplies && allReplies?.length
         ? allReplies?.map((data) => {
             return (
-              <div key={data.id} className={`${replyShow ? 'block' : 'hidden'} pl-10`}>
+              <div
+                key={data.id}
+                className={`${replyShow ? "block" : "hidden"} pl-10`}
+              >
                 <Reply
                   reply_username={comment?.users?.username}
                   comment_id={comment.id}
@@ -296,10 +402,16 @@ type RepProp = {
   comment_id?: string | undefined;
   corner_id?: string | undefined;
   createReply?: (e: React.FormEvent) => void;
-  setReplyText?: React.Dispatch<SetStateAction<string>>
+  setReplyText?: React.Dispatch<SetStateAction<string>>;
 };
 
-function Reply({ reply_username, user_reply, userID, createReply, setReplyText }: RepProp) {
+function Reply({
+  reply_username,
+  user_reply,
+  userID,
+  createReply,
+  setReplyText,
+}: RepProp) {
   const [isDisliked, setIsDisliked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [showReply, setShowReply] = useState(false);
@@ -373,11 +485,17 @@ function Reply({ reply_username, user_reply, userID, createReply, setReplyText }
         <div className="mt-2">
           {user_reply?.content ? (
             user_reply?.reply_username ? (
-                <p className="text-[14px]">
-                <Link href={userID === user_reply?.user_id ? '/profile' : `/profile/${reply_username}`}>
-                <span className="font-medium text-orange-800">
-                  @{user_reply?.reply_username}
-                </span>{" "}
+              <p className="text-[14px]">
+                <Link
+                  href={
+                    userID === user_reply?.user_id
+                      ? "/profile"
+                      : `/profile/${reply_username}`
+                  }
+                >
+                  <span className="font-medium text-orange-800">
+                    @{user_reply?.reply_username}
+                  </span>{" "}
                 </Link>
                 {user_reply?.content}
               </p>
