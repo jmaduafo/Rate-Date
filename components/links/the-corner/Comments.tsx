@@ -141,7 +141,7 @@ function Comments({ comment, userID }: Comment) {
           <div className="">
             {comment?.users ? (
               <div className="flex items-center gap-1">
-                <p className="text-[16px]">{comment?.users?.name}</p>
+                <p className="text-[15px]">{comment?.users?.name}</p>
                 <p className="text-[14px] text-darkText60">&#x2022;</p>
                 <p className="text-[14px] text-darkText60">
                   @{comment?.users?.username}
@@ -234,7 +234,7 @@ function Comments({ comment, userID }: Comment) {
           )}
         </div>
         <div onClick={() => setShowReply(true)}>
-          <p className="text-[13px] font-medium cursor-pointer">Reply</p>
+          <p className="text-[12px] font-medium cursor-pointer">Reply</p>
         </div>
       </div>
       {showReply ? (
@@ -329,7 +329,7 @@ function Reply({ reply_username, user_reply, userID, createReply, setReplyText }
             <div className="">
               {user_reply?.users ? (
                 <div className="flex items-center gap-1">
-                  <p className="text-[16px]">{user_reply?.users?.name}</p>
+                  <p className="text-[15px]">{user_reply?.users?.name}</p>
                   <p className="text-[14px] text-darkText60">&#x2022;</p>
                   <p className="text-[14px] text-darkText60">
                     @{user_reply?.users?.username}
@@ -423,7 +423,7 @@ function Reply({ reply_username, user_reply, userID, createReply, setReplyText }
         </div>
         <div className="mt-2">
           <div onClick={() => setShowReply(true)}>
-            <p className="text-[13px] font-medium cursor-pointer">Reply</p>
+            <p className="text-[12px] font-medium cursor-pointer">Reply</p>
           </div>
         </div>
         {showReply ? (

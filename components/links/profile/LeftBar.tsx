@@ -16,6 +16,7 @@ import SelectedBanner from "@/components/SelectedBanner";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import CollectionCardSkeleton from "@/components/CollectionCardSkeleton";
+import SearchBar from "../the-corner/SearchBar";
 
 function LeftBar({ username }: { username?: string | string[] }) {
   const supabase = createClient();
@@ -205,8 +206,9 @@ function LeftBar({ username }: { username?: string | string[] }) {
   return (
     <section>
       {/* USER'S STORIES AND DATE IDEAS SECTION */}
-      <section className="">
-        <div className="flex md:justify-start md:mb-2 justify-center mb-4">
+      <section className="relative">
+        <SearchBar classNameSize="md:w-[45%] w-full"/>
+        <div className="flex md:justify-start md:mb-2 justify-center mt-8 mb-4">
           {userSelect === "Date Idea" && !username ? (
             <Link href="/the-corner/ideas/create">
               <div className="flex items-center gap-2 text-darkText mb-3">
