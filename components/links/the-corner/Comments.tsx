@@ -33,6 +33,8 @@ import DropDownMenuComments from "../DropDownMenuComments";
 type Comment = {
   comment: CommentProps;
   userID?: string;
+  commentText?: string | undefined; 
+  setCommentText?: React.Dispatch<SetStateAction<string | undefined>>
 };
 
 function Comments({ comment, userID }: Comment) {
@@ -42,6 +44,7 @@ function Comments({ comment, userID }: Comment) {
   const [likesCount, setLikesCount] = useState(0);
   const [dislikesCount, setDislikesCount] = useState(0);
   const [replyText, setReplyText] = useState("");
+  const [commentText, setCommentText] = useState("");
   const [showReply, setShowReply] = useState(false);
   const [displayTextarea, setDisplayTextarea] = useState(false);
   const [allReplies, setAllReplies] = useState<ReplyProps[] | undefined>();
@@ -127,6 +130,32 @@ function Comments({ comment, userID }: Comment) {
       console.log(error.message);
     } else {
       setAllReplies(data);
+    }
+  }
+
+  async function handleUpdate() {
+    if (commentText && !commentText.length) {
+      return;
+    } else {
+      const { error } = await supabase
+        .from("comments")
+        .update({
+          content: commentText,
+        })
+        .eq("id", comment?.id);
+
+      if (error) {
+        toast({
+          title: "There was something wrong enacting this request",
+          description: error.message
+        });
+      } else {
+        toast({
+          title: "Comment updated successfully!"
+        });
+
+        setDisplayTextarea(false)
+      }
     }
   }
 
@@ -310,10 +339,40 @@ function Comments({ comment, userID }: Comment) {
           id={comment?.id}
           postUser={comment?.user_id}
           setDisplayTextarea={setDisplayTextarea}
+          content={comment?.content}
+          setText={setCommentText}
         />
       </div>
       <div className="mt-2">
-        {comment?.content ? (
+      {displayTextarea ? (
+            <form onSubmit={handleUpdate}>
+              <TextareaAutosize
+                onChange={(e) => setCommentText && setCommentText(e.target.value)}
+                value={commentText}
+                placeholder="Write a reply"
+                className="outline-none p-2 text-[14px] text-darkText w-full rounded-lg border-dark10 border-[1px] bg-[#ffffff30] min-h-[80px]"
+              />
+              <div className="flex justify-end items-center gap-3">
+                <button
+                  onClick={() => {
+                    setDisplayTextarea(false);
+                    setCommentText && setCommentText("");
+                  }}
+                  type="button"
+                  className="text-[14px] px-4 py-[2px] rounded-full border-darkText border-[1px] text-darkText"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="text-[14px] px-4 py-[2px] rounded-full bg-darkText text-myForeground"
+                >
+                  Update
+                </button>
+              </div>
+            </form>
+          ) : null}
+        {comment?.content && !displayTextarea ? (
           <p className="text-[14px]">{comment?.content}</p>
         ) : null}
       </div>

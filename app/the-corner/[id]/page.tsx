@@ -17,7 +17,7 @@ import CollectionCardSkeleton from "@/components/CollectionCardSkeleton";
 
 function TheCornerDetailPage() {
   const [cornerDetail, setCornerDetail] = useState<PostProps | undefined>();
-  const [commentText, setCommentText] = useState<string | null>("");
+  const [commentText, setCommentText] = useState<string | undefined>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [commentsData, setCommentsData] = useState<
     CommentProps[] | undefined
@@ -46,17 +46,17 @@ function TheCornerDetailPage() {
       .select(
         `
       *, 
-    saves(
-        *),
-    likes(
-        *
-    ),
-    comments(
-        *
-    ),
-    replies (
-        *
-    ) `
+        saves(
+            *),
+        likes(
+            *
+        ),
+        comments(
+            *
+        ),
+        replies (
+            *
+        ) `
       )
       .eq("id", id);
 
@@ -88,26 +88,23 @@ function TheCornerDetailPage() {
   async function getViews() {
     const { data, error } = await supabase
       .from("corner")
-      .select(
-        "views"
-      )
+      .select("views")
       .eq("id", id);
 
-      if (error) {
-        console.log(error.message)
-      } else {
-          const { error: viewError } = await supabase
-            .from("corner")
-            .update({
-              views: data[0]?.views + 1,
-            })
-            .eq("id", id);
-      
-          if (viewError) {
-            console.log(viewError.message);
-          } else {
-            setViewCount(data[0]?.views);
+    if (error) {
+      console.log(error.message);
+    } else {
+      const { error: viewError } = await supabase
+        .from("corner")
+        .update({
+          views: data[0]?.views + 1,
+        })
+        .eq("id", id);
 
+      if (viewError) {
+        console.log(viewError.message);
+      } else {
+        setViewCount(data[0]?.views);
       }
     }
   }
@@ -241,7 +238,7 @@ function TheCornerDetailPage() {
         "postgres_changes",
         { event: "*", schema: "public", table: "comments" },
         (payload) => {
-          getComments();
+          // getComments();
         }
       )
       .on(
@@ -268,7 +265,7 @@ function TheCornerDetailPage() {
     listen();
   }, [supabase, cornerDetail, commentsData]);
 
-  console.log(cornerDetail?.replies?.length)
+  console.log(cornerDetail?.replies?.length);
 
   return (
     <div className="md:w-[70%] w-full mx-auto mb-[4rem]">
@@ -289,7 +286,9 @@ function TheCornerDetailPage() {
         // COMMENT HEADER
         <div className="text-darkText mt-8">
           <Header2
-            title={`${commentsData?.length + cornerDetail?.replies?.length} Comment${checkForS(
+            title={`${
+              commentsData?.length + cornerDetail?.replies?.length
+            } Comment${checkForS(
               commentsData?.length + cornerDetail?.replies?.length
             )}`}
           />
@@ -329,7 +328,7 @@ function TheCornerDetailPage() {
         ? commentsData?.map((com) => {
             return (
               <Fragment key={com?.id}>
-                <Comments comment={com} userID={userID}/>
+                <Comments comment={com} userID={userID} />
               </Fragment>
             );
           })
