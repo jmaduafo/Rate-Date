@@ -1,16 +1,28 @@
+'use client'
 import React, { Fragment } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import Link from "next/link";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { useToast } from "../ui/use-toast";
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 
 type MenuProp = {
   userID?: string;
@@ -21,6 +33,8 @@ type MenuProp = {
 };
 function DropDownMenu({ userID, postUser, date_type, id, type }: MenuProp) {
   const { toast } = useToast();
+  const supabase = createClient();
+  const router = useRouter();
 
   const userMenu = [
     {
@@ -52,6 +66,24 @@ function DropDownMenu({ userID, postUser, date_type, id, type }: MenuProp) {
       link: null,
     },
   ];
+
+  async function handleDelete() {
+    const { error } = await supabase.from("corner").delete().eq("id", id);
+
+    if (error) {
+      toast({
+        title: "Sorry, had trouble enacting this request",
+        description: error.message,
+      });
+    } else {
+      toast({
+        title: "Post deletion was successful!",
+      });
+      
+      router.refresh()
+    }
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
@@ -74,12 +106,33 @@ function DropDownMenu({ userID, postUser, date_type, id, type }: MenuProp) {
                     </div>
                   </Link>
                 ) : (
-                  <div
-                    className="py-1 px-1 text-[14px] cursor-pointer hover:bg-[#ffffff10] duration-500 rounded"
-                    key={menu.title}
-                  >
-                    <p>{menu.title}</p>
-                  </div>
+                  // DELETE POST BUTTON
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <div
+                        className="py-1 px-1 text-[14px] cursor-pointer hover:bg-[#ffffff10] duration-500 rounded"
+                        key={menu.title}
+                      >
+                        <p>{menu.title}</p>
+                      </div>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>
+                          Are you absolutely sure?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently
+                          delete your post as well as comments, replies, likes, and saves accompanied with it, and will remove your data from our
+                          servers.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDelete}>Continue</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 );
               })}
             </div>
