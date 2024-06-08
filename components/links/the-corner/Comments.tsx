@@ -28,6 +28,7 @@ import DropDownMenu from "../DropDownMenu";
 import { createClient } from "@/utils/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import Link from "next/link";
+import DropDownMenuComments from "../DropDownMenuComments";
 
 type Comment = {
   comment: CommentProps;
@@ -42,6 +43,7 @@ function Comments({ comment, userID }: Comment) {
   const [dislikesCount, setDislikesCount] = useState(0);
   const [replyText, setReplyText] = useState("");
   const [showReply, setShowReply] = useState(false);
+  const [displayTextarea, setDisplayTextarea] = useState(false);
   const [allReplies, setAllReplies] = useState<ReplyProps[] | undefined>();
 
   const supabase = createClient();
@@ -302,11 +304,12 @@ function Comments({ comment, userID }: Comment) {
             </div>
           </div>
         </div>
-        <DropDownMenu
+        <DropDownMenuComments
           userID={userID}
           type="comment"
           id={comment?.id}
           postUser={comment?.user_id}
+          setDisplayTextarea={setDisplayTextarea}
         />
       </div>
       <div className="mt-2">
@@ -407,6 +410,7 @@ function Comments({ comment, userID }: Comment) {
                   corner_id={comment?.corner_id}
                   createReply={createReply}
                   setReplyText={setReplyText}
+                  replyText={replyText}
                 />
               </div>
             );
@@ -427,6 +431,7 @@ type RepProp = {
   corner_id?: string | undefined;
   createReply?: (e: React.FormEvent) => void;
   setReplyText?: React.Dispatch<SetStateAction<string>>;
+  replyText?: string;
 };
 
 function Reply({
@@ -435,14 +440,17 @@ function Reply({
   userID,
   createReply,
   setReplyText,
+  replyText,
 }: RepProp) {
   const [isDisliked, setIsDisliked] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [dislikesCount, setDislikesCount] = useState(0);
   const [showReply, setShowReply] = useState(false);
+  const [displayTextarea, setDisplayTextarea] = useState(false);
 
   const supabase = createClient();
+  const { toast } = useToast();
 
   async function getLikesDislikes() {
     const { data: likesData, error: likesError } = await supabase
@@ -525,6 +533,32 @@ function Reply({
         console.log(error.message);
       } else {
         setIsDisliked(false);
+      }
+    }
+  }
+
+  async function handleUpdate() {
+    if (replyText && !replyText.length) {
+      return;
+    } else {
+      const { error } = await supabase
+        .from("replies")
+        .update({
+          content: replyText,
+        })
+        .eq("id", user_reply?.id);
+
+      if (error) {
+        toast({
+          title: "There was something wrong enacting this request",
+          description: error.message
+        });
+      } else {
+        toast({
+          title: "Reply updated successfully!"
+        });
+
+        setDisplayTextarea(false)
       }
     }
   }
@@ -636,15 +670,46 @@ function Reply({
               </div>
             </div>
           </div>
-          <DropDownMenu
+          <DropDownMenuComments
             userID={userID}
-            type="comment"
+            type="reply"
             id={user_reply?.id}
             postUser={user_reply?.user_id}
+            setDisplayTextarea={setDisplayTextarea}
+            content={user_reply?.content}
+            setText={setReplyText}
           />
         </div>
         <div className="mt-2">
-          {user_reply?.content ? (
+          {displayTextarea ? (
+            <form onSubmit={handleUpdate}>
+              <TextareaAutosize
+                onChange={(e) => setReplyText && setReplyText(e.target.value)}
+                value={replyText}
+                placeholder="Write a reply"
+                className="outline-none p-2 text-[14px] text-darkText w-full rounded-lg border-dark10 border-[1px] bg-[#ffffff30] min-h-[80px]"
+              />
+              <div className="flex justify-end items-center gap-3">
+                <button
+                  onClick={() => {
+                    setDisplayTextarea(false);
+                    setReplyText && setReplyText("");
+                  }}
+                  type="button"
+                  className="text-[14px] px-4 py-[2px] rounded-full border-darkText border-[1px] text-darkText"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="text-[14px] px-4 py-[2px] rounded-full bg-darkText text-myForeground"
+                >
+                  Update
+                </button>
+              </div>
+            </form>
+          ) : null}
+          {user_reply?.content && !displayTextarea ? (
             user_reply?.reply_username ? (
               <p className="text-[14px]">
                 <Link

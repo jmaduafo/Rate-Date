@@ -1,5 +1,4 @@
-"use client";
-import React, { Fragment } from "react";
+import React, { Fragment, SetStateAction } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,41 +21,41 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { useToast } from "../ui/use-toast";
 import { createClient } from "@/utils/supabase/client";
-import { useRouter } from "next/navigation";
 
 type MenuProp = {
   userID?: string;
   date_type?: string;
   id?: string;
-  type?: string;
+  type: string;
   postUser?: string;
+  setDisplayTextarea?: React.Dispatch<SetStateAction<boolean>>
+  setText?: React.Dispatch<SetStateAction<string>>
+  content?: string;
 };
-function DropDownMenu({ userID, postUser, date_type, id, type }: MenuProp) {
+
+function DropDownMenuComments({
+  userID,
+  postUser,
+  date_type,
+  setDisplayTextarea,
+  setText,
+  id,
+  type,
+  content
+}: MenuProp) {
   const { toast } = useToast();
   const supabase = createClient();
-  const router = useRouter();
 
   const userMenu = [
     {
-      title: `Edit ${type === "Post".toLowerCase() ? "Post" : ""}`,
-      link:
-        date_type === "Date Story"
-          ? `/the-corner/stories/edit/${id}`
-          : date_type === "Date Idea"
-          ? `/the-corner/ideas/edit/${id}`
-          : null,
+      title: `Edit`,
     },
     {
-      title: `Delete ${type === "Post".toLowerCase() ? "Post" : ""}`,
-      link: null,
+      title: `Delete`,
     },
   ];
 
   const otherMenu = [
-    {
-      title: "Share",
-      link: `/the-corner/${id}`,
-    },
     {
       title: "Block",
       link: null,
@@ -67,20 +66,33 @@ function DropDownMenu({ userID, postUser, date_type, id, type }: MenuProp) {
     },
   ];
 
-  async function handlePostDelete() {
-    const { error } = await supabase.from("corner").delete().eq("id", id);
+  async function handleDelete() {
+    if (type === "comment") {
+      const { error } = await supabase.from("comments").delete().eq("id", id);
 
-    if (error) {
-      toast({
-        title: "Sorry, had trouble enacting this request",
-        description: error.message,
-      });
+      if (error) {
+        toast({
+          title: "Sorry, had trouble deleting your comment",
+          description: error.message,
+        });
+      } else {
+        toast({
+          title: "Comment deletion was successful!",
+        });
+      }
     } else {
-      toast({
-        title: "Post deletion was successful!",
-      });
+        const { error } = await supabase.from("replies").delete().eq("id", id);
 
-      router.refresh();
+      if (error) {
+        toast({
+          title: "Sorry, had trouble deleting your reply",
+          description: error.message,
+        });
+      } else {
+        toast({
+          title: "Reply deletion was successful!",
+        });
+      }
     }
   }
 
@@ -96,17 +108,16 @@ function DropDownMenu({ userID, postUser, date_type, id, type }: MenuProp) {
           {userID === postUser ? (
             <div>
               {userMenu?.map((menu) => {
-                return menu.link ? (
-                  <Link href={menu.link}>
-                    <div
-                      className="py-1 px-1 text-[14px] cursor-pointer hover:bg-[#ffffff10] duration-500 rounded"
-                      key={menu.title}
-                    >
-                      <p>{menu.title}</p>
-                    </div>
-                  </Link>
+                return menu.title.includes("Edit") ? (
+                  <div
+                    onClick={() => {setText && setText(content as string); setDisplayTextarea && setDisplayTextarea(true)}}
+                    className="py-1 px-1 text-[14px] cursor-pointer hover:bg-[#ffffff10] duration-500 rounded"
+                    key={menu.title}
+                  >
+                    <p>{menu.title}</p>
+                  </div>
                 ) : (
-                  // DELETE POST BUTTON
+                  // DELETE DROPDOWN
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <div
@@ -116,6 +127,7 @@ function DropDownMenu({ userID, postUser, date_type, id, type }: MenuProp) {
                         <p>{menu.title}</p>
                       </div>
                     </AlertDialogTrigger>
+                    {/* DISPLAYS ALERT BEFORE DELETION TO MAKE CONFIRM USER'S CHOICE */}
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>
@@ -123,14 +135,13 @@ function DropDownMenu({ userID, postUser, date_type, id, type }: MenuProp) {
                         </AlertDialogTitle>
                         <AlertDialogDescription>
                           This action cannot be undone. This will permanently
-                          delete your post as well as comments, replies, likes,
-                          and saves accompanied with it, and will remove your
-                          data from our servers.
+                          delete your {type} as well as likes accompanied with
+                          it, and will remove your data from our servers.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handlePostDelete}>
+                        <AlertDialogAction onClick={handleDelete}>
                           Continue
                         </AlertDialogAction>
                       </AlertDialogFooter>
@@ -177,4 +188,4 @@ function DropDownMenu({ userID, postUser, date_type, id, type }: MenuProp) {
   );
 }
 
-export default DropDownMenu;
+export default DropDownMenuComments;
