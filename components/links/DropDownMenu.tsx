@@ -26,9 +26,9 @@ function DropDownMenu({ userID, postUser, date_type, id, type }: MenuProp) {
     {
       title: `Edit ${type === "Post".toLowerCase() ? "Post" : ""}`,
       link:
-        date_type === "Date Story".toLowerCase()
+        date_type === "Date Story"
           ? `/the-corner/stories/edit/${id}`
-          : date_type === "Date Idea".toLowerCase()
+          : date_type === "Date Idea"
           ? `/the-corner/ideas/edit/${id}`
           : null,
     },
