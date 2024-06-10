@@ -21,7 +21,7 @@ function Navbar() {
       opacity: 1,
       rotateZ: 0,
       transition: {
-        duration: 1.2,
+        duration: .6,
         ease: [0.85, 0, 0.15, 1],
       },
     },
