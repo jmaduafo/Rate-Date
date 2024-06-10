@@ -28,6 +28,21 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import Header6 from "@/components/Header6";
 import Header5 from "@/components/Header5";
 
@@ -40,14 +55,17 @@ import {
 import Loading from "@/components/Loading";
 import { checkForS } from "@/utils/general/isS";
 import { useRouter } from "next/navigation";
-import { clearCachesByServerAction } from "@/utils/general/revalidatePath";
 import RealTimeSchedule from "./RealTimeSchedule";
+import FilterSort from "./FilterSort";
 
 function BottomBar() {
   // HANDLES GETTING THE DIALOG FOR ONE INDIVIDUAL DATE
   const [selectedDate, setSelectedDate] = useState<DateDataProps | undefined>();
   // GETS ALL THE DATES DATA AND RENDERS INTO A TABLE
   const [datesList, setDatesList] = useState<DateDataProps[] | undefined>();
+  const [sortDatesList, setSortDatesList] = useState<
+    DateDataProps[] | undefined
+  >();
   const [filteredDatesList, setFilteredDatesList] = useState<
     DateDataProps[] | undefined
   >();
@@ -81,6 +99,8 @@ function BottomBar() {
 
   const [userID, setUserID] = useState<string | undefined>("");
   const [open, setOpen] = useState(false);
+
+  const [sortText, setSortText] = useState<string | undefined>();
 
   const listHeaders = [
     {
@@ -183,7 +203,7 @@ function BottomBar() {
         },
         () => {
           getDates();
-          setDateLoading(false)
+          setDateLoading(false);
         }
       )
       .on(
@@ -195,7 +215,7 @@ function BottomBar() {
         },
         (payload) => {
           getScheduleDates();
-          setScheduleLoading(false)
+          setScheduleLoading(false);
         }
       )
       .subscribe();
@@ -209,9 +229,9 @@ function BottomBar() {
     getDates();
     getScheduleDates();
   }, []);
-  
+
   useEffect(() => {
-    listen()
+    listen();
   }, [supabase, datesList, schedulesList]);
 
   function checkOpen() {
@@ -223,6 +243,10 @@ function BottomBar() {
   useEffect(() => {
     checkOpen();
   }, [open]);
+
+  useEffect(() => {
+    sortBy();
+  }, [sortText]);
 
   // INSERT, UPDATE, DELETE REQUESTS
 
@@ -241,13 +265,12 @@ function BottomBar() {
         description: "Date was deleted successfully!",
       });
 
-      setOpen(false)
+      setOpen(false);
     }
   }
 
   function handleSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchValue(e.target.value);
-    console.log(searchValue);
 
     setFilteredDatesList(
       datesList?.filter(
@@ -286,7 +309,7 @@ function BottomBar() {
       }
 
       setScheduleLoading(false);
-      setOpen(false)
+      setOpen(false);
     }
   }
 
@@ -323,7 +346,7 @@ function BottomBar() {
         description: `Your date was deleted successfully!`,
       });
 
-      setOpen(false)
+      setOpen(false);
     }
   }
 
@@ -358,8 +381,88 @@ function BottomBar() {
       }
 
       setScheduleLoading(false);
-      setOpen(false)
+      setOpen(false);
     }
+  }
+
+  function sortBy() {
+    if (sortText === "Sort By Name (A - Z)") {
+      setFilteredDatesList([]);
+      setSortDatesList(
+        datesList?.sort((a, b) => {
+          if (a.date_name < b.date_name) {
+            return -1;
+          }
+          if (a.date_name > b.date_name) {
+            return 1;
+          }
+          return 0;
+        })
+      );
+    } else if (sortText === "Sort By Name (Z - A)") {
+      setFilteredDatesList(undefined);
+      setSortDatesList(
+        datesList?.sort((a, b) => {
+          if (a.date_name < b.date_name) {
+            return 1;
+          }
+          if (a.date_name > b.date_name) {
+            return -1;
+          }
+          return 0;
+        })
+      );
+    } else if (sortText === "Sort By Rating (10 - 0)") {
+      setFilteredDatesList(undefined);
+      setSortDatesList(
+        datesList?.sort((a, b) => {
+          if (a.rating && b.rating) {
+            return a.rating - b.rating
+          } else {
+            return 0
+          }
+        })
+      );
+    } else if (sortText === "Sort By Rating (0 - 10)") {
+      setFilteredDatesList(undefined);
+      datesList?.sort((a, b) => {
+        if (a.rating && b.rating) {
+          return b.rating - a.rating
+        } else {
+          return 0
+        }
+      })
+    } else if (sortText === "Sort By Status (Z - A)") {
+      setFilteredDatesList(undefined);
+      setSortDatesList(
+        datesList?.sort((a, b) => {
+          if (a.relationship_status && b.relationship_status && a.relationship_status < b.relationship_status) {
+            return -1;
+          }
+          if (a.relationship_status && b.relationship_status && a.relationship_status > b.relationship_status) {
+            return 1;
+          }
+          return 0;
+        })
+      );
+    } else if (sortText === "Sort By Status (A - Z)") {
+      setFilteredDatesList(undefined);
+      setSortDatesList(
+        datesList?.sort((a, b) => {
+          if (a.relationship_status && b.relationship_status && a.relationship_status < b.relationship_status) {
+            return 1;
+          }
+          if (a.relationship_status && b.relationship_status && a.relationship_status > b.relationship_status) {
+            return -1;
+          }
+          return 0;
+        })
+      );
+    } else if (sortText === 'Reset') {
+      setSortDatesList(undefined)
+      setSortText(undefined)
+      setFilteredDatesList(datesList)
+    } 
   }
 
   return (
@@ -375,9 +478,7 @@ function BottomBar() {
             </PrimaryButton>
           </Link>
           {/* FILTER BY BUTTON */}
-          <SecondaryButton className="flex justify-center items-center px-2">
-            <AdjustmentsHorizontalIcon strokeWidth={1} className="w-6" />
-          </SecondaryButton>
+          <FilterSort setSort={setSortText} sort={sortText}/>
         </div>
         {/* SEARCH BAR */}
         <div className="w-full mt-3 flex gap-2 py-2 px-3 bg-myForeground rounded-full">
@@ -438,9 +539,58 @@ function BottomBar() {
                     );
                   })}
                 </div>
-              ) : datesList.length ? (
+              ) : !sortDatesList?.length &&
+                datesList.length &&
+                filteredDatesList &&
+                filteredDatesList?.length ? (
                 <div className=" mt-2 text-darkText max-h-[45vh] overflow-y-auto">
                   {filteredDatesList?.map((date) => {
+                    return (
+                      <DialogTrigger
+                        key={date.id}
+                        asChild
+                        onClick={() => setSelectedDate(date)}
+                      >
+                        <div className="flex gap-3 duration-500 hover:bg-myBackgroundMuted cursor-pointer mt-1 py-3 px-3 rounded-xl w-full">
+                          <div className="flex-[3] text-darkText">
+                            <p className="text-[12px] md:text-[13.5px]">
+                              {date.date_name}
+                            </p>
+                          </div>
+                          <div className="flex-[3] text-darkText">
+                            <p className="text-[12px] md:text-[13.5px]">
+                              {date.short_desc}
+                            </p>
+                          </div>
+                          <div className="flex-[2] text-darkText md:block hidden">
+                            <p className="text-[12px] md:text-[13.5px]">
+                              {date.duration_of_dating} {date.duration_metric}
+                            </p>
+                          </div>
+                          <div className="flex-[2] text-darkText flex gap-1 items-center">
+                            {date.rating && date.rating >= 8 ? (
+                              <FireIcon className="w-4 text-orange-500" />
+                            ) : null}
+                            <p className="text-[12px] md:text-[13.5px]">
+                              {date.rating?.toFixed(1)}
+                            </p>
+                          </div>
+                          <div className="flex-[2] text-darkText">
+                            <p className="text-[12px] md:text-[13.5px]">
+                              {date.relationship_status}
+                            </p>
+                          </div>
+                        </div>
+                      </DialogTrigger>
+                    );
+                  })}
+                </div>
+              ) : sortDatesList &&
+                sortDatesList?.length &&
+                datesList.length &&
+                !filteredDatesList?.length ? (
+                <div className=" mt-2 text-darkText max-h-[45vh] overflow-y-auto">
+                  {sortDatesList?.map((date) => {
                     return (
                       <DialogTrigger
                         key={date.id}
@@ -488,7 +638,7 @@ function BottomBar() {
               )}
 
               {!filteredDatesList ||
-                (!filteredDatesList?.length && (
+                (!filteredDatesList?.length || !sortDatesList || !sortDatesList?.length && (
                   <div className="my-8 text-darkText">
                     <p className="text-center text-[14px]">
                       No listed date applies to the search
