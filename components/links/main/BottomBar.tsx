@@ -276,7 +276,8 @@ function BottomBar() {
       datesList?.filter(
         (date) =>
           date?.date_name?.toLowerCase()?.includes(searchValue.toLowerCase()) ||
-          date?.short_desc?.toLowerCase()?.includes(searchValue.toLowerCase())
+          date?.short_desc?.toLowerCase()?.includes(searchValue.toLowerCase()) ||
+          date?.relationship_status?.toLowerCase()?.includes(searchValue.toLowerCase())
       )
     );
   }
