@@ -118,11 +118,10 @@ function DropDownMenuComments({
                   </div>
                 ) : (
                   // DELETE DROPDOWN
-                  <AlertDialog>
+                  <AlertDialog key={menu.title}>
                     <AlertDialogTrigger asChild>
                       <div
                         className="py-1 px-1 text-[14px] cursor-pointer hover:bg-[#ffffff10] duration-500 rounded"
-                        key={menu.title}
                       >
                         <p>{menu.title}</p>
                       </div>

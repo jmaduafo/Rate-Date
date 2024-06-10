@@ -97,17 +97,16 @@ function DropDownMenu({ userID, postUser, date_type, id, type }: MenuProp) {
             <div>
               {userMenu?.map((menu) => {
                 return menu.link ? (
-                  <Link href={menu.link}>
+                  <Link href={menu.link} key={menu.title}>
                     <div
                       className="py-1 px-1 text-[14px] cursor-pointer hover:bg-[#ffffff10] duration-500 rounded"
-                      key={menu.title}
                     >
                       <p>{menu.title}</p>
                     </div>
                   </Link>
                 ) : (
                   // DELETE POST BUTTON
-                  <AlertDialog>
+                  <AlertDialog key={menu.title}>
                     <AlertDialogTrigger asChild>
                       <div
                         className="py-1 px-1 text-[14px] cursor-pointer hover:bg-[#ffffff10] duration-500 rounded"

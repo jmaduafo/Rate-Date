@@ -265,8 +265,6 @@ function TheCornerDetailPage() {
     listen();
   }, [supabase, cornerDetail, commentsData]);
 
-  console.log(cornerDetail?.replies?.length);
-
   return (
     <div className="md:w-[70%] w-full mx-auto mb-[4rem]">
       {cornerDetail ? (

@@ -244,7 +244,7 @@ function TopBar() {
               {topData[0]?.relationship_status}
             </p>
           </div>
-          <div className="mt-auto">
+          <div className="mt-10 md:mt-auto">
             {topData?.map((data) => {
               return (
                 <div className="w-full" key={data.id}>

@@ -57,6 +57,7 @@ import { checkForS } from "@/utils/general/isS";
 import { useRouter } from "next/navigation";
 import RealTimeSchedule from "./RealTimeSchedule";
 import FilterSort from "./FilterSort";
+import PaginationSection from "./PaginationSection";
 
 function BottomBar() {
   // HANDLES GETTING THE DIALOG FOR ONE INDIVIDUAL DATE
@@ -101,6 +102,7 @@ function BottomBar() {
   const [open, setOpen] = useState(false);
 
   const [sortText, setSortText] = useState<string | undefined>();
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   const listHeaders = [
     {
@@ -276,8 +278,12 @@ function BottomBar() {
       datesList?.filter(
         (date) =>
           date?.date_name?.toLowerCase()?.includes(searchValue.toLowerCase()) ||
-          date?.short_desc?.toLowerCase()?.includes(searchValue.toLowerCase()) ||
-          date?.relationship_status?.toLowerCase()?.includes(searchValue.toLowerCase())
+          date?.short_desc
+            ?.toLowerCase()
+            ?.includes(searchValue.toLowerCase()) ||
+          date?.relationship_status
+            ?.toLowerCase()
+            ?.includes(searchValue.toLowerCase())
       )
     );
   }
@@ -388,7 +394,7 @@ function BottomBar() {
 
   function sortBy() {
     if (sortText === "Sort By Name (A - Z)") {
-      setFilteredDatesList([]);
+      setFilteredDatesList(undefined);
       setSortDatesList(
         datesList?.sort((a, b) => {
           if (a.date_name < b.date_name) {
@@ -418,9 +424,9 @@ function BottomBar() {
       setSortDatesList(
         datesList?.sort((a, b) => {
           if (a.rating && b.rating) {
-            return a.rating - b.rating
+            return a.rating - b.rating;
           } else {
-            return 0
+            return 0;
           }
         })
       );
@@ -428,19 +434,27 @@ function BottomBar() {
       setFilteredDatesList(undefined);
       datesList?.sort((a, b) => {
         if (a.rating && b.rating) {
-          return b.rating - a.rating
+          return b.rating - a.rating;
         } else {
-          return 0
+          return 0;
         }
-      })
+      });
     } else if (sortText === "Sort By Status (Z - A)") {
       setFilteredDatesList(undefined);
       setSortDatesList(
         datesList?.sort((a, b) => {
-          if (a.relationship_status && b.relationship_status && a.relationship_status < b.relationship_status) {
+          if (
+            a.relationship_status &&
+            b.relationship_status &&
+            a.relationship_status < b.relationship_status
+          ) {
             return -1;
           }
-          if (a.relationship_status && b.relationship_status && a.relationship_status > b.relationship_status) {
+          if (
+            a.relationship_status &&
+            b.relationship_status &&
+            a.relationship_status > b.relationship_status
+          ) {
             return 1;
           }
           return 0;
@@ -450,20 +464,28 @@ function BottomBar() {
       setFilteredDatesList(undefined);
       setSortDatesList(
         datesList?.sort((a, b) => {
-          if (a.relationship_status && b.relationship_status && a.relationship_status < b.relationship_status) {
+          if (
+            a.relationship_status &&
+            b.relationship_status &&
+            a.relationship_status < b.relationship_status
+          ) {
             return 1;
           }
-          if (a.relationship_status && b.relationship_status && a.relationship_status > b.relationship_status) {
+          if (
+            a.relationship_status &&
+            b.relationship_status &&
+            a.relationship_status > b.relationship_status
+          ) {
             return -1;
           }
           return 0;
         })
       );
-    } else if (sortText === 'Reset') {
-      setSortDatesList(undefined)
-      setSortText(undefined)
-      setFilteredDatesList(datesList)
-    } 
+    } else if (sortText === "Reset") {
+      setSortDatesList(undefined);
+      setSortText(undefined);
+      setFilteredDatesList(datesList);
+    }
   }
 
   return (
@@ -479,7 +501,7 @@ function BottomBar() {
             </PrimaryButton>
           </Link>
           {/* FILTER BY BUTTON */}
-          <FilterSort setSort={setSortText} sort={sortText}/>
+          <FilterSort setSort={setSortText} sort={sortText} />
         </div>
         {/* SEARCH BAR */}
         <div className="w-full mt-3 flex gap-2 py-2 px-3 bg-myForeground rounded-full">
@@ -514,7 +536,7 @@ function BottomBar() {
                 </>
               ) : null}
               {dateLoading || !datesList ? (
-                <div className="mt-2 text-darkText max-h-[45vh] overflow-y-auto">
+                <div className="mt-2 text-darkText max-h-[35vh] overflow-y-auto">
                   {[0, 1, 2, 3, 4, 5].map((header, i) => {
                     return (
                       <div
@@ -544,7 +566,7 @@ function BottomBar() {
                 datesList.length &&
                 filteredDatesList &&
                 filteredDatesList?.length ? (
-                <div className=" mt-2 text-darkText max-h-[45vh] overflow-y-auto">
+                <div className=" mt-2 text-darkText max-h-[25vh] overflow-y-auto scrollbar">
                   {filteredDatesList?.map((date) => {
                     return (
                       <DialogTrigger
@@ -552,7 +574,7 @@ function BottomBar() {
                         asChild
                         onClick={() => setSelectedDate(date)}
                       >
-                        <div className="flex gap-3 duration-500 hover:bg-myBackgroundMuted cursor-pointer mt-1 py-3 px-3 rounded-xl w-full">
+                        <div className="flex items-start gap-3 duration-500 hover:bg-myBackgroundMuted cursor-pointer mt-1 py-3 px-3 rounded-xl w-full">
                           <div className="flex-[3] text-darkText">
                             <p className="text-[12px] md:text-[13.5px]">
                               {date.date_name}
@@ -590,7 +612,7 @@ function BottomBar() {
                 sortDatesList?.length &&
                 datesList.length &&
                 !filteredDatesList?.length ? (
-                <div className=" mt-2 text-darkText max-h-[45vh] overflow-y-auto">
+                <div className=" mt-2 text-darkText max-h-[25vh] overflow-y-auto scrollbar">
                   {sortDatesList?.map((date) => {
                     return (
                       <DialogTrigger
@@ -598,7 +620,7 @@ function BottomBar() {
                         asChild
                         onClick={() => setSelectedDate(date)}
                       >
-                        <div className="flex gap-3 duration-500 hover:bg-myBackgroundMuted cursor-pointer mt-1 py-3 px-3 rounded-xl w-full">
+                        <div className="flex items-start gap-3 duration-500 hover:bg-myBackgroundMuted cursor-pointer mt-1 py-3 px-3 rounded-xl w-full">
                           <div className="flex-[3] text-darkText">
                             <p className="text-[12px] md:text-[13.5px]">
                               {date.date_name}
@@ -639,7 +661,9 @@ function BottomBar() {
               )}
 
               {!filteredDatesList ||
-                (!filteredDatesList?.length || !sortDatesList || !sortDatesList?.length && (
+                !filteredDatesList?.length ||
+                !sortDatesList ||
+                (!sortDatesList?.length && (
                   <div className="my-8 text-darkText">
                     <p className="text-center text-[14px]">
                       No listed date applies to the search
@@ -887,6 +911,21 @@ function BottomBar() {
             </div>
           </Card>
         </Dialog>
+        {/* <div className="mt-5">
+          {(filteredDatesList && filteredDatesList.length > 4) ||
+          (datesList && datesList?.length > 4) ? (
+            <PaginationSection
+              setCurrentPage={setCurrentPage}
+              currentPage={currentPage}
+              totalItems={
+                filteredDatesList
+                  ? filteredDatesList?.length
+                  : datesList?.length
+              }
+              itemsPerPage={4}
+            />
+          ) : null}
+        </div> */}
       </div>
       {/* UPCOMING DATES SCHEDULES */}
       <Card className="flex-[2]">
@@ -1046,14 +1085,6 @@ function BottomBar() {
                           type="submit"
                           className="w-full hover:opacity-85 duration-500 text-myForeground bg-green-700 rounded border-none outline-none px-3 py-2 text-[15px]"
                         >
-                          {/* {scheduleLoading ? (
-                            <Loading
-                              classNameColor="border-t-myForeground"
-                              classNameSize="w-[30px] h-[30px]"
-                            />
-                          ) : (
-                            "Add Record"
-                          )} */}
                           Save
                         </button>
                         <button
