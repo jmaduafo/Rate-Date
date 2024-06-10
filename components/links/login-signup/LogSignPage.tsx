@@ -3,6 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 import Image from 'next/image'
 import Picture from '@/app/logSignGif.gif'
+import SecondaryButton from '@/components/SecondaryButton'
 
 function LogSignPage({children, topRightLabel, link}: { children: React.ReactNode, topRightLabel: string, link: string}) {
   return (
@@ -17,11 +18,16 @@ function LogSignPage({children, topRightLabel, link}: { children: React.ReactNod
             </div>
         </div>  
         <div className='md:bg-myForeground md:flex-[1] md:rounded-tl-3xl md:rounded-bl-3xl p-8'>
-            <div className='flex justify-end'>
+            <div className='flex justify-end gap-4'>
                 <Link href={link}>
                     <PrimaryButton className=''>
                         {topRightLabel}
                     </PrimaryButton>
+                </Link>
+                <Link href={'/'}>
+                    <SecondaryButton className=''>
+                        Back to Home
+                    </SecondaryButton>
                 </Link>
 
             </div>

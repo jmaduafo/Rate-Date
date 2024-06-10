@@ -1,18 +1,41 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import GradientCircle from "./GradientCircle";
 import { boskaMedium } from "@/fonts/font";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { SocialIcon } from "react-social-icons";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
 
 function Footer() {
   const [pricingHover, setPricingHover] = useState(false);
+
+  const textRise = useRef(null)
+
+  useGSAP(() => {
+    // gsap code here...
+    gsap.to(textRise.current,{
+      y: -100,
+      duration: 3.4,
+      ease: 'power4.inOut',
+      scrollTrigger: {
+        trigger: textRise.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: true,
+        markers: true
+      }
+    }); // <-- automatically reverted
+
+  }, []);
+
 
   return (
     <section className="pt-[30vh]">
       <div className="z-[0] translate-y-[8vh]">
         <h2
+          ref={textRise}
           className={`${boskaMedium.className} text-[9vw] leading-[1] text-center`}
         >
           ELEVATE YOUR DATING
@@ -30,7 +53,7 @@ function Footer() {
               Sign up to get started
             </h5>
             <div className="flex justify-center mt-4">
-              <Link href="/login">
+              <Link href="/signup">
                 <button className="outline-none border-none tracking-tight bg-homeText text-homeAccent py-2 px-4 rounded-lg flex items-center gap-4">
                   Get Started
                   <ArrowRightIcon className="w-6 " strokeWidth={1} />

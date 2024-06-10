@@ -1,27 +1,16 @@
+'use client'
 import About from "@/components/links/home/About";
 import Features from "@/components/links/home/Features";
 import Footer from "@/components/links/home/Footer";
 import Hero from "@/components/links/home/Hero";
 import Navbar from "@/components/links/home/Navbar";
-import { createClient } from "@/utils/supabase/client";
-import { useEffect } from "react";
-// import { useRouter } from "next/navigation";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 export default async function Index() {
-  const supabase = createClient()
-  // const router = useRouter()
-
-  // useEffect(() => {
-  //   async function checkLoggedIn() {
-  //     const { error } = await supabase.auth.getUser()
-
-  //     if (!error) {
-  //       router.push('/dashboard')
-  //     }
-  //   }
-
-  //   checkLoggedIn()
-  // }, [])
+  gsap.registerPlugin(useGSAP);
+  gsap.registerPlugin(ScrollTrigger);
 
   return (
    <div className="bg-homeBackground text-homeText">

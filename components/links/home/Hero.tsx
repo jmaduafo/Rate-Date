@@ -26,7 +26,7 @@ function Hero() {
           </p>
         </div>
         <div className="flex justify-center gap-6 items-center mt-8">
-          <Link href="/login">
+          <Link href="/signup">
             <PrimaryButton className="flex gap-5 items-center">
               Sign Up Free
               <ArrowRightIcon strokeWidth={1} className="w-5 text-homeText" />

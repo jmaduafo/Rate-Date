@@ -5,12 +5,35 @@ import Link from "next/link";
 import Image from "next/image";
 import PrimaryButton from "@/components/PrimaryButton";
 import { boskaMedium, boskaRegular } from "@/fonts/font";
+import { motion } from "framer-motion";
 
 function Navbar() {
   const [pricingHover, setPricingHover] = useState(false);
 
+  const drop = {
+    initial: {
+      y: -300,
+      opacity: 0,
+      rotateZ: 5
+    },
+    animate: {
+      y: 0,
+      opacity: 1,
+      rotateZ: 0,
+      transition: {
+        duration: 1.2,
+        ease: [0.85, 0, 0.15, 1],
+      },
+    },
+  };
+
   return (
-    <header className="py-3 px-10 z-[60]">
+    <motion.header
+      variants={drop}
+      initial="initial"
+      animate="animate"
+      className="py-3 px-10 z-[60]"
+    >
       <nav className="flex justify-between items-center">
         <div className="flex items-center z-[50]">
           <div className="w-[40px] object-cover">
@@ -35,12 +58,12 @@ function Navbar() {
               <a>{pricingHover ? "Coming Soon" : "Pricing"}</a>
             </li>
           </ul>
-          <Link href='/login'>
+          <Link href="/login">
             <PrimaryButton>Sign In</PrimaryButton>
           </Link>
         </div>
       </nav>
-    </header>
+    </motion.header>
   );
 }
 

@@ -62,7 +62,7 @@ function Features() {
       <div className="h-[10vh]"></div>
       <div className="mb-10">
         <Carousel
-          className="w-full mx-auto max-w-[90vw] overflow-y-visible"
+          className="w-full mx-auto md:max-w-[90vw] max-w-[70vw] overflow-y-visible"
           setApi={setApi}
           opts={{
             loop: true,
@@ -72,7 +72,7 @@ function Features() {
             {slides.map((slide, index) => {
               return (
                 <CarouselItem
-                  className={`md:basis-1/3 overflow-y-visible`}
+                  className={`md:basis-1/3 h-[40vh] flex items-end`}
                   key={slide.title}
                 >
                   <div
