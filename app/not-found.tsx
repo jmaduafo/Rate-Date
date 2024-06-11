@@ -1,9 +1,11 @@
+import CheckNav from "@/components/CheckNav";
 import Navbar from "@/components/links/home/Navbar";
 import React from "react";
 
 function NotFound() {
   return (
     <>
+      <CheckNav/>
       <div className={`h-screen flex justify-center items-center`}>
         <div
           className={`w-full pb-16
