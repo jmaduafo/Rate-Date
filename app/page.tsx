@@ -13,12 +13,11 @@ export default async function Index() {
   gsap.registerPlugin(ScrollTrigger);
 
   return (
-   <div className="bg-homeBackground text-homeText">
-    <Navbar/>
+   <div className="">
     <Hero/>
     <About/>
     <Features/>
-    <Footer/>
+    <Footer />
    </div>
   );
 }

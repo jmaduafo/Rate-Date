@@ -14,14 +14,14 @@ function Navbar() {
     initial: {
       y: -300,
       opacity: 0,
-      rotateZ: 5
+      rotateZ: 5,
     },
     animate: {
       y: 0,
       opacity: 1,
       rotateZ: 0,
       transition: {
-        duration: .6,
+        duration: 0.6,
         ease: [0.85, 0, 0.15, 1],
       },
     },
@@ -35,16 +35,18 @@ function Navbar() {
       className="py-3 px-10 z-[60]"
     >
       <nav className="flex justify-between items-center">
-        <div className="flex items-center z-[50]">
-          <div className="w-[40px] object-cover">
-            <Image
-              src={Logo}
-              alt="elysian logo with three lines symbolizing journal entries"
-              className="w-full h-full"
-            />
+        <Link href='/'>
+          <div className="flex items-center z-[50]">
+            <div className="w-[40px] object-cover">
+              <Image
+                src={Logo}
+                alt="elysian logo with three lines symbolizing journal entries"
+                className="w-full h-full"
+              />
+            </div>
+            <p className={`text-[18px] ${boskaRegular.className}`}>Elysian</p>
           </div>
-          <p className={`text-[18px] ${boskaRegular.className}`}>Elysian</p>
-        </div>
+        </Link>
         <div className="flex items-center gap-10 z-[50]">
           <ul className="flex items-center gap-5">
             <li className="text-[13px] list-none tracking-tight">
