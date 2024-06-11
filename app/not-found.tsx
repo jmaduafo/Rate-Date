@@ -1,34 +1,7 @@
+import Navbar from "@/components/links/home/Navbar";
 import React from "react";
-import { createClient } from "@/utils/supabase/client";
-import Image from "next/image";
-import Gif from "@/app/bubble-gum-error-404.gif";
-import PrimaryButton from "@/components/PrimaryButton";
-import Link from "next/link";
 
 function NotFound() {
-  //   const [loggedIn, setLoggedIn] = useState<boolean | undefined>();
-  //   const [loading, setLoading] = useState(false);
-
-  //   const supabase = createClient();
-
-  //   const checkLoggedIn = async () => {
-  //     setLoading(true);
-
-  //     const { error } = await supabase.auth.getUser();
-
-  //     if (error) {
-  //       setLoggedIn(false);
-  //       setLoading(false);
-  //     } else {
-  //       setLoggedIn(true);
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   useEffect(() => {
-  //     checkLoggedIn();
-  //   }, []);
-
   return (
     <>
       <div className={`h-screen flex justify-center items-center`}>

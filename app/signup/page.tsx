@@ -12,6 +12,7 @@ function Signup({
 }: {
   searchParams: { message: string };
 }) {
+
   const signUp = async (formData: FormData) => {
     "use server";
 
@@ -20,6 +21,12 @@ function Signup({
     const password = formData.get("password") as string;
     const name = formData.get("name") as string;
     const username = formData.get("username") as string;
+
+    if (!email.length || !password.length || !name.length || !username.length ) {
+      return
+    } else if (password.length < 6) {
+      return redirect("/login?message=Password must be 6 characters or more"); 
+    }
 
     const supabase = createClient();
 

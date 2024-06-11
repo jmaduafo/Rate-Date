@@ -7,7 +7,7 @@ import SecondaryButton from '@/components/SecondaryButton'
 
 function LogSignPage({children, topRightLabel, link}: { children: React.ReactNode, topRightLabel: string, link: string}) {
   return (
-    <div className='md:flex min-h-screen shadow-md'>
+    <div className='md:flex min-h-screen shadow-md bg-myBackground'>
         <div className='md:flex-[1] hidden p-8 md:flex justify-center items-center'>
             {/* Illustration by <a href="https://icons8.com/illustrations/author/N3YOxdn12Kox">Marina Mogulska</a> from <a href="https://icons8.com/illustrations">Ouch!</a> */}
             <div className='w-full object-cover object-bottom'>
@@ -21,7 +21,7 @@ function LogSignPage({children, topRightLabel, link}: { children: React.ReactNod
             <div className='flex justify-end gap-4'>
                 <Link href={link}>
                     <PrimaryButton className=''>
-                        {topRightLabel}
+                        Switch to {topRightLabel}
                     </PrimaryButton>
                 </Link>
                 <Link href={'/'}>

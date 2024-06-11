@@ -49,7 +49,6 @@ export default async function RootLayout({
             </div>
           ) : (
             <div className="bg-homeBackground text-homeText">
-              <Navbar />
               {children}
             </div>
           )}
