@@ -14,6 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import ScreenLoading from './ScreenLoading'
 import Image from 'next/image'
 import Loading from './Loading'
+import Settings from './Settings'
 
 type User = {
     name: string;
@@ -172,10 +173,7 @@ function SideBar() {
     <div className='md:mt-[8rem]'>
         <LineBreak/>
         {/* SETTINGS BUTTON */}
-        <div onClick={() => {}} className='md:flex items-center gap-6 hidden md:py-3 md:px-8 mt-3 cursor-pointer'>
-            <Cog6ToothIcon className='w-[20px] text-darkText'/>
-            <p className='text-[15px]'>Setting</p>
-        </div>
+        <Settings/>
     </div>
     </>
   )
