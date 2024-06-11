@@ -164,7 +164,7 @@ function DropDownMenuComments({
                             title: "Copied to clipboard",
                           });
                         }}
-                        text={window.location.origin + menu.link}
+                        text={window.location.origin + '/profile/' + menu.link}
                       >
                         <p>{menu.title}</p>
                       </CopyToClipboard>

@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { v4 as uuidv4 } from "uuid";
 import PrimaryButton from "@/components/PrimaryButton";
 import { checkForS } from "@/utils/general/isS";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 function RightBar({ username }: { username?: string | string[] }) {
   const [userData, setUserData] = useState<UserDataProps[] | undefined>();
@@ -106,35 +107,49 @@ function RightBar({ username }: { username?: string | string[] }) {
       const { data: userData, error: userError } =
         await supabase.auth.getUser();
 
-      setUserID(userData?.user?.id);
-
       if (userError) {
         router.push("/login");
         router.refresh();
       } else {
-        const { data: dataInfo, error: errorMessage } = await supabase
+        setUserID(userData?.user?.id);
+
+        const { data: user, error: uError } = await supabase
           .from("users")
-          .select(`*, followers ( * )`)
-          .eq("username", username);
+          .select("id, username")
+          .eq("id", userData?.user?.id);
 
-        if (errorMessage) {
-          toast({
-            title: "Uh oh! Something went wrong",
-            description: errorMessage.message,
-          });
+        if (uError) {
+          console.log(uError.message);
         } else {
-          setUserData(dataInfo);
-          setNotUserID(dataInfo[0]?.id);
+          if (username === user[0]?.username) {
+            router.push("/profile/");
+            router.refresh();
+          }
 
-          getFollows(dataInfo[0]?.id);
+          const { data: dataInfo, error: errorMessage } = await supabase
+            .from("users")
+            .select(`*, followers ( * )`)
+            .eq("username", username);
 
-          const isFollow = dataInfo[0]?.followers?.some(
-            (el: { user_id: string; follow_id: string }) =>
-              el.user_id === userData?.user?.id &&
-              el.follow_id === dataInfo[0]?.id
-          );
+          if (errorMessage) {
+            toast({
+              title: "Uh oh! Something went wrong",
+              description: errorMessage.message,
+            });
+          } else {
+            setUserData(dataInfo);
+            setNotUserID(dataInfo[0]?.id);
 
-          setIsFollowed(isFollow);
+            getFollows(dataInfo[0]?.id);
+
+            const isFollow = dataInfo[0]?.followers?.some(
+              (el: { user_id: string; follow_id: string }) =>
+                el.user_id === userData?.user?.id &&
+                el.follow_id === dataInfo[0]?.id
+            );
+
+            setIsFollowed(isFollow);
+          }
         }
       }
     }
@@ -311,7 +326,24 @@ function RightBar({ username }: { username?: string | string[] }) {
                 />
               )}
               <div>
-                <SecondaryButton>Share</SecondaryButton>
+                <CopyToClipboard
+                  onCopy={() => {
+                    toast({
+                      title: "Copied to clipboard",
+                    });
+                  }}
+                  text={
+                    userData
+                      ? window.location.origin +
+                        "/profile/" +
+                        userData[0]?.username
+                      : window.location.origin + "/profile/" + username
+                  }
+                >
+                  <div>
+                    <SecondaryButton>Share</SecondaryButton>
+                  </div>
+                </CopyToClipboard>
               </div>
             </div>
           </UserInfo>
