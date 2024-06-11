@@ -123,6 +123,10 @@ module.exports = {
         from: { transform: "translateX(-20%)"},
         to: { transform: "translateX(0%)"},
       }, 
+      "ping": {
+        from: { opacity: 0},
+        to: { opacity: 1},
+      }, 
       "bounceMove1": {
         from: { top: "10%", left: "10%"},
         to: { top: "100%", left: "90%"},
@@ -157,6 +161,9 @@ module.exports = {
       "slide1": "slide1 60s linear infinite",
       "slide2": "slide2 45s linear infinite",
       "slide3": "slide3 60s linear infinite",
+      "ping1": "ping 0.4s ease infinite",
+      "ping2": "ping 0.4s ease infinite .1s",
+      "ping3": "ping 0.4s ease infinite .2s",
     },
   },
   plugins: [require("tailwindcss-animate"), require('@tailwindcss/typography')],
