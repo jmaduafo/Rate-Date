@@ -32,9 +32,9 @@ export default async function RootLayout({
   } = await supabase.auth.getUser();
 
   return (
-    <html lang="en" className={`${DMSans.className}`}>
+    <html lang="en" >
       <body className="bg-myBackground text-myForeground bodyScroll">
-        <main className="">
+        <main className={`${DMSans.className}`}>
           {/* IF USER IS LOGGED IN, DISPLAY SIDEBAR WITH CUSTOM CONTAINER;
               IF NOT LOGGED IN, DISPLAY COMPONENTS AS NORMAL */}
           {user ? (
