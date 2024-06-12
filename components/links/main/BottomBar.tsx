@@ -999,19 +999,24 @@ function BottomBar() {
                   </div>
                 );
               })
-            ) : schedulesList.length ? (
+            ) : schedulesList && schedulesList?.length ? (
               <RealTimeSchedule
                 schedulesList={schedulesList}
                 setScheduleID={setScheduleID}
                 setSelectedSchedule={setSelectedSchedule}
               />
             ) : (
-              <div className="">
-                <p className="text-center text-[14px]">
-                  No dates scheduled yet
-                </p>
-              </div>
+              schedulesList &&
+              !schedulesList?.length && (
+                <div className="">
+                  <p className="text-center text-[14px]">
+                    No dates scheduled yet
+                  </p>
+                </div>
+              )
             )}
+
+            {/* DATE SCHEDULE INFORMATION POP UP */}
             <DialogContent>
               <DialogHeader>
                 <Header4 title="Schedule Info" />

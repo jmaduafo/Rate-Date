@@ -4,9 +4,7 @@ import SideBar from "@/components/SideBar";
 import Container from "@/components/Container";
 import { Toaster } from "@/components/ui/toaster";
 import { createClient } from "@/utils/supabase/server";
-import ScreenLoading from "@/components/ScreenLoading";
-import Navbar from "@/components/links/home/Navbar";
-import Footer from "@/components/links/home/Footer";
+import { redirect } from "next/navigation";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -28,7 +26,7 @@ export default async function RootLayout({
   const supabase = createClient();
 
   const {
-    data: { user },
+    data: { user }, error
   } = await supabase.auth.getUser();
 
   return (
