@@ -91,7 +91,7 @@ function About() {
         </div>
       </motion.div>
       <div className="relative flex flex-col sm:flex-row z-[1] px-10 my-[14vh]">
-        <div className="relative object-cover flex-[1] z-[0] flex justify-center">
+        <div className="relative object-cover flex-[1] z-[0] flex justify-center sm:justify-end md:justify-center">
           <Image src={Gif} alt="couple on a date" className="w-[80%]" />
         </div>
         <div className="flex-[1] flex justify-center sm:justify-end" ref={textRise}>

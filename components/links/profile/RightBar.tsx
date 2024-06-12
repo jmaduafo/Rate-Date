@@ -209,6 +209,36 @@ function RightBar({ username }: { username?: string | string[] }) {
               });
             }
           }
+        } else {
+          const { error } = await supabase
+              .from("users")
+              .update({
+                username,
+                bio,
+                pronouns: pronounsText,
+                birthday,
+                image: profileImage,
+                relationship_status:
+                  relationStatus === "" || relationStatus === "n/a"
+                    ? null
+                    : relationStatus,
+                sexual_orientation:
+                  orientation === "" || orientation === "n/a"
+                    ? null
+                    : orientation,
+                private: isPrivate,
+              })
+              .eq("id", userData[0]?.id);
+
+            if (error) {
+              toast({
+                title: error.message,
+              });
+            } else {
+              toast({
+                title: "Profile updated successfully!",
+              });
+            }
         }
 
         setLoading(false);
@@ -255,6 +285,13 @@ function RightBar({ username }: { username?: string | string[] }) {
           getUserProfile();
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "users" },
+        (payload) => {
+          getUserProfile()
+        }
+      )
       .subscribe();
 
     return () => {
@@ -270,7 +307,7 @@ function RightBar({ username }: { username?: string | string[] }) {
 
   useEffect(() => {
     listen();
-  }, [supabase, followerCount, followingCount, isFollowed]);
+  }, [supabase, followerCount, followingCount, isFollowed, userData]);
 
   return (
     <section className="md:sticky top-[20px]">
