@@ -518,7 +518,7 @@ function BottomBar() {
             <div>
               {datesList && datesList?.length ? (
                 <>
-                  <div className="flex gap-3 py-2 px-3">
+                  <div className="flex gap-3 py-2 md:px-3">
                     {listHeaders.map((header) => {
                       return (
                         <div
@@ -574,7 +574,7 @@ function BottomBar() {
                         asChild
                         onClick={() => setSelectedDate(date)}
                       >
-                        <div className="flex items-start gap-3 duration-500 hover:bg-myBackgroundMuted cursor-pointer mt-1 py-3 px-3 rounded-xl w-full">
+                        <div className="flex items-start gap-3 duration-500 hover:bg-myBackgroundMuted cursor-pointer mt-1 py-3 md:px-3 rounded-xl w-full">
                           <div className="flex-[3] text-darkText">
                             <p className="text-[12px] md:text-[13.5px]">
                               {date.date_name}
