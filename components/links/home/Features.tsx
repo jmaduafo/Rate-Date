@@ -111,7 +111,7 @@ function Features() {
               {slides.map((slide, index) => {
                 return (
                   <CarouselItem
-                    className={`md:basis-1/3 h-[40vh] flex items-end`}
+                    className={`md:basis-1/3 h-[50vh] md:h-[40vh] flex items-end`}
                     key={slide.title}
                   >
                     <div
@@ -148,14 +148,14 @@ function Features() {
                 key={slide.title}
                 className={`${
                   current === i + 1 ? "block" : "hidden"
-                } duration-500 w-[30%] font-light`}
+                } duration-500 w-[70%] md:w-[30%] font-light`}
               >
                 <h5
                   className={`${boskaMedium.className} uppercase text-center text-[28px] mb-3`}
                 >
                   {slide.title}
                 </h5>
-                <p className={`text-center`}>{slide.description}</p>
+                <p className={`text-center text-[14px] md:text-[16px]`}>{slide.description}</p>
               </div>
             );
           })}

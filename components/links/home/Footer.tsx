@@ -72,7 +72,7 @@ function Footer() {
         >
           <div className="">
             <h5
-              className={`${boskaMedium.className} text-[40px] uppercase text-center`}
+              className={`${boskaMedium.className} text-[26px] md:text-[40px] uppercase text-center leading-[1]`}
             >
               Sign up to get started
             </h5>

@@ -42,7 +42,7 @@ function About() {
   };
 
   return (
-    <section className="mt-[30vh]">
+    <section className="mt-[10vh] md:mt-[30vh]">
       <motion.div
         className="overflow-hidden z-[20]"
         variants={appear}
@@ -90,16 +90,12 @@ function About() {
           })}
         </div>
       </motion.div>
-      <div className="relative flex z-[1] px-10 my-[14vh]">
+      <div className="relative flex flex-col sm:flex-row z-[1] px-10 my-[14vh]">
         <div className="relative object-cover flex-[1] z-[0] flex justify-center">
-          {/* <GradientCircle
-            classNamePosition="left-1/2 top-[30%]"
-            classNameAnimate="animate-bounceMove2"
-          /> */}
           <Image src={Gif} alt="couple on a date" className="w-[80%]" />
         </div>
-        <div className="flex-[1] flex justify-end" ref={textRise}>
-          <p className="w-[90%] font-light">
+        <div className="flex-[1] flex justify-center sm:justify-end" ref={textRise}>
+          <p className="w-[90%] font-light text-center sm:text-left">
             Elysian is designed to enrich your dating life. Easily record,
             schedule future meetups, and explore new ideas for unforgettable
             experiences. With visual charts to track your activity and a vibrant

@@ -76,11 +76,11 @@ function Hero() {
   };
 
   return (
-    <section className="relative z-[2] h-screen pb-[5vh] flex justify-center items-end">
+    <section className="relative z-[2] h-screen pb-[5vh] flex justify-center items-center md:items-end">
       <GradientCircle classNameAnimate="animate-bounceMove3" />
       {/* <GradientCircle classNameAnimate="animate-bounceMove4"/> */}
       <div>
-        <div className="flex items-center justify-center gap-6 overflow-hidden">
+        <div className="flex items-center justify-center gap-2 md:gap-6 overflow-hidden">
           {firstLine.split(" ").map((el, i) => {
             return (
               <motion.h1
@@ -100,7 +100,7 @@ function Hero() {
             );
           })}
         </div>
-        <div className="flex items-center justify-center gap-6 overflow-hidden">
+        <div className="flex items-center justify-center gap-2 md:gap-6 overflow-hidden">
           {secondLine.split(" ").map((el, i) => {
             return (
               <motion.h1
@@ -126,7 +126,7 @@ function Hero() {
           animate="animate"
           className="flex justify-center mt-10"
         >
-          <p className="text-[20px] w-[40%] text-center">
+          <p className="text-[15px] md:text-[20px] w-[80%] md:w-[40%] text-center">
             Welcome to Elysian – your personal hub for recording, planning, and
             sharing all your memorable moments. Whether it's a romantic evening
             or a casual meetup, keep track of your experiences and make every
@@ -161,9 +161,9 @@ function Hero() {
           initial="initial"
           animate="animate"
         >
-          <div className="flex justify-center items-center rounded-full w-[100px] h-[100px] border-[1.5px] border-homeText">
+          <div className="flex justify-center items-center rounded-full w-[60px] h-[60px] md:w-[100px] md:h-[100px] border-[1.5px] border-homeText">
             <div className=" animate-bounce">
-              <ArrowDownIcon strokeWidth={1} className="w-10 text-homeText" />
+              <ArrowDownIcon strokeWidth={1} className="w-6 md:w-10 text-homeText" />
             </div>
           </div>
         </motion.div>

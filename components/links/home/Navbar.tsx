@@ -32,7 +32,7 @@ function Navbar() {
       variants={drop}
       initial="initial"
       animate="animate"
-      className="py-3 px-10 z-[60]"
+      className="py-3 px-4 md:px-10 z-[60]"
     >
       <nav className="flex justify-between items-center">
         <Link href='/'>
@@ -47,8 +47,8 @@ function Navbar() {
             <p className={`text-[18px] ${boskaRegular.className}`}>Elysian</p>
           </div>
         </Link>
-        <div className="flex items-center gap-10 z-[50]">
-          <ul className="flex items-center gap-5">
+        <div className="flex items-center gap-4 md:gap-10 z-[50]">
+          <ul className="flex items-center gap-3 md:gap-5">
             <li className="text-[13px] list-none tracking-tight">
               <Link href="#features">Features</Link>
             </li>
