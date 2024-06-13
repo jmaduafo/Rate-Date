@@ -49,52 +49,62 @@ function LeftBar({ username }: { username?: string | string[] }) {
 
   const getNonUserInfo = async () => {
     if (username) {
-      const { data: userData, error: userError } = await supabase
-        .from("users")
-        .select("id")
-        .eq("username", username);
+      const { data: authData, error: authError } = await supabase.auth.getUser()
 
-      if (userError) {
-        console.error(userError.message);
+      if (authError) {
+        router.push('/')
+        router.refresh()
       } else {
-        const { data: cornerData, error: cornerError } = await supabase
-          .from("corner")
-          .select(
-            `
-                *,
-                saves (
-                  *
-                ),
-                comments (
-                  *
-                ),
-                likes (
-                  *
-                ),
-                users (
-                  id,
-                  name,
-                  username,
-                  image
-                ),
-                replies (
-                  *
-                )
-              `
-          )
-          .eq("user_id", userData[0]?.id);
-
-        if (cornerError) {
-          console.log(cornerError.message);
+        setUserID(authData?.user?.id)
+        
+        const { data: userData, error: userError } = await supabase
+          .from("users")
+          .select("id")
+          .eq("username", username);
+  
+        if (userError) {
+          console.error(userError.message);
         } else {
-          setInfoData(cornerData);
-
-          const filter = cornerData?.filter(
-            (data) => data.date_type === userSelect
-          );
-
-          setFilterData(filter);
+          const { data: cornerData, error: cornerError } = await supabase
+            .from("corner")
+            .select(
+              `
+                  *,
+                  saves (
+                    *
+                  ),
+                  comments (
+                    *
+                  ),
+                  likes (
+                    *
+                  ),
+                  users (
+                    id,
+                    name,
+                    username,
+                    image
+                  ),
+                  replies (
+                    *
+                  )
+                `
+            )
+            .eq("user_id", userData[0]?.id);
+  
+          if (cornerError) {
+            console.log(cornerError.message);
+          } else {
+            setInfoData(cornerData);
+  
+            const filter = cornerData?.filter(
+              (data) => data.date_type === userSelect
+            );
+  
+            setFilterData(filter);
+          }
         }
+
       }
     }
   };

@@ -91,7 +91,7 @@ function Footer() {
               bgColor="transparent"
               network="instagram"
               target="_blank"
-              url="https://www.vimeo.com"
+              url="https://www.instagram.com"
               style={{ width: "40px" }}
             />
             <SocialIcon
@@ -99,7 +99,7 @@ function Footer() {
               bgColor="transparent"
               network="linkedin"
               target="_blank"
-              url="https://www.vimeo.com"
+              url="hhttps://www.linkedin.com/in/jasmine-maduafokwa-48070a180/"
               style={{ width: "40px" }}
             />
           </div>
