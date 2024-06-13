@@ -172,6 +172,32 @@ function TopBar() {
           getUserData()
         }
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "dates",
+          // Only care about dates where the user_id matches the user's id
+          filter: `user_id=eq.${userID}`,
+        },
+        (payload) => {
+          getUserData()
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "schedules",
+          // Only care about dates where the user_id matches the user's id
+          filter: `user_id=eq.${userID}`,
+        },
+        (payload) => {
+          getUserData()
+        }
+      )
       .subscribe();
 
     return () => {

@@ -52,8 +52,8 @@ function ScheduleBarChart({ chartData }: ChartProps) {
           </div>
         </div>
       ) : chartData && !chartData?.length ? (
-        <div>
-          <p>Hi</p>
+        <div className="w-full h-full flex justify-center items-center">
+          <p className="w-[70%] text-[15px] text-center">You have not scheduled any dates. Schedule future dates to access this chart.</p>
         </div>
       ) : (
         <div className="w-full h-full flex justify-center items-center">

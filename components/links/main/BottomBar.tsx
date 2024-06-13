@@ -313,10 +313,14 @@ function BottomBar() {
           title: "Success!",
           description: "Date was scheduled successfully!",
         });
+
+        setScheduleDate('')
+        setScheduleName('')
       }
 
       setScheduleLoading(false);
       setOpen(false);
+      
     }
   }
 
@@ -385,6 +389,9 @@ function BottomBar() {
           title: "Success!",
           description: `Your date with ${selectedSchedule?.date_name} was updated successfully!`,
         });
+
+        setUpdateScheduleName('')
+        setUpdateScheduleDate('')
       }
 
       setScheduleLoading(false);
@@ -656,7 +663,7 @@ function BottomBar() {
                 </div>
               ) : (
                 <div className="my-8 text-darkText">
-                  <p className="text-center text-[14px]">No dates added yet</p>
+                  <p className="text-center text-[14px]">No listed date applies to the search</p>
                 </div>
               )}
 
