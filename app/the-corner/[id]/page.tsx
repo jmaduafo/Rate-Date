@@ -54,6 +54,12 @@ function TheCornerDetailPage() {
         comments(
             *
         ),
+        users (
+          id,
+          name,
+          username,
+          image
+        ),
         replies (
             *
         ) `

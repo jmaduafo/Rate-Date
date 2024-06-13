@@ -71,6 +71,12 @@ function LeftBar({ username }: { username?: string | string[] }) {
                 likes (
                   *
                 ),
+                users (
+                  id,
+                  name,
+                  username,
+                  image
+                ),
                 replies (
                   *
                 )
@@ -116,6 +122,12 @@ function LeftBar({ username }: { username?: string | string[] }) {
             likes (
               *
             ),
+            users (
+              id,
+              name,
+              username,
+              image
+            ),
             replies (
               *
             )
@@ -159,6 +171,12 @@ function LeftBar({ username }: { username?: string | string[] }) {
             ),
             likes (
               *
+            ),
+            users (
+              id,
+              name,
+              username,
+              image
             ),
             replies (
               *

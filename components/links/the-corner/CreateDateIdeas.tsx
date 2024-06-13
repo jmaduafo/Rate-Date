@@ -90,64 +90,6 @@ function CreateDateIdeas() {
           if (storageError) {
             console.log(storageError.message);
           } else {
-            const { data: userData, error: userError } = await supabase
-              .from("users")
-              .select("id, username, name, image")
-              .eq("id", authData?.user?.id);
-
-            if (userError) {
-              toast({
-                title: "Whoops, something went wrong!",
-                description: userError.message,
-              });
-            } else {
-              const { error } = await supabase.from("corner").insert({
-                title,
-                content,
-                date_type: "Date Idea",
-                is_mature: NSFWSwitch ?? false,
-                cost,
-                location,
-                user: userData[0],
-                tags: tagArray,
-                image: imageIdea
-                  ? `https://oevsvjkpdlznvfenlttz.supabase.co/storage/v1/object/public/corner/${storageData?.path}`
-                  : null,
-              });
-
-              if (error) {
-                toast({
-                  title: "Oh no! Something went wrong",
-                  description: error.message,
-                });
-              } else {
-                toast({
-                  title: "Success!",
-                  description: "Your story was posted successfully!",
-                });
-
-                setTitle("");
-                setContent("");
-                setNSFWSwitch(false);
-                setTagArray([]);
-                setImageIdea(undefined);
-
-                goBack();
-              }
-            }
-          }
-        } else {
-          const { data: userData, error: userError } = await supabase
-            .from("users")
-            .select("id, username, name, image")
-            .eq("id", authData?.user?.id);
-
-          if (userError) {
-            toast({
-              title: "Whoops, something went wrong!",
-              description: userError.message,
-            });
-          } else {
             const { error } = await supabase.from("corner").insert({
               title,
               content,
@@ -155,9 +97,10 @@ function CreateDateIdeas() {
               is_mature: NSFWSwitch ?? false,
               cost,
               location,
-              user: userData[0],
               tags: tagArray,
-              image: null,
+              image: imageIdea
+                ? `https://oevsvjkpdlznvfenlttz.supabase.co/storage/v1/object/public/corner/${storageData?.path}`
+                : null,
             });
 
             if (error) {
@@ -179,6 +122,37 @@ function CreateDateIdeas() {
 
               goBack();
             }
+          }
+        } else {
+          const { error } = await supabase.from("corner").insert({
+            title,
+            content,
+            date_type: "Date Idea",
+            is_mature: NSFWSwitch ?? false,
+            cost,
+            location,
+            tags: tagArray,
+            image: null,
+          });
+
+          if (error) {
+            toast({
+              title: "Oh no! Something went wrong",
+              description: error.message,
+            });
+          } else {
+            toast({
+              title: "Success!",
+              description: "Your story was posted successfully!",
+            });
+
+            setTitle("");
+            setContent("");
+            setNSFWSwitch(false);
+            setTagArray([]);
+            setImageIdea(undefined);
+
+            goBack();
           }
         }
       }

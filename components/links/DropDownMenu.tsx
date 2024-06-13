@@ -153,7 +153,7 @@ function DropDownMenu({ userID, postUser, date_type, id, type }: MenuProp) {
                             title: "Copied to clipboard",
                           });
                         }}
-                        text={window.location.origin + '/profile/' + menu.link}
+                        text={window.location.origin + menu.link}
                       >
                         <p>{menu.title}</p>
                       </CopyToClipboard>

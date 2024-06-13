@@ -59,6 +59,12 @@ function MainLeftBar() {
           likes (
             *
           ),
+          users (
+            id,
+            username,
+            image,
+            name
+          ),
           replies (
             *
           )

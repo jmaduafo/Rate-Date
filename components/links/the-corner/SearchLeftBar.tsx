@@ -38,7 +38,17 @@ function SearchLeftBar({ searchParams }: { searchParams: { search: string } }) {
 
       const { data, error } = await supabase
         .from("corner")
-        .select(`*, likes ( * ), saves ( * ), replies ( * ), comments ( * )`);
+        .select(`*, 
+          likes ( * ), 
+          saves ( * ), 
+          replies ( * ), 
+          comments ( * ), 
+          users (
+            id,
+            name,
+            username,
+            image
+          )`);
 
       if (error) {
         console.log(error);

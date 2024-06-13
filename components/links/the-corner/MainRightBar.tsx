@@ -57,7 +57,16 @@ function MainRightBar() {
             comments (
               *
             ),
+            users (
+              id,
+              username,
+              image,
+              name
+            ),
             likes (
+              *
+            ),
+            replies (
               *
             )
           `
@@ -131,7 +140,7 @@ function MainRightBar() {
           <div className="">
             <Header4 title={"Recommended"} />
           </div>
-          <div className="mt-2 max-h-[40vh] overflow-auto scrollbar pr-2">
+          <div className="mt-2 max-h-[40vh] overflow-auto scrollbar pr-1">
             {recommended && recommended?.length ? (
               recommended?.map((rec) => {
                 return (
@@ -142,15 +151,17 @@ function MainRightBar() {
               })
             ) : recommended && !recommended?.length ? (
               <div className="mt-10 mb-5 flex justify-center items-center">
-                <p className="text-center text-[14px] w-[70%]">Nothing recommended at the moment</p>
+                <p className="text-center text-[14px] w-[70%]">
+                  Nothing recommended at the moment
+                </p>
               </div>
             ) : (
-              [0, 1, 2, 3].map(el => {
+              [0, 1, 2, 3].map((el) => {
                 return (
                   <Fragment key={el}>
-                    <RecommendedSkeleton/>
+                    <RecommendedSkeleton />
                   </Fragment>
-                )
+                );
               })
             )}
           </div>

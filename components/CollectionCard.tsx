@@ -46,7 +46,7 @@ function CollectionCard({
   const checkTags = [
     {
       category: "NSFW",
-      name: info?.is_nsfw ? "NSFW" : null,
+      name: info?.is_nsfw ? "NSFW" : info?.is_mature ? "21+" : null,
     },
     {
       category: "Date Type",
@@ -64,7 +64,7 @@ function CollectionCard({
   function checkLikesSaves() {
     const isLiked = info?.likes?.some(
         (like) =>
-          like.user_id === info?.user?.id
+          like.user_id === userID
       );
 
       if (isLiked) {
@@ -73,7 +73,7 @@ function CollectionCard({
 
       const isSaved = info?.saves?.some(
         (save) =>
-          save.user_id === info?.user?.id
+          save.user_id === userID
       );
 
       if (isSaved) {
@@ -91,18 +91,18 @@ function CollectionCard({
     >
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-2">
-          {info?.user?.image && info?.user?.username ? (
+          {info?.users && info?.users?.image && info?.users?.username ? (
             <Link
               href={
                 info?.user_id === userID
                   ? "/profile"
-                  : `/profile/${info?.user?.username}`
+                  : `/profile/${info?.users?.username}`
               }
             >
               <div className="cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
                 <Image
-                  src={info?.user?.image}
-                  alt={`${info?.user?.name}'s profile`}
+                  src={info?.users?.image}
+                  alt={`${info?.users?.name}'s profile`}
                   width={500}
                   height={500}
                   className="w-full h-full rounded-full"
@@ -114,23 +114,23 @@ function CollectionCard({
               href={
                 info?.user_id === userID
                   ? "/profile"
-                  : `/profile/${info?.user?.username}`
+                  : `/profile/${info?.users?.username}`
               }
             >
               <div className="flex justify-center items-center cursor-pointer w-[40px] h-[40px] rounded-full bg-white object-cover">
-                {info?.user?.name ? (
-                  <p>{getInitials(info?.user?.name)}</p>
+                {info?.users?.name ? (
+                  <p>{getInitials(info?.users?.name)}</p>
                 ) : null}
               </div>
             </Link>
           )}
           <div className="">
-            {info?.user ? (
+            {info?.users ? (
               <div className="flex items-center gap-1">
-                <p className="text-[16px]">{info?.user?.name}</p>
+                <p className="text-[16px]">{info?.users?.name}</p>
                 <p className="text-[14px] text-darkText60">&#x2022;</p>
                 <p className="text-[14px] text-darkText60">
-                  @{info?.user?.username}
+                  @{info?.users?.username}
                 </p>
               </div>
             ) : null}
@@ -194,7 +194,7 @@ function CollectionCard({
                 <div className="" key={tag.category}>
                   <p
                     className={`${
-                      tag.name === "NSFW" ? "bg-myWarning" : "bg-myAccent"
+                      tag.name === "NSFW" || tag.name === "21+" ? "bg-myWarning" : "bg-myAccent"
                     } text-[13px] rounded-full px-3 py-[2px]`}
                   >
                     {tag.name}

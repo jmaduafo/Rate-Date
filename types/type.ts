@@ -125,6 +125,7 @@ export type PostProps = {
   is_mature?: boolean;
   user_id?: string;
   user?: UserDataProps;
+  users?: UserDataProps;
   likes?: OtherProps[];
   saves?: OtherProps[];
   comments?: CommentProps[];
