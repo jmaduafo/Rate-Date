@@ -40,16 +40,20 @@ function Signup({
     if (error) {
       return redirect("/login?message=Could not authenticate user");
     } else {
-      await supabase.from('users').insert({
+      const { error: userError } = await supabase.from('users').insert({
         id: data?.user?.id,
         email,
         username,
         name
       })
-      
-      return redirect("/login?message=Check your email to continue sign in process");
-    }
 
+      if (userError) {
+        return redirect(`/login?message=${userError.message} - Please try signing up again`);
+      } else {
+        return redirect("/login?message=Check your email to continue sign in process");
+      }
+      
+    }
   };
 
   return (
