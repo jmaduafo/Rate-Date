@@ -14,8 +14,8 @@ const DMSans = DM_Sans({ subsets: ["latin"] });
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Rate My Date",
-  description: "The fastest way to build apps with Next.js and Supabase",
+  title: "Elysian",
+  description: "Explore, record, and share your endevours in the dating scene",
 };
 
 export default async function RootLayout({
