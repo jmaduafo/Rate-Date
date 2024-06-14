@@ -18,6 +18,13 @@
 
 - I spearheaded the design, front-end, and back-end development of Elysian, tackling each problem systematically and breaking tasks into manageable pieces. This methodical approach ensured that each feature was developed efficiently and effectively, from creating a seamless user interface with engaging design elements to implementing robust backend functionalities for data management. Throughout the project, I relished the challenges and enjoyed the creative process, ultimately delivering a dynamic and user-friendly web application.
 
+<img width="524" alt="serendate_search" src="https://github.com/jmaduafo/Rate-Date/assets/87540591/41132d62-b5d2-4c76-93f6-cacde1e8488e">
+
+<img width="523" alt="serendate_corner" src="https://github.com/jmaduafo/Rate-Date/assets/87540591/e7c8068c-6e8a-49d8-acfe-8fd252003a2b">
+
+<img width="505" alt="serendate_dashboard" src="https://github.com/jmaduafo/Rate-Date/assets/87540591/654339e2-cd2d-401a-a668-4d32d4ac57e2">
+
+
 <a href="https://demo-nextjs-with-supabase.vercel.app/">
   <img alt="Next.js and Supabase Starter Kit - the fastest way to build apps with Next.js and Supabase" src="https://demo-nextjs-with-supabase.vercel.app/opengraph-image.png">
   <h1 align="center">Next.js and Supabase Starter Kit</h1>
