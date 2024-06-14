@@ -10,6 +10,7 @@
   - Next.js
   - Typescript
   - Supabase
+  - Chart.js
   - Tailwind
   - Shadcn UI
   - Framer Motion
