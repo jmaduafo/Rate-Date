@@ -9,6 +9,9 @@ module.exports = {
       boxShadow: {
         '3xl': "20px 20px 60px #afa9a9, -20px -20px 60px #ede5e5",
       },
+      backgroundImage: {
+        'confetti': "url('../app/confetti.gif')"
+      },
       colors: {
         background: "black",
         foreground: "#D9D9D9",

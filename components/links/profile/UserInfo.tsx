@@ -8,6 +8,8 @@ import Header5 from "@/components/Header5";
 import LineBreak from "@/components/LineBreak";
 import Header4 from "@/components/Header4";
 import { checkForS } from "@/utils/general/isS";
+import { Cake } from "lucide-react";
+import { isBirthday } from "@/utils/general/checkBirthday";
 
 type UserInfoProps = {
   user: UserDataProps;
@@ -46,10 +48,15 @@ function UserInfo({
         )}
       </div>
       {/* USER'S NAME */}
-      <div className="mt-3 flex justify-center">
+      <div className="mt-3 flex justify-center items-center gap-2">
         {user && user?.name && (
           <Header4 title={user?.name} />
         )}
+        {
+          user && user?.birthday &&
+          isBirthday(user?.birthday) ? <Cake strokeWidth={1} className="text-darkText" size={24}/> : null 
+        }
+        
       </div>
       {/* USERNAME */}
       <div className="mt-[-5px] flex justify-center">

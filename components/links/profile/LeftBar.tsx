@@ -56,7 +56,7 @@ function LeftBar({ username }: { username?: string | string[] }) {
         router.refresh()
       } else {
         setUserID(authData?.user?.id)
-        
+
         const { data: userData, error: userError } = await supabase
           .from("users")
           .select("id")

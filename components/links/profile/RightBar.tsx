@@ -13,6 +13,7 @@ import { v4 as uuidv4 } from "uuid";
 import PrimaryButton from "@/components/PrimaryButton";
 import { checkForS } from "@/utils/general/isS";
 import CopyToClipboard from "react-copy-to-clipboard";
+import { isBirthday } from "@/utils/general/checkBirthday";
 
 function RightBar({ username }: { username?: string | string[] }) {
   const [userData, setUserData] = useState<UserDataProps[] | undefined>();
@@ -211,34 +212,34 @@ function RightBar({ username }: { username?: string | string[] }) {
           }
         } else {
           const { error } = await supabase
-              .from("users")
-              .update({
-                username,
-                bio,
-                pronouns: pronounsText,
-                birthday,
-                image: profileImage,
-                relationship_status:
-                  relationStatus === "" || relationStatus === "n/a"
-                    ? null
-                    : relationStatus,
-                sexual_orientation:
-                  orientation === "" || orientation === "n/a"
-                    ? null
-                    : orientation,
-                private: isPrivate,
-              })
-              .eq("id", userData[0]?.id);
+            .from("users")
+            .update({
+              username,
+              bio,
+              pronouns: pronounsText,
+              birthday,
+              image: profileImage,
+              relationship_status:
+                relationStatus === "" || relationStatus === "n/a"
+                  ? null
+                  : relationStatus,
+              sexual_orientation:
+                orientation === "" || orientation === "n/a"
+                  ? null
+                  : orientation,
+              private: isPrivate,
+            })
+            .eq("id", userData[0]?.id);
 
-            if (error) {
-              toast({
-                title: error.message,
-              });
-            } else {
-              toast({
-                title: "Profile updated successfully!",
-              });
-            }
+          if (error) {
+            toast({
+              title: error.message,
+            });
+          } else {
+            toast({
+              title: "Profile updated successfully!",
+            });
+          }
         }
 
         setLoading(false);
@@ -289,7 +290,7 @@ function RightBar({ username }: { username?: string | string[] }) {
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "users" },
         (payload) => {
-          getUserProfile()
+          getUserProfile();
         }
       )
       .subscribe();
@@ -311,7 +312,14 @@ function RightBar({ username }: { username?: string | string[] }) {
 
   return (
     <section className="md:sticky top-[20px]">
-      <Card className="w-full flex justify-center items-center">
+      <Card
+        className={`w-full flex justify-center items-center bg-cover bg-center bg-no-repeat ${
+          userData &&
+          userData[0]?.birthday &&
+          isBirthday(userData[0]?.birthday) &&
+          "bg-confetti"
+        }`}
+      >
         {/* <DemographicChart ethnicData={ethnicData}/> */}
         {userData ? (
           <UserInfo
