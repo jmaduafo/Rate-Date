@@ -106,7 +106,7 @@ function MainLeftBar() {
         </div>
       </section>
       {/* RENDER OF ALL IDEAS AND STORIES FROM NEWEST TO LATEST */}
-      <section className="mt-4">
+      <section className="mt-9">
         <div>
           {infoData
             ? infoData.map((info) => {
