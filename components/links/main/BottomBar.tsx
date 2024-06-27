@@ -234,7 +234,7 @@ function BottomBar() {
 
   useEffect(() => {
     listen();
-  }, [supabase, datesList, schedulesList]);
+  }, [supabase, datesList, schedulesList, setSchedulesList, setDatesList]);
 
   function checkOpen() {
     if (!open) {
