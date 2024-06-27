@@ -96,6 +96,7 @@ function CreateDateIdeas() {
               date_type: "Date Idea",
               is_mature: NSFWSwitch ?? false,
               cost,
+              category,
               location,
               tags: tagArray,
               image: imageIdea
@@ -130,6 +131,7 @@ function CreateDateIdeas() {
             date_type: "Date Idea",
             is_mature: NSFWSwitch ?? false,
             cost,
+            category,
             location,
             tags: tagArray,
             image: null,

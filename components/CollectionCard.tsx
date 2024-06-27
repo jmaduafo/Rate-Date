@@ -181,7 +181,7 @@ function CollectionCard({
           ) : null}
         </div>
         {info?.location ? (
-          <p className="text-[12px] text-darkText60 mt-[-5px]">
+          <p className="text-[12px] text-darkText60">
             Located at {info?.location}
           </p>
         ) : null}

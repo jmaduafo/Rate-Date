@@ -112,7 +112,7 @@ function MainLeftBar() {
             ? infoData.map((info) => {
                 return (
                   <Fragment key={info?.id}>
-                    <div className="md:py-5 md:px-4">
+                    <div className="md:py-0 md:px-4">
                       <CollectionCard info={info} userID={userID} />
                     </div>
                   </Fragment>
