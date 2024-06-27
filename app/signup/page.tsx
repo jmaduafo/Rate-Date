@@ -65,7 +65,7 @@ function Signup({
           <div className="flex justify-center">
             <Header2 title='Sign Up'/>
           </div>
-          <p className="text-[14px] text-darkText60 font-medium text-center mt-5">Not a registered user yet? Enter your credentials below to create your account</p>
+          <p className="text-[14px] text-darkText60 font-medium text-center mt-5">Not a registered user yet? Enter your credentials below to create your account and take your dating journey to the next level!</p>
         </div>
         <form className="text-darkText w-full">
           {/* NAME INPUT */}

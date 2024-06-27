@@ -39,7 +39,7 @@ export default function Login({
           <div className="flex justify-center">
             <Header2 title='Log In'/>
           </div>
-          <p className="text-[14px] text-darkText60 font-medium text-center mt-5">Already registered with us? Welcome back! And FYI, we now have NSFW fill out content available.</p>
+          <p className="text-[14px] text-darkText60 font-medium text-center mt-5">Already registered with us? Welcome back!</p>
         </div>
         <form className="text-darkText w-full">
           {/* EMAIL INPUT */}
