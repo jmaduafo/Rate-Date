@@ -62,6 +62,13 @@ function DetailPage({
       <div className="mt-10">
         {info?.title ? <Header1 title={info?.title} /> : null}
       </div>
+      <div className={`${info?.location ? 'mt-1' : 'mt-0'}`}>
+        {info?.location ? (
+          <p className="text-[14px] text-darkText60 mt-[-5px]">
+            Located at {info?.location}
+          </p>
+        ) : null}
+      </div>
       <div className="flex justify-between items-start mt-5">
         <div className="flex items-center gap-2">
           {info?.users?.image ? (
@@ -139,13 +146,6 @@ function DetailPage({
           />
         </div>
       ) : null}
-      <div className="mt-2">
-        {info?.location ? (
-          <p className="text-[12px] text-darkText60 mt-[-5px]">
-            Located at {info?.location}
-          </p>
-        ) : null}
-      </div>
       <div className="mt-5">{info?.content ? parse(info?.content) : null}</div>
       <div className="flex items-center gap-3 mt-5">
         <div className="flex items-center gap-2">
