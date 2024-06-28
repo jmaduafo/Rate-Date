@@ -5,6 +5,7 @@ import { ArrowRightIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
 import GradientCircle from "./GradientCircle";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import ViewDemo from "./ViewDemo";
 
 function Hero() {
   const firstLine = "Track your journey,";
@@ -146,14 +147,14 @@ function Hero() {
               </PrimaryButton>
             </Link>
           </motion.div>
-          <motion.button
+          <motion.div
             variants={rightButtonAppear}
             initial="initial"
             animate="animate"
-            className="bg-homeText50 duration-500 hover:opacity-80 border-none text-darkText rounded-xl py-2 px-5 outline-none"
+            className=""
           >
-            View Demo
-          </motion.button>
+            <ViewDemo/>
+          </motion.div>
         </div>
         <motion.div
           className="flex justify-center mt-8"

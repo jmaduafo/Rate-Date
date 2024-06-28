@@ -1,0 +1,23 @@
+{
+  "status": "ready",
+  "originalFilePath": "videos\\elysian_demo.mp4",
+  "provider": "mux",
+  "providerMetadata": {
+    "mux": {
+      "uploadId": "Fq8jozJfiiQJq3501whHHuE00hTefTdB1bD2r3C8jE1Mo",
+      "assetId": "TfovKE0000Xhs8NwNJxMbIe800jiYXjUD8UipyfuKU02h7c",
+      "playbackId": "A5d02Q9HSfpsT01W00JgpbCLNHOiuhOTBWZelr6JxbVjJ00"
+    }
+  },
+  "createdAt": 1719562234335,
+  "updatedAt": 1719562249258,
+  "size": 21844275,
+  "sources": [
+    {
+      "src": "https://stream.mux.com/A5d02Q9HSfpsT01W00JgpbCLNHOiuhOTBWZelr6JxbVjJ00.m3u8",
+      "type": "application/x-mpegURL"
+    }
+  ],
+  "poster": "https://image.mux.com/A5d02Q9HSfpsT01W00JgpbCLNHOiuhOTBWZelr6JxbVjJ00/thumbnail.webp",
+  "blurDataURL": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAADwAQCdASoQAAkAAQAcJZQCdAEQUIoWV9gA/vs0jMsjMAlEl/qX0XIiNT7CfQfh3f5gd5Nn4gf/5irpfLPBN65MRvoBAw01a7BPR/fP++Yx1giIDGO9JZL9ZOQBUNW1aIqLA0LAHuAAAA=="
+}
