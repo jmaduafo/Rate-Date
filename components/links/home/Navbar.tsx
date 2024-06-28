@@ -50,7 +50,7 @@ function Navbar() {
         <div className="flex items-center gap-4 md:gap-10 z-[50]">
           <ul className="flex items-center gap-3 md:gap-5">
             <li className="text-[13px] list-none tracking-tight">
-              <Link href="#features">Features</Link>
+              <Link href="/#features">Features</Link>
             </li>
             <li
               className="text-[13px] list-none tracking-tight duration-500"
