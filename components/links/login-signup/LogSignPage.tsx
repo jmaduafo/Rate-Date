@@ -14,7 +14,9 @@ function LogSignPage({children, topRightLabel, link}: { children: React.ReactNod
                 <Image
                     src={Picture}
                     alt='animated chill blue laptop'
-                    className='w-full h-full'/>
+                    className='w-full h-full'
+                    unoptimized
+                    />
             </div>
         </div>  
         <div className='md:bg-myForeground md:flex-[1] md:rounded-tl-3xl md:rounded-bl-3xl p-8'>

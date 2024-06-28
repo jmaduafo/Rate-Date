@@ -115,7 +115,7 @@ function SearchBar({ classNameSize }: { classNameSize?: string }) {
     <>
       {/* SEARCH ENGINE */}
       <div
-        className={`relative mb-2 flex items-center gap-2 text-darkText bg-myForeground rounded-full py-2 px-3 ${classNameSize}`}
+        className={`relative mb-2 flex items-center gap-2 text-darkText bg-[#ffffff30] rounded-full py-2 px-3 ${classNameSize}`}
       >
         <MagnifyingGlassIcon className="w-6 text-darkText" strokeWidth={1} />
         <input

@@ -31,6 +31,10 @@ function RecommendedList({ info, userID }: Post) {
       category: "Date Type",
       name: info?.date_type ?? null,
     },
+    {
+      category: "Date Category",
+      name: info?.category ?? null,
+    },
   ];
 
   return (
@@ -109,33 +113,35 @@ function RecommendedList({ info, userID }: Post) {
         </div>
       </div>
       <div className="mt-2">
-      <div className="cursor-pointer">
+        <div className="cursor-pointer">
           {info?.title ? (
             <Link href={`/the-corner/${info?.id}`}>
               <Header5 title={info?.title} />
             </Link>
           ) : null}
           {info?.location ? (
-          <p className="text-[12px] text-darkText60 mt-[-5px]">
-            Located at {info?.location}
-          </p>
-        ) : null}
+            <p className="text-[12px] text-darkText60 mt-[-5px]">
+              Located at {info?.location}
+            </p>
+          ) : null}
         </div>
       </div>
-      <div className="flex items-center gap-3 mt-1">
+      <div className="flex items-center flex-wrap gap-y-1 gap-x-3 mt-1">
         <div className="flex items-center gap-2">
           {checkTags.map((tag) => {
-            return (
+            return tag.name ? (
               <div className="" key={tag.category}>
                 <p
                   className={`${
-                    tag.name === "NSFW" || tag.name === "21+" ? "bg-myWarning" : "bg-myAccent"
+                    tag.name === "NSFW" || tag.name === "21+"
+                      ? "bg-myWarning"
+                      : "bg-myAccent"
                   } text-[13px] rounded-full px-3 py-[2px]`}
                 >
                   {tag.name}
                 </p>
               </div>
-            );
+            ) : null;
           })}
         </div>
         {info?.tags ? (
@@ -157,7 +163,7 @@ function RecommendedList({ info, userID }: Post) {
       </div>
       <div className="flex justify-between items-center gap-2 mt-2">
         <div className="flex items-center gap-2">
-        <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1">
             {info?.comments && info?.replies ? (
               <>
                 <CommentIcon className="w-5" strokeWidth={1.5} />

@@ -10,7 +10,7 @@ import {
   ReactionDataProps,
   UserDataProps,
   ScheduleChartDataProps,
-  EthnicDataProps
+  EthnicDataProps,
 } from "@/types/type";
 import SingleDateList from "@/components/SingleDateList";
 import { FireIcon } from "@heroicons/react/24/solid";
@@ -80,7 +80,6 @@ function TopBar() {
         .select("id, user_id, ethnicity, date_name")
         .neq("ethnicity", "Don't know")
         .eq("user_id", userData?.user?.id);
-
 
       if (topError) {
         console.log(topError.message);
@@ -153,7 +152,7 @@ function TopBar() {
   }, []);
 
   useEffect(() => {
-    listen()
+    listen();
   }, [supabase, emojiData, ethnicData, chartData]);
 
   async function listen() {
@@ -169,7 +168,7 @@ function TopBar() {
           filter: `user_id=eq.${userID}`,
         },
         (payload) => {
-          getUserData()
+          getUserData();
         }
       )
       .on(
@@ -182,7 +181,7 @@ function TopBar() {
           filter: `user_id=eq.${userID}`,
         },
         (payload) => {
-          getUserData()
+          getUserData();
         }
       )
       .on(
@@ -195,7 +194,7 @@ function TopBar() {
           filter: `user_id=eq.${userID}`,
         },
         (payload) => {
-          getUserData()
+          getUserData();
         }
       )
       .subscribe();
@@ -243,13 +242,13 @@ function TopBar() {
 
   return (
     <div className="flex md:flex-row flex-col gap-6 md:mt-0 mt-8">
-      {/* CHART CARD */}
+      {/* DATE ACTIVITY CARD */}
       <Card className="flex-[1.5]">
         <ScheduleBarChart chartData={chartData} />
       </Card>
-      {/* HOROSCOPE CARD */}
+      {/* RACIAL DEMOGRAPHIC CARD */}
       <Card className="flex-[1.5] flex flex-col">
-        <DemographicChart ethnicData={ethnicData}/>
+        <DemographicChart ethnicData={ethnicData} />
       </Card>
       {/* TOP DATE CARD */}
       {topData && topData.length ? (
@@ -289,7 +288,12 @@ function TopBar() {
       ) : (
         <Card className="flex-[1] flex justify-center items-center">
           <div className="w-[80%] object-cover">
-            <Image src={Gif} alt="laptop chart gif" className="w-full h-full" />
+            <Image
+              src={Gif}
+              alt="laptop chart gif"
+              unoptimized
+              className="w-full h-full"
+            />
           </div>
         </Card>
       )}
