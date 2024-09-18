@@ -5,7 +5,7 @@ import MainRightBar from "./MainRightBar";
 function MainCornerPage() {
   return (
     <div className="md:flex md:gap-6">
-      <div className="md:flex-[3] overflow-x-hidden">
+      <div className="md:flex-[3]">
         <MainLeftBar />
       </div>
       <div className="md:flex-[1] md:block hidden">
