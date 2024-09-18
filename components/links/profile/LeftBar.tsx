@@ -236,7 +236,7 @@ function LeftBar({ username }: { username?: string | string[] }) {
       {/* USER'S STORIES AND DATE IDEAS SECTION */}
       <section className="relative">
         <SearchBar classNameSize="md:w-[45%] w-full"/>
-        <div className="flex md:justify-start md:mb-2 justify-center mt-8 mb-4">
+        <div className="flex justify-center md:justify-start md:mb-2 mt-8 mb-4">
           {userSelect === "Date Idea" && !username ? (
             <Link href="/the-corner/ideas/create">
               <div className="flex items-center gap-2 text-darkText mb-3">
@@ -260,7 +260,7 @@ function LeftBar({ username }: { username?: string | string[] }) {
             )
           )}
         </div>
-        <div className="flex justify-center items-center gap-6 mb-10">
+        <div className="flex justify-center items-center gap-2 flex-wrap xs:gap-6 mb-10">
           {profileList.map((list) => {
             return (
               list.select && (
