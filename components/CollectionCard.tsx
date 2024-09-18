@@ -90,7 +90,7 @@ function CollectionCard({
       className={`text-darkText py-5 px-4 border-b-dark10 border-b-[1px] hover:bg-dark10 duration-500 rounded-xl`}
     >
       <div className="flex justify-between items-start">
-        <div className="flex items-center gap-2">
+        <div className="flex items-start xs:items-center gap-2">
           {info?.users && info?.users?.image && info?.users?.username ? (
             <Link
               href={
@@ -126,15 +126,15 @@ function CollectionCard({
           )}
           <div className="">
             {info?.users ? (
-              <div className="flex items-center gap-1">
-                <p className="text-[16px]">{info?.users?.name}</p>
-                <p className="text-[14px] text-darkText60">&#x2022;</p>
+              <div className="flex flex-col xs:flex-row xs:items-center gap-x-1">
+                <p className="text-[16px] mb-[-5px] xs:mb-0">{info?.users?.name}</p>
+                <p className="hidden xs:block text-[14px] text-darkText60">&#x2022;</p>
                 <p className="text-[14px] text-darkText60">
                   @{info?.users?.username}
                 </p>
               </div>
             ) : null}
-            <div className="mt-[-3px]">
+            <div className="mt-1 xs:mt-[-3px]">
               {info?.created_at ? (
                 <p className="italic text-[13px] text-darkText60">
                   {futureHoursFromNow(new Date(info?.created_at)) >= 24
@@ -266,7 +266,7 @@ function CollectionCard({
           ) : null}
         </div>
         {typeof info?.views === "number" ? (
-          <div className="flex items-center gap-1">
+          <div className="hidden sm:flex items-center gap-1">
             <EyeIcon className="w-5" strokeWidth={1.5} />
             <p className="text-[13px] font-medium whitespace-nowrap">
               {info?.views}

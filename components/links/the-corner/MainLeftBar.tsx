@@ -88,7 +88,7 @@ function MainLeftBar() {
       <SearchBar classNameSize="md:w-[45%] w-full"/>
       {/* CREATE DATE STORY OR IDEA */}
       <section className="w-full mt-4">
-        <div className="flex gap-3 px-1">
+        <div className="flex flex-col sm:flex-row gap-y-1 gap-x-3 px-1">
           {categories.map((cat) => {
             return (
               <Fragment key={cat.title}>
