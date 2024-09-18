@@ -24,14 +24,14 @@ function MainLeftBar() {
   const categories = [
     {
       title: "Date Idea",
-      icon: <LightBulbIcon className="text-darkText md:w-6 w-4" />,
-      bgColor: "hover:bg-[#E0A85440]",
+      icon: <LightBulbIcon className="duration-300 group-hover:text-[#e1b067] text-darkText md:w-6 w-4" />,
+      borderColor: "group-hover:border-[#e1b06740]",
       href: "/the-corner/ideas/create",
     },
     {
       title: "Date Story",
-      icon: <BookOpenIcon className="text-darkText md:w-6 w-4" />,
-      bgColor: "hover:bg-[#96D6BB40]",
+      icon: <BookOpenIcon className="duration-300 group-hover:text-[#557467] text-darkText md:w-6 w-4" />,
+      borderColor: "group-hover:border-[#55746740]",
       href: "/the-corner/stories/create",
     },
   ];
@@ -95,7 +95,8 @@ function MainLeftBar() {
                 <Link href={cat.href} className="w-full">
                   <CategoriesSelect
                     title={`Create a ${cat.title}`}
-                    bgColor={`${cat.bgColor} flex-[1]`}
+                    className={`flex-[1]`}
+                    borderColor={cat.borderColor}
                   >
                     {cat.icon}
                   </CategoriesSelect>
